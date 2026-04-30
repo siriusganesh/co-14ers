@@ -247,26 +247,40 @@ td.range { color: var(--text-dim); font-size: .85rem; }
 .check.sm { width: 14px; height: 14px; }
 .check.sm.on::after { left: 3px; top: -1px; }
 
-/* difficulty badges — verdict-mark style */
+/* difficulty badges — filled, gradient by class */
 .badge {
   display: inline-block; font-family: var(--font-mono); font-size: .68rem;
   font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
-  padding: .1rem .45rem; border: 1px solid currentColor;
-  background: var(--bg); vertical-align: middle;
+  padding: .15rem .5rem; border: 1px solid transparent;
+  vertical-align: middle; white-space: nowrap;
 }
-.badge.c1 { color: var(--good); }
-.badge.c2 { color: var(--good); }
-.badge.c3 { color: var(--amber); }
-.badge.c4 { color: var(--rust); }
-.badge.c5 { color: var(--navy); }
-.badge.snow { color: var(--navy); background: var(--navy-soft); }
-.badge.outline { color: var(--text-dim); }
+.badge.c1 { background: var(--good-soft);  color: var(--good);     border-color: var(--good); }
+.badge.c2 { background: var(--good);       color: #fff;            border-color: var(--good); }
+.badge.c3 { background: var(--amber-soft); color: #6b4d05;         border-color: var(--amber); }
+.badge.c4 { background: var(--rust);       color: #fff;            border-color: var(--rust); }
+.badge.c5 { background: var(--navy);       color: #fff;            border-color: var(--navy); }
+.badge.snow    { background: var(--navy-soft); color: var(--navy); border-color: var(--navy); }
+.badge.outline { background: var(--bg-tint);   color: var(--text-dim); border-color: var(--border); }
 
-/* peak detail panel */
-.panel {
-  border: 1px solid var(--border); border-left: 3px solid var(--navy);
-  padding: 1.25rem 1.5rem; margin-top: 1rem; background: var(--bg);
+/* peak detail panel — rendered inline as a row inside the table */
+tr.detail-row > td {
+  padding: 0; border-bottom: 1px solid var(--border-strong);
+  background: var(--bg-tint);
 }
+tr.detail-row:hover > td { background: var(--bg-tint); }
+tbody tr.is-open { background: var(--navy-soft); }
+tbody tr.is-open:hover { background: var(--navy-soft); }
+.panel {
+  border-left: 3px solid var(--navy);
+  padding: 1.25rem 1.5rem 1.5rem;
+  background: var(--bg-tint);
+}
+.panel .close-x {
+  background: none; border: 0; padding: 0;
+  font-family: var(--font-mono); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--text-dim); cursor: pointer; border-bottom: 1px solid transparent;
+}
+.panel .close-x:hover { color: var(--rust); border-bottom-color: var(--rust); }
 .panel-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
 .panel h3 {
   margin: 0; font-size: 1.5rem; font-weight: 700; letter-spacing: -.01em;
@@ -305,12 +319,20 @@ a.route-name:hover { color: var(--navy); border-bottom-color: var(--navy); }
   color: var(--text-faint); margin-right: .35rem;
   letter-spacing: .08em; text-transform: uppercase; font-size: .68rem;
 }
-.ratings { display: flex; gap: 1rem; flex-wrap: wrap; font-family: var(--font-mono); font-size: .72rem; color: var(--text-faint); margin-top: .55rem; letter-spacing: .03em; }
-.ratings .v { color: var(--text-heading); margin-left: .15rem; }
-.rating-low { color: var(--good); }
-.rating-mod { color: var(--amber); }
-.rating-high { color: var(--rust); }
-.rating-extreme { color: var(--navy); }
+.ratings { display: flex; gap: .65rem .9rem; flex-wrap: wrap; font-family: var(--font-mono); font-size: .72rem; color: var(--text-faint); margin-top: .55rem; letter-spacing: .03em; align-items: center; }
+.ratings .pair { display: inline-flex; align-items: center; gap: .35rem; }
+.ratings .v { color: var(--text-heading); }
+.ratings .v.rating {
+  display: inline-block; font-family: var(--font-mono);
+  font-size: .65rem; letter-spacing: .08em; text-transform: uppercase;
+  padding: .1rem .45rem; border: 1px solid transparent;
+  vertical-align: middle; line-height: 1.4;
+}
+.rating-low      { background: var(--good-soft);  color: var(--good); border-color: var(--good); }
+.rating-mod      { background: var(--amber-soft); color: #6b4d05;     border-color: var(--amber); }
+.rating-cons     { background: var(--rust-soft);  color: var(--rust); border-color: var(--rust); }
+.rating-high     { background: var(--rust);       color: #fff;        border-color: var(--rust); }
+.rating-extreme  { background: var(--navy);       color: #fff;        border-color: var(--navy); }
 .route-actions {
   display: flex; gap: 1rem; align-items: center; margin-top: .65rem;
   flex-wrap: wrap; font-family: var(--font-mono); font-size: .75rem; color: var(--text-dim);
@@ -431,13 +453,12 @@ footer.page-footer {
     </table>
   </section>
 
-  <section id="detail" hidden></section>
 </main>
 
 <div id="toast" class="toast"></div>
 
 <footer class="page-footer">
-  <span>v0.3.0</span>
+  <span>v0.3.1</span>
   <span>73 peaks &middot; 333 routes</span>
   <span>data: 14ers.com &middot; not a substitute for current conditions</span>
 </footer>
@@ -466,7 +487,8 @@ const state = {
   summits: new Map(), routes: new Map(), planned: new Map(),
   q: "", range: "", maxClass: "", snowOk: true,
   hideSummited: false, plannedOnly: false,
-  sort: "rank", dir: "asc", authMode: "signin"
+  sort: "rank", dir: "asc", authMode: "signin",
+  openPeak: null
 };
 
 function classBadge(diff) {
@@ -488,7 +510,8 @@ function ratingClass(v) {
   v = v.toLowerCase();
   if (v === "low") return "rating-low";
   if (v === "moderate") return "rating-mod";
-  if (v === "considerable" || v === "high") return "rating-high";
+  if (v === "considerable") return "rating-cons";
+  if (v === "high") return "rating-high";
   if (v === "extreme") return "rating-extreme";
   return "";
 }
@@ -825,6 +848,7 @@ function render() {
     const tr = document.createElement("tr");
     if (state.summits.has(p.peak_id)) tr.classList.add("summited");
     if (state.planned.has(p.peak_id)) tr.classList.add("planned");
+    if (state.openPeak === p.peak_id) tr.classList.add("is-open");
     tr.innerHTML = `
       <td>${p.rank ?? ""}</td>
       <td class="peak-name">${p.name}</td>
@@ -842,24 +866,51 @@ function render() {
         setSummit(id, on).then(ok => { if (ok) render(); });
         return;
       }
-      showDetail(p);
+      togglePeak(p);
     });
     tb.appendChild(tr);
+
+    if (state.openPeak === p.peak_id) {
+      const detailTr = document.createElement("tr");
+      detailTr.className = "detail-row";
+      detailTr.innerHTML = `<td colspan="7">${detailHTML(p)}</td>`;
+      tb.appendChild(detailTr);
+      bindDetailEvents(p, detailTr);
+    }
   });
 }
 
-function fmtRating(label, v) {
-  return `<span><span class="k">${label}</span><span class="v ${ratingClass(v)}">${v || "—"}</span></span>`;
+function togglePeak(p) {
+  if (state.openPeak === p.peak_id) {
+    state.openPeak = null;
+    if (location.hash) history.replaceState(null, "", location.pathname + location.search);
+  } else {
+    state.openPeak = p.peak_id;
+    history.replaceState(null, "", "#" + p.slug);
+  }
+  render();
+  if (state.openPeak) {
+    const tr = document.querySelector(`.is-open`);
+    if (tr) tr.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 }
 
-function showDetail(p) {
-  const el = document.getElementById("detail");
-  el.hidden = false;
+function fmtRating(label, v) {
+  const cls = ratingClass(v);
+  const text = v || "—";
+  const valSpan = cls
+    ? `<span class="v rating ${cls}">${text}</span>`
+    : `<span class="v">${text}</span>`;
+  return `<span class="pair"><span class="k">${label}</span>${valSpan}</span>`;
+}
+
+function detailHTML(p) {
   const summit = state.summits.get(p.peak_id);
   const isSummited = !!summit;
   const isPlanned = state.planned.has(p.peak_id);
   const planTarget = state.planned.get(p.peak_id)?.target_date || "";
-  el.innerHTML = `
+  const shareUrl = location.origin + location.pathname + "#" + p.slug;
+  return `
     <div class="panel">
       <div class="panel-head">
         <div>
@@ -869,23 +920,24 @@ function showDetail(p) {
         </div>
         <div class="panel-actions">
           <label>
-            <span class="check ${isSummited ? "on" : ""}" id="detailCheck"></span>
+            <span class="check ${isSummited ? "on" : ""}" data-act="summit"></span>
             <span>${isSummited ? "summited" : "mark summited"}</span>
           </label>
           ${isSummited ? `
             <label>
               <span>date</span>
-              <input type="date" id="summitDate" value="${summit.summit_date || ""}">
+              <input type="date" data-act="summit-date" value="${summit.summit_date || ""}">
             </label>` : ""}
           <label>
-            <span class="check ${isPlanned ? "on" : ""}" id="planCheck"></span>
+            <span class="check ${isPlanned ? "on" : ""}" data-act="plan"></span>
             <span>${isPlanned ? "planned" : "plan it"}</span>
           </label>
           ${isPlanned ? `
             <label>
               <span>target</span>
-              <input type="date" id="planDate" value="${planTarget || ""}">
+              <input type="date" data-act="plan-date" value="${planTarget || ""}">
             </label>` : ""}
+          <button type="button" class="close-x" data-act="close">close</button>
         </div>
       </div>
       <h3 class="subsection-label" style="margin-top:1.75rem">Routes <span class="dim">— ${p.routes.length}</span></h3>
@@ -928,35 +980,48 @@ function showDetail(p) {
           }).join("")
         }
       </div>
-      <p style="margin-top: 1.25rem; font-family: var(--font-mono); font-size: .8rem;">
+      <p style="margin-top: 1.25rem; font-family: var(--font-mono); font-size: .8rem; display: flex; gap: 1.25rem; flex-wrap: wrap;">
         <a href="https://www.14ers.com/peaks/${p.peak_id}/${p.slug}" target="_blank" rel="noopener">view on 14ers.com →</a>
+        <button type="button" class="close-x" data-act="copy" data-url="${shareUrl}">copy share link</button>
       </p>
     </div>
   `;
+}
 
-  document.getElementById("detailCheck").addEventListener("click", async () => {
+function bindDetailEvents(p, container) {
+  container.addEventListener("click", e => e.stopPropagation());
+
+  container.querySelector('[data-act="summit"]').addEventListener("click", async () => {
     const on = !state.summits.has(p.peak_id);
-    if (await setSummit(p.peak_id, on)) { render(); showDetail(p); }
+    if (await setSummit(p.peak_id, on)) render();
   });
-  document.getElementById("planCheck").addEventListener("click", async () => {
+  container.querySelector('[data-act="plan"]').addEventListener("click", async () => {
     const on = !state.planned.has(p.peak_id);
-    if (await setPlanned(p.peak_id, on)) { render(); showDetail(p); }
+    if (await setPlanned(p.peak_id, on)) render();
   });
-  const sd = document.getElementById("summitDate");
+  container.querySelector('[data-act="close"]').addEventListener("click", () => togglePeak(p));
+
+  const sd = container.querySelector('[data-act="summit-date"]');
   if (sd) sd.addEventListener("change", async e => { await setSummitDate(p.peak_id, e.target.value || null); toast("Summit date saved"); });
-  const pd = document.getElementById("planDate");
+  const pd = container.querySelector('[data-act="plan-date"]');
   if (pd) pd.addEventListener("change", async e => { if (await setPlanned(p.peak_id, true, e.target.value || null)) toast("Target date saved"); });
 
-  el.querySelectorAll("[data-route]").forEach(node => {
+  const copyBtn = container.querySelector('[data-act="copy"]');
+  if (copyBtn) copyBtn.addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(copyBtn.dataset.url); toast("Link copied"); }
+    catch (_) { toast("Copy failed; URL: " + copyBtn.dataset.url); }
+  });
+
+  container.querySelectorAll("[data-route]").forEach(node => {
     node.addEventListener("click", async (e) => {
       e.preventDefault();
       const route_key = node.dataset.route;
       const peak_id   = node.dataset.peak;
       const on = !state.routes.has(route_key);
-      if (await setRoute(route_key, peak_id, on)) { render(); showDetail(p); }
+      if (await setRoute(route_key, peak_id, on)) render();
     });
   });
-  el.querySelectorAll("[data-route-date]").forEach(node => {
+  container.querySelectorAll("[data-route-date]").forEach(node => {
     node.addEventListener("change", async (e) => {
       const route_key = node.dataset.routeDate;
       const climbed = state.routes.get(route_key);
@@ -964,12 +1029,17 @@ function showDetail(p) {
       if (await setRoute(route_key, climbed.peak_id, true, e.target.value || null)) toast("Route date saved");
     });
   });
+}
 
-  el.scrollIntoView({ behavior: "smooth", block: "start" });
+function applyHash() {
+  const slug = location.hash.replace(/^#/, "");
+  const found = slug ? PEAKS.find(p => p.slug === slug) : null;
+  state.openPeak = found?.peak_id || null;
 }
 
 async function init() {
   state.ready = true;
+  applyHash();
   let session = null;
   try { session = await getSessionSafe(); }
   catch (e) { console.error("auth init failed:", e); toast("Auth unavailable; offline mode"); }
@@ -982,7 +1052,13 @@ async function init() {
     } else { loadLegacy(); }
   } catch (e) { console.error("hydrate failed:", e); loadLegacy(); }
   renderAuthStrip(); renderAuthCard(); render();
+  if (state.openPeak) {
+    const tr = document.querySelector(".is-open");
+    if (tr) tr.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 }
+
+window.addEventListener("hashchange", () => { applyHash(); render(); });
 
 sb.auth.onAuthStateChange(async (event, session) => {
   state.user = session?.user || null;
