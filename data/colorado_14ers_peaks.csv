@@ -1,0 +1,74 @@
+rank,name,elevation_ft,range,peak_id,slug,num_routes_on_page,note
+1,Mount Elbert,14438,Sawatch Range,10001,mount-elbert,4,
+2,Mount Massive,14427,Sawatch Range,10002,mount-massive,3,
+3,Mount Harvard,14424,Sawatch Range,10003,mount-harvard,6,
+4,Blanca Peak,14350,Sangre de Cristo,10004,blanca-peak,9,
+5,La Plata Peak,14344,Sawatch Range,10005,la-plata-peak,4,
+,North Massive,14337,Sawatch Range,10068,north-massive,0,unranked subpoint; routes listed under parent peak
+6,Uncompahgre Peak,14318,San Juan Mountains,10006,uncompahgre-peak,1,
+,Massive Green,14311,Sawatch Range,10069,massive-green,0,unranked subpoint; routes listed under parent peak
+7,Crestone Peak,14299,Sangre de Cristo,10007,crestone-peak,7,
+,East Crestone,14299,Sangre de Cristo,10071,east-crestone,0,unranked subpoint; routes listed under parent peak
+8,Mount Lincoln,14293,Mosquito Range,10008,mount-lincoln,11,
+9,Grays Peak,14275,Front Range,10009,grays-peak,11,
+10,Castle Peak,14274,Elk Mountains,10012,castle-peak,6,
+11,Quandary Peak,14272,Tenmile Range,10013,quandary-peak,4,
+12,Torreys Peak,14272,Front Range,10011,torreys-peak,11,
+13,Mount Antero,14271,Sawatch Range,10010,mount-antero,2,
+14,Mount Blue Sky,14268,Front Range,10014,mount-blue-sky,11,
+15,Longs Peak,14259,Front Range,10015,longs-peak,3,
+,West Evans,14257,Front Range,10072,west-evans,0,unranked subpoint; routes listed under parent peak
+16,Mount Wilson,14256,San Juan Mountains,10016,mount-wilson,12,
+,Northeast Crestone,14251,Sangre de Cristo,10070,northeast-crestone,0,unranked subpoint; routes listed under parent peak
+,Mount Cameron,14248,Mosquito Range,10063,mount-cameron,11,unranked-but-named peak; has own routes
+17,Mount Shavano,14230,Sawatch Range,10017,mount-shavano,4,
+18,Mount Belford,14202,Sawatch Range,10018,mount-belford,7,
+19,Mount Princeton,14200,Sawatch Range,10020,mount-princeton,1,
+20,Mount Yale,14200,Sawatch Range,10021,mount-yale,2,
+21,Crestone Needle,14196,Sangre de Cristo,10019,crestone-needle,7,
+,East La Plata,14186,Sawatch Range,10073,east-la-plata,0,unranked subpoint; routes listed under parent peak
+22,Mount Bross,14178,Mosquito Range,10022,mount-bross,11,
+,El Diente Peak,14175,San Juan Mountains,10064,el-diente-peak,12,unranked-but-named peak; has own routes
+23,Kit Carson Peak,14167,Sangre de Cristo,10023,kit-carson-peak,7,
+24,Maroon Peak,14163,Elk Mountains,10024,maroon-peak,5,
+25,Mount Oxford,14158,Sawatch Range,10026,mount-oxford,7,
+26,Tabeguache Peak,14158,Sawatch Range,10025,tabeguache-peak,4,
+,South Massive,14157,Sawatch Range,10075,south-massive,0,unranked subpoint; routes listed under parent peak
+27,Mount Sneffels,14155,San Juan Mountains,10027,mount-sneffels,2,
+28,Mount Democrat,14154,Mosquito Range,10028,mount-democrat,11,
+29,Capitol Peak,14138,Elk Mountains,10029,capitol-peak,1,
+,South Elbert,14129,Sawatch Range,10074,south-elbert,0,unranked subpoint; routes listed under parent peak
+30,Pikes Peak,14109,Front Range,10030,pikes-peak,2,
+31,Snowmass Mountain,14105,Elk Mountains,10031,snowmass-mountain,2,
+,South Wilson,14105,San Juan Mountains,10076,south-wilson,0,unranked subpoint; routes listed under parent peak
+,West Wilson,14101,San Juan Mountains,10077,west-wilson,0,unranked subpoint; routes listed under parent peak
+32,Windom Peak,14089,San Juan Mountains,10033,windom-peak,5,
+33,Mount Eolus,14087,San Juan Mountains,10032,mount-eolus,5,
+,Challenger Point,14086,Sangre de Cristo,10034,challenger-point,7,unranked-but-named peak; has own routes
+34,Mount Columbia,14075,Sawatch Range,10035,mount-columbia,6,
+35,Missouri Mountain,14071,Sawatch Range,10036,missouri-mountain,7,
+36,Humboldt Peak,14068,Sangre de Cristo,10037,humboldt-peak,7,
+,Southeast Longs,14067,Front Range,10078,southeast-longs,0,unranked subpoint; routes listed under parent peak
+37,Mount Bierstadt,14066,Front Range,10038,mount-bierstadt,11,
+38,Sunlight Peak,14061,San Juan Mountains,10039,sunlight-peak,5,
+39,Handies Peak,14058,San Juan Mountains,10040,handies-peak,3,
+40,Ellingwood Point,14057,Sangre de Cristo,10042,ellingwood-point,9,
+41,Mount Lindsey,14055,Sangre de Cristo,10043,mount-lindsey,3,
+42,Culebra Peak,14053,Sangre de Cristo,10041,culebra-peak,1,
+43,Mount Sherman,14043,Mosquito Range,10045,mount-sherman,3,
+,North Eolus,14042,San Juan Mountains,10066,north-eolus,5,unranked-but-named peak; has own routes
+,Pin Point,14042,San Juan Mountains,10851,pin-point,0,unranked subpoint; routes listed under parent peak
+44,Little Bear Peak,14041,Sangre de Cristo,10044,little-bear-peak,9,
+45,Redcloud Peak,14037,San Juan Mountains,10046,redcloud-peak,4,
+,Conundrum Peak,14037,Elk Mountains,10065,conundrum-peak,6,unranked-but-named peak; has own routes
+46,Pyramid Peak,14029,Elk Mountains,10047,pyramid-peak,5,
+,South Little Bear,14028,Sangre de Cristo,10080,south-little-bear,0,unranked subpoint; routes listed under parent peak
+,North Snowmass,14024,Elk Mountains,10081,north-snowmass,0,unranked subpoint; routes listed under parent peak
+47,San Luis Peak,14023,San Juan Mountains,10050,san-luis-peak,2,
+48,North Maroon Peak,14022,Elk Mountains,10067,north-maroon-peak,5,
+49,Wetterhorn Peak,14021,San Juan Mountains,10049,wetterhorn-peak,2,
+50,Wilson Peak,14021,San Juan Mountains,10048,wilson-peak,12,
+,South Bross,14020,Mosquito Range,10079,south-bross,0,unranked subpoint; routes listed under parent peak
+51,Mount of the Holy Cross,14007,Sawatch Range,10051,mt-of-the-holy-cross,3,
+52,Huron Peak,14006,Sawatch Range,10052,huron-peak,3,
+53,Sunshine Peak,14004,San Juan Mountains,10053,sunshine-peak,4,
