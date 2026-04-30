@@ -463,7 +463,7 @@ footer.page-footer {
 <div id="toast" class="toast"></div>
 
 <footer class="page-footer">
-  <span>v0.3.2</span>
+  <span>v0.3.3</span>
   <span>73 peaks &middot; 333 routes</span>
   <span>data: 14ers.com &middot; not a substitute for current conditions</span>
 </footer>
@@ -909,19 +909,14 @@ function render() {
 }
 
 function togglePeak(p) {
-  const opening = state.openPeak !== p.peak_id;
-  if (opening) {
-    state.openPeak = p.peak_id;
-    history.replaceState(null, "", "#" + p.slug);
-  } else {
+  if (state.openPeak === p.peak_id) {
     state.openPeak = null;
     if (location.hash) history.replaceState(null, "", location.pathname + location.search);
+  } else {
+    state.openPeak = p.peak_id;
+    history.replaceState(null, "", "#" + p.slug);
   }
   render();
-  if (opening) {
-    const row = document.querySelector("tbody tr.is-open");
-    if (row) row.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
 }
 
 function fmtRating(label, v) {
