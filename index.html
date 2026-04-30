@@ -274,12 +274,12 @@
 <div id="toast" class="toast"></div>
 
 <footer>
-  <span>v0.2 · 73 peaks · 333 routes · supabase-synced</span>
+  <span>v0.2.1 · 73 peaks · 333 routes · supabase-synced</span>
   <span>not a substitute for current conditions, weather, or judgment</span>
 </footer>
 
 <script type="module">
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
 const SUPABASE_URL = "https://ifuhruklphwmwqattwvk.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmdWhydWtscGh3bXdxYXR0d3ZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1Njg0OTksImV4cCI6MjA5MzE0NDQ5OX0.OEea65dtlZRJvZrDpmqaRtQg7tMwMw1OS2yF4i4YRlc";
@@ -791,15 +791,41 @@ function showDetail(p) {
   el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+async function getSessionSafe() {
+  try {
+    const { data: { session }, error } = await sb.auth.getSession();
+    if (error) throw error;
+    return session;
+  } catch (e) {
+    console.warn("getSession failed; clearing stored auth:", e);
+    try { localStorage.removeItem("co14ers.auth"); } catch (_) {}
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      return session;
+    } catch (_) { return null; }
+  }
+}
+
 async function init() {
-  const { data: { session } } = await sb.auth.getSession();
-  state.user = session?.user || null;
   state.ready = true;
-  if (state.user) {
-    const ok = await hydrateFromDB();
-    if (ok) await migrateLegacyIfNeeded();
-    else loadLegacy();
-  } else {
+  let session = null;
+  try {
+    session = await getSessionSafe();
+  } catch (e) {
+    console.error("auth init failed:", e);
+    toast("Auth unavailable; offline mode");
+  }
+  state.user = session?.user || null;
+  try {
+    if (state.user) {
+      const ok = await hydrateFromDB();
+      if (ok) await migrateLegacyIfNeeded();
+      else loadLegacy();
+    } else {
+      loadLegacy();
+    }
+  } catch (e) {
+    console.error("hydrate failed:", e);
     loadLegacy();
   }
   renderAuthStrip();
@@ -824,7 +850,16 @@ sb.auth.onAuthStateChange(async (event, session) => {
   render();
 });
 
-init();
+init().catch(e => {
+  console.error("fatal init error:", e);
+  state.ready = true;
+  loadLegacy();
+  renderAuthStrip();
+  render();
+});
+
+window.addEventListener("error", e => console.error("[14ers] runtime error:", e.message, e.error));
+window.addEventListener("unhandledrejection", e => console.error("[14ers] unhandled rejection:", e.reason));
 </script>
 </body>
 </html>
