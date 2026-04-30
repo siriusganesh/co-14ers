@@ -4,53 +4,79 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Reset password — Colorado 14ers</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23fafaf7'/%3E%3Cpolygon points='4,26 12,12 16,18 22,8 28,26' fill='none' stroke='%231a1a1a' stroke-width='2' stroke-linejoin='round'/%3E%3Ccircle cx='22' cy='8' r='2' fill='%23b8543b'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23ffffff'/%3E%3Cpolygon points='4,26 12,12 16,18 22,8 28,26' fill='none' stroke='%23011f5b' stroke-width='2' stroke-linejoin='round'/%3E%3Ccircle cx='22' cy='8' r='2' fill='%23a8443a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #fafaf7; --fg: #1a1a1a; --muted: #6b6b6b;
-    --line: #d8d6cf; --accent: #b8543b; --c1: #2e7d32; --c4: #c62828;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root { --bg: #14140f; --fg: #ececec; --muted: #9a978d; --line: #353330; --accent: #e8a08c; }
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; }
-  body {
-    font-family: ui-sans-serif, -apple-system, "Helvetica Neue", Arial, sans-serif;
-    font-size: 15px; line-height: 1.5;
-    background: var(--bg); color: var(--fg);
-    padding: 32px 24px 96px; max-width: 520px; margin: 0 auto;
-  }
-  a { color: var(--accent); text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  hr { border: none; border-top: 1px solid var(--line); margin: 24px 0; }
-  h1 { font-size: 44px; margin: 0 0 8px; letter-spacing: -0.02em; }
-  h1 .dot { color: var(--accent); }
-  .card { border: 1px solid var(--line); border-radius: 6px; padding: 20px; margin-top: 16px; }
-  label { display: block; font-size: 13px; color: var(--muted); margin: 8px 0 4px; }
-  input {
-    width: 100%; font: inherit; padding: 8px 10px;
-    border: 1px solid var(--line); border-radius: 4px;
-    background: var(--bg); color: var(--fg);
-  }
-  button.primary {
-    margin-top: 14px; font: inherit; font-weight: 600; padding: 8px 16px;
-    background: var(--accent); color: white; border: none; border-radius: 4px; cursor: pointer;
-  }
-  button.primary:disabled { opacity: 0.5; cursor: progress; }
-  .err { color: var(--c4); font-size: 13px; margin-top: 8px; min-height: 1em; }
-  .ok  { color: var(--c1); font-size: 13px; margin-top: 8px; }
-  .muted { color: var(--muted); font-size: 13px; }
+:root {
+  --bg: #ffffff; --bg-tint: #f7f7f4;
+  --text: #111113; --text-heading: #303130; --text-dim: #616160; --text-faint: #717270;
+  --border: #e4e4df; --border-strong: #91928f;
+  --navy: #011f5b; --navy-deep: #001541; --navy-soft: #dbe3f5;
+  --rust: #a8443a; --good: #1d6f3f;
+  --font-sans: Verdana, Geneva, "DejaVu Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: var(--font-sans); font-size: 15px; line-height: 1.65; }
+a { color: var(--navy); text-decoration: none; border-bottom: 1px solid var(--navy-soft); }
+a:hover { color: var(--navy-deep); border-bottom-color: var(--navy-deep); }
+
+nav.topnav {
+  position: sticky; top: 0; z-index: 10;
+  background: #ffffffe0;
+  backdrop-filter: saturate(140%) blur(10px);
+  -webkit-backdrop-filter: saturate(140%) blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+nav.topnav .wrap { max-width: 600px; margin: 0 auto; padding: .9rem 1.5rem; display: flex; justify-content: space-between; align-items: baseline; gap: 1.5rem; }
+nav.topnav .brand { color: var(--text-heading); font-weight: 500; font-size: .9rem; border: 0; font-family: var(--font-mono); letter-spacing: -.01em; }
+nav.topnav .brand:after { content: ""; display: inline-block; width: 2px; height: .95em; background: var(--navy); margin-left: 3px; vertical-align: -.1em; animation: brand-caret-blink 1.06s step-end infinite; }
+@keyframes brand-caret-blink { 0%,50% { opacity: 1; } 50.01%,100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { nav.topnav .brand:after { animation: none; opacity: 1; } }
+
+.page { max-width: 600px; margin: 0 auto; padding: 4rem 1.5rem; }
+.overline { font-family: var(--font-mono); font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--text-dim); display: block; margin-bottom: 1.25rem; }
+h1 { font-size: clamp(2rem, 4.5vw, 2.6rem); letter-spacing: -.01em; margin: 0 0 1rem; color: var(--text-heading); }
+.accent { color: var(--rust); }
+.lede { color: var(--text); margin: 0 0 2rem; }
+
+.card {
+  border: 1px solid var(--border); border-left: 3px solid var(--navy);
+  background: var(--bg); padding: 1.25rem 1.5rem;
+}
+label { display: block; font-family: var(--font-mono); font-size: .7rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--text-dim); margin: .8rem 0 .3rem; }
+input { width: 100%; font-family: var(--font-mono); font-size: .95rem; padding: .6rem .75rem; background: var(--bg); border: 1px solid var(--border-strong); border-radius: 0; color: var(--text-heading); }
+input:focus { outline: none; border-color: var(--navy); box-shadow: inset 0 -2px 0 0 var(--navy); }
+button.primary { margin-top: 1.1rem; font-family: var(--font-mono); font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; padding: .6rem 1.1rem; background: var(--navy); color: #fff; border: 1px solid var(--navy); border-radius: 0; cursor: pointer; }
+button.primary:hover:not(:disabled) { background: var(--navy-deep); border-color: var(--navy-deep); }
+button.primary:disabled { background: var(--bg-tint); border-color: var(--border); color: var(--text-faint); cursor: not-allowed; }
+.err { color: var(--rust); font-family: var(--font-mono); font-size: .8rem; margin-top: .65rem; min-height: 1em; }
+.ok  { color: var(--good); font-family: var(--font-mono); font-size: .8rem; margin-top: .65rem; }
+.muted { color: var(--text-dim); font-family: var(--font-mono); font-size: .8rem; letter-spacing: .03em; }
 </style>
 </head>
 <body>
-<a href="./" class="muted">← back to 14ers</a>
-<h1>reset<span class="dot">.</span></h1>
-<p class="muted">Set a new password for your Colorado 14ers account.</p>
 
-<div class="card" id="card">
-  <p class="muted" id="status">Verifying recovery link…</p>
-</div>
+<nav class="topnav">
+  <div class="wrap">
+    <a class="brand" href="./">14ers</a>
+    <ul style="list-style:none; display:flex; gap:1.25rem; padding:0; margin:0;">
+      <li><a href="./" style="border:0; font-family: var(--font-mono); font-size: .78rem; color: var(--text-dim); letter-spacing: .04em;">back</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="page">
+  <span class="overline">Account · Password recovery</span>
+  <h1>Reset password<span class="accent">.</span></h1>
+  <p class="lede">Set a new password for your Colorado 14ers account.</p>
+
+  <div class="card" id="card">
+    <p class="muted" id="status">verifying recovery link…</p>
+  </div>
+</main>
 
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
@@ -94,9 +120,7 @@ function showForm() {
 }
 
 sb.auth.onAuthStateChange((event, session) => {
-  if (event === "PASSWORD_RECOVERY" || (session && session.user)) {
-    showForm();
-  }
+  if (event === "PASSWORD_RECOVERY" || (session && session.user)) showForm();
 });
 
 (async () => {
