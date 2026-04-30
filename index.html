@@ -462,7 +462,7 @@ footer.page-footer {
 <div id="toast" class="toast"></div>
 
 <footer class="page-footer">
-  <span>v0.4.4</span>
+  <span>v0.4.5</span>
   <span>73 peaks &middot; 333 routes</span>
   <span>data: 14ers.com &middot; not a substitute for current conditions</span>
 </footer>
@@ -572,52 +572,53 @@ function coordOnAuthChange(event) {
   }
 }
 
-// === Realtime: keep state in sync across tabs/devices without re-fetching ===
-let realtimeChannel = null;
+// === Cross-tab data sync via BroadcastChannel ===
+// Replaces Supabase Realtime (which kept dropping DELETE events on long-lived
+// channels). Same-browser tabs sync deltas instantly through this channel;
+// cross-device sync picks up on visibilitychange or the 10-min resync timer.
+let dataBC = null;
 
-function startRealtime() {
-  if (!sb || !state.user || realtimeChannel) return;
-  const uid = state.user.id;
-  // No filter: Supabase Realtime's postgres_changes filter silently drops
-  // DELETE events. RLS handles the scoping (own-rows-only policies on every
-  // table mean we only receive our own rows).
-  realtimeChannel = sb
-    .channel("user-data-" + uid)
-    .on("postgres_changes",
-      { event: "*", schema: "public", table: "summits" },
-      (p) => applyRealtimeRow("summits", p))
-    .on("postgres_changes",
-      { event: "*", schema: "public", table: "routes_climbed" },
-      (p) => applyRealtimeRow("routes", p))
-    .on("postgres_changes",
-      { event: "*", schema: "public", table: "planned" },
-      (p) => applyRealtimeRow("planned", p))
-    .subscribe();
+function startDataBroadcast() {
+  if (dataBC || typeof BroadcastChannel === "undefined") return;
+  dataBC = new BroadcastChannel("co14ers-data");
+  dataBC.onmessage = (e) => applyDataBroadcast(e.data);
 }
 
-function stopRealtime() {
-  if (realtimeChannel && sb) {
-    sb.removeChannel(realtimeChannel);
-    realtimeChannel = null;
-  }
+function stopDataBroadcast() {
+  if (dataBC) { try { dataBC.close(); } catch (_) {} dataBC = null; }
 }
 
-function applyRealtimeRow(kind, payload) {
-  const ev = payload.eventType;
-  const row = payload.new || payload.old;
-  if (!row) return;
-  if (kind === "summits") {
-    if (ev === "DELETE") state.summits.delete(row.peak_id);
-    else state.summits.set(row.peak_id, { summit_date: row.summit_date });
-  } else if (kind === "routes") {
-    if (ev === "DELETE") state.routes.delete(row.route_key);
-    else state.routes.set(row.route_key, { climbed_date: row.climbed_date, peak_id: row.peak_id });
-  } else if (kind === "planned") {
-    if (ev === "DELETE") state.planned.delete(row.peak_id);
-    else state.planned.set(row.peak_id, { target_date: row.target_date });
+function broadcastChange(msg) {
+  if (!dataBC) return;
+  try { dataBC.postMessage({ ...msg, tabId }); } catch (_) {}
+}
+
+function applyDataBroadcast(m) {
+  if (!m || m.tabId === tabId) return;            // ignore our own
+  if (state.user && m.user_id && m.user_id !== state.user.id) return;
+  if (m.kind === "summit") {
+    if (m.op === "set") state.summits.set(m.peak_id, { summit_date: m.summit_date ?? null });
+    else if (m.op === "del") state.summits.delete(m.peak_id);
+  } else if (m.kind === "route") {
+    if (m.op === "set") state.routes.set(m.route_key, { climbed_date: m.climbed_date ?? null, peak_id: m.peak_id });
+    else if (m.op === "del") state.routes.delete(m.route_key);
+  } else if (m.kind === "planned") {
+    if (m.op === "set") state.planned.set(m.peak_id, { target_date: m.target_date ?? null });
+    else if (m.op === "del") state.planned.delete(m.peak_id);
   }
   saveCache();
   render();
+}
+
+// Cross-device: re-hydrate when the tab becomes visible after >30s away.
+let lastHydrateAt = 0;
+function setupVisibilityRehydrate() {
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState !== "visible") return;
+    if (!state.user) return;
+    if (Date.now() - lastHydrateAt < 30000) return;
+    hydrateFromDB().then(ok => { if (ok) { lastHydrateAt = Date.now(); render(); } });
+  });
 }
 
 // === Periodic re-sync as a safety net ===
@@ -651,7 +652,7 @@ function setupSupabase() {
     // Real wipe events only. Anything else (TOKEN_REFRESHED, USER_UPDATED,
     // transient null-session blips during refresh) must NOT touch local data.
     if (event === "SIGNED_OUT" || event === "USER_DELETED") {
-      stopRealtime();
+      stopDataBroadcast();
       stopResyncTimer();
       state.summits = new Map();
       state.routes  = new Map();
@@ -666,7 +667,7 @@ function setupSupabase() {
         // Re-fetch in background; existing state stays visible meanwhile
         const ok = await hydrateFromDB();
         if (ok) await migrateLegacyIfNeeded();
-        startRealtime();
+        startDataBroadcast();
         startResyncTimer();
         if (event === "SIGNED_IN") toast("Signed in");
       }
@@ -840,6 +841,7 @@ async function hydrateFromDB() {
   state.summits = newSummits;
   state.routes  = newRoutes;
   state.planned = newPlanned;
+  lastHydrateAt = Date.now();
   saveCache();
   return true;
 }
@@ -872,6 +874,7 @@ async function setSummit(peak_id, on, summit_date = null) {
       state.summits.delete(peak_id);
     }
     saveCache();
+    broadcastChange({ kind: "summit", op: on ? "set" : "del", peak_id, summit_date, user_id: state.user.id });
   } else {
     if (on) state.summits.set(peak_id, { summit_date: null });
     else state.summits.delete(peak_id);
@@ -885,8 +888,9 @@ async function setSummitDate(peak_id, summit_date) {
   state.summits.set(peak_id, { summit_date });
   if (!state.user) return;
   const { error } = await sb.from("summits").upsert({ user_id: state.user.id, peak_id, summit_date });
-  if (error) toast("Save failed: " + error.message);
-  else saveCache();
+  if (error) { toast("Save failed: " + error.message); return; }
+  saveCache();
+  broadcastChange({ kind: "summit", op: "set", peak_id, summit_date, user_id: state.user.id });
 }
 
 async function setRoute(route_key, peak_id, on, climbed_date = null) {
@@ -901,6 +905,7 @@ async function setRoute(route_key, peak_id, on, climbed_date = null) {
     state.routes.delete(route_key);
   }
   saveCache();
+  broadcastChange({ kind: "route", op: on ? "set" : "del", route_key, peak_id, climbed_date, user_id: state.user.id });
   return true;
 }
 
@@ -916,6 +921,7 @@ async function setPlanned(peak_id, on, target_date = null) {
     state.planned.delete(peak_id);
   }
   saveCache();
+  broadcastChange({ kind: "planned", op: on ? "set" : "del", peak_id, target_date, user_id: state.user.id });
   return true;
 }
 
@@ -1324,11 +1330,12 @@ async function init() {
     if (state.user) {
       const ok = await hydrateFromDB();
       if (ok) await migrateLegacyIfNeeded();
-      startRealtime();
+      startDataBroadcast();
       startResyncTimer();
     }
   } catch (e) { console.error("hydrate failed:", e); }
 
+  setupVisibilityRehydrate();
   renderAuthStrip();
   renderAuthCard();
   render();
