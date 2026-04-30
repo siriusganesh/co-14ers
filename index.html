@@ -461,7 +461,7 @@ footer.page-footer {
 <div id="toast" class="toast"></div>
 
 <footer class="page-footer">
-  <span>v0.4.0</span>
+  <span>v0.4.1</span>
   <span>73 peaks &middot; 333 routes</span>
   <span>data: 14ers.com &middot; not a substitute for current conditions</span>
 </footer>
@@ -684,19 +684,14 @@ function withTimeout(promise, ms, label) {
 
 async function getSessionSafe() {
   try {
-    const { data: { session }, error } = await withTimeout(sb.auth.getSession(), 4000, "getSession");
+    const { data: { session }, error } = await withTimeout(sb.auth.getSession(), 10000, "getSession");
     if (error) throw error;
     return session;
   } catch (e) {
-    console.warn("[14ers] getSession failed; clearing stored auth:", e);
-    try { localStorage.removeItem("co14ers.auth"); } catch (_) {}
-    try {
-      const { data: { session } } = await withTimeout(sb.auth.getSession(), 2000, "getSession-retry");
-      return session;
-    } catch (e2) {
-      console.warn("[14ers] retry also failed:", e2);
-      return null;
-    }
+    // Slow != corrupt. Do NOT clear localStorage — other tabs share it.
+    // If _initialize eventually completes, onAuthStateChange will catch us up.
+    console.warn("[14ers] getSession slow/failed; deferring to onAuthStateChange:", e);
+    return null;
   }
 }
 
@@ -708,10 +703,9 @@ async function hydrateFromDB() {
       sb.from("summits").select("peak_id, summit_date"),
       sb.from("routes_climbed").select("route_key, peak_id, climbed_date"),
       sb.from("planned").select("peak_id, target_date")
-    ]), 6000, "hydrate");
+    ]), 10000, "hydrate");
   } catch (e) {
-    console.error("[14ers] hydrate timeout/error:", e);
-    toast("Sync timed out — working offline");
+    console.warn("[14ers] hydrate slow/failed; will retry on next auth event:", e);
     return false;
   }
   if (s.error || r.error || pl.error) {
