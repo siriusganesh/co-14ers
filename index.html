@@ -238,7 +238,7 @@ th {
 th.sort-asc::after { content: " \2191"; color: var(--navy); }
 th.sort-desc::after { content: " \2193"; color: var(--navy); }
 th:hover { color: var(--navy); }
-tbody tr { cursor: pointer; }
+tbody tr { cursor: pointer; scroll-margin-top: 64px; }
 tbody tr:hover { background: var(--navy-soft); }
 tbody tr.summited td.peak-name { text-decoration: line-through; color: var(--text-faint); }
 tbody tr.planned td.peak-name::after {
@@ -473,7 +473,7 @@ footer.page-footer {
 <div id="toast" class="toast"></div>
 
 <footer class="page-footer">
-  <span>v0.4.10</span>
+  <span>v0.4.11</span>
   <span>73 peaks &middot; 333 routes</span>
   <span>data: 14ers.com &middot; not a substitute for current conditions</span>
 </footer>
