@@ -462,7 +462,7 @@ footer.page-footer {
 <div id="toast" class="toast"></div>
 
 <footer class="page-footer">
-  <span>v0.4.7</span>
+  <span>v0.4.8</span>
   <span>73 peaks &middot; 333 routes</span>
   <span>data: 14ers.com &middot; not a substitute for current conditions</span>
 </footer>
@@ -1356,6 +1356,13 @@ async function init() {
     return;
   }
 
+  // Cross-tab broadcast listener doesn't need auth — start it BEFORE any
+  // network awaits so we don't miss messages from sibling tabs during the
+  // 0.5-15s _initialize / hydrate window. applyDataBroadcast filters by
+  // user_id at message time.
+  startDataBroadcast();
+  setupVisibilityRehydrate();
+
   // Validate the optimistic state via the SDK. getSessionSafe returns null on
   // both timeout and "no session" — only update state.user on a positive
   // confirmation. Treat null as "wait for onAuthStateChange to be authoritative."
@@ -1372,12 +1379,10 @@ async function init() {
     if (state.user) {
       const ok = await hydrateFromDB();
       if (ok) await migrateLegacyIfNeeded();
-      startDataBroadcast();
       startResyncTimer();
     }
   } catch (e) { console.error("hydrate failed:", e); }
 
-  setupVisibilityRehydrate();
   renderAuthStrip();
   renderAuthCard();
   render();
