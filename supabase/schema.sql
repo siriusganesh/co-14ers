@@ -80,6 +80,19 @@ create policy "planned own write" on public.planned
   with check (auth.uid() = user_id);
 
 -- =====================================================================
+-- realtime: stream row changes back to the client so multi-tab and
+-- multi-device updates land without a refresh. Idempotent: ignore the
+-- "already in publication" error if rerun.
+-- =====================================================================
+
+do $$
+begin
+  begin alter publication supabase_realtime add table public.summits;        exception when others then null; end;
+  begin alter publication supabase_realtime add table public.routes_climbed; exception when others then null; end;
+  begin alter publication supabase_realtime add table public.planned;        exception when others then null; end;
+end $$;
+
+-- =====================================================================
 -- post-flight check
 -- run these after the migration. each should return zero rows when
 -- executed in the SQL editor as the anon role (use "RLS" preview in

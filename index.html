@@ -461,7 +461,7 @@ footer.page-footer {
 <div id="toast" class="toast"></div>
 
 <footer class="page-footer">
-  <span>v0.4.1</span>
+  <span>v0.4.2</span>
   <span>73 peaks &middot; 333 routes</span>
   <span>data: 14ers.com &middot; not a substitute for current conditions</span>
 </footer>
@@ -571,6 +571,64 @@ function coordOnAuthChange(event) {
   }
 }
 
+// === Realtime: keep state in sync across tabs/devices without re-fetching ===
+let realtimeChannel = null;
+
+function startRealtime() {
+  if (!sb || !state.user || realtimeChannel) return;
+  const uid = state.user.id;
+  realtimeChannel = sb
+    .channel("user-data-" + uid)
+    .on("postgres_changes",
+      { event: "*", schema: "public", table: "summits", filter: "user_id=eq." + uid },
+      (p) => applyRealtimeRow("summits", p))
+    .on("postgres_changes",
+      { event: "*", schema: "public", table: "routes_climbed", filter: "user_id=eq." + uid },
+      (p) => applyRealtimeRow("routes", p))
+    .on("postgres_changes",
+      { event: "*", schema: "public", table: "planned", filter: "user_id=eq." + uid },
+      (p) => applyRealtimeRow("planned", p))
+    .subscribe();
+}
+
+function stopRealtime() {
+  if (realtimeChannel && sb) {
+    sb.removeChannel(realtimeChannel);
+    realtimeChannel = null;
+  }
+}
+
+function applyRealtimeRow(kind, payload) {
+  const ev = payload.eventType;
+  const row = payload.new || payload.old;
+  if (!row) return;
+  if (kind === "summits") {
+    if (ev === "DELETE") state.summits.delete(row.peak_id);
+    else state.summits.set(row.peak_id, { summit_date: row.summit_date });
+  } else if (kind === "routes") {
+    if (ev === "DELETE") state.routes.delete(row.route_key);
+    else state.routes.set(row.route_key, { climbed_date: row.climbed_date, peak_id: row.peak_id });
+  } else if (kind === "planned") {
+    if (ev === "DELETE") state.planned.delete(row.peak_id);
+    else state.planned.set(row.peak_id, { target_date: row.target_date });
+  }
+  saveCache();
+  render();
+}
+
+// === Periodic re-sync as a safety net ===
+let resyncTimer = null;
+function startResyncTimer() {
+  if (resyncTimer) return;
+  resyncTimer = setInterval(() => {
+    if (!state.user || document.visibilityState === "hidden") return;
+    hydrateFromDB().then(ok => { if (ok) render(); });
+  }, 10 * 60 * 1000);
+}
+function stopResyncTimer() {
+  if (resyncTimer) { clearInterval(resyncTimer); resyncTimer = null; }
+}
+
 async function loadSupabase() {
   const { createClient } = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
   sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
@@ -582,17 +640,35 @@ async function loadSupabase() {
     }
   });
   sb.auth.onAuthStateChange(async (event, session) => {
+    const prevUserId = state.user?.id;
     state.user = session?.user || null;
     state.authMode = null;
-    if (state.user) {
-      const ok = await hydrateFromDB();
-      if (ok) await migrateLegacyIfNeeded();
-      if (event === "SIGNED_IN") toast("Signed in");
-    } else {
-      state.summits.clear(); state.routes.clear(); state.planned.clear();
+
+    // Real wipe events only. Anything else (TOKEN_REFRESHED, USER_UPDATED,
+    // transient null-session blips during refresh) must NOT touch local data.
+    if (event === "SIGNED_OUT" || event === "USER_DELETED") {
+      stopRealtime();
+      stopResyncTimer();
+      state.summits = new Map();
+      state.routes  = new Map();
+      state.planned = new Map();
+      clearCache();
       loadLegacy();
       if (event === "SIGNED_OUT") toast("Signed out");
+    } else if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
+      if (state.user) {
+        // Different user logged in — drop the previous user's cache
+        if (prevUserId && prevUserId !== state.user.id) clearCache();
+        // Re-fetch in background; existing state stays visible meanwhile
+        const ok = await hydrateFromDB();
+        if (ok) await migrateLegacyIfNeeded();
+        startRealtime();
+        startResyncTimer();
+        if (event === "SIGNED_IN") toast("Signed in");
+      }
     }
+    // TOKEN_REFRESHED, USER_UPDATED, MFA_CHALLENGE_VERIFIED: no-op for local state.
+
     coordOnAuthChange(event);
     renderAuthStrip(); renderAuthCard(); render();
   });
@@ -664,7 +740,9 @@ function toast(msg) {
 }
 
 function loadLegacy() {
-  state.summits.clear();
+  state.summits = new Map();
+  state.routes  = new Map();
+  state.planned = new Map();
   try {
     const arr = JSON.parse(localStorage.getItem(LEGACY_KEY) || "[]");
     arr.forEach(id => state.summits.set(id, { summit_date: null }));
@@ -673,6 +751,41 @@ function loadLegacy() {
 function saveLegacy() {
   if (state.user) return;
   localStorage.setItem(LEGACY_KEY, JSON.stringify([...state.summits.keys()]));
+}
+
+// === Per-user cache for instant boot ===
+// Holds the last-known summits/routes/planned for the signed-in user so
+// the UI can render immediately on page load while a fresh hydrate runs
+// in the background.
+const CACHE_KEY = "co14ers.cache";
+
+function loadCache(userId) {
+  if (!userId) return false;
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return false;
+    const cache = JSON.parse(raw);
+    if (cache.user_id !== userId) return false;
+    state.summits = new Map(cache.summits || []);
+    state.routes  = new Map(cache.routes  || []);
+    state.planned = new Map(cache.planned || []);
+    return true;
+  } catch (e) { return false; }
+}
+function saveCache() {
+  if (!state.user) return;
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({
+      user_id: state.user.id,
+      ts: Date.now(),
+      summits: [...state.summits.entries()],
+      routes:  [...state.routes.entries()],
+      planned: [...state.planned.entries()]
+    }));
+  } catch (e) {}
+}
+function clearCache() {
+  try { localStorage.removeItem(CACHE_KEY); } catch (e) {}
 }
 
 function withTimeout(promise, ms, label) {
@@ -695,8 +808,9 @@ async function getSessionSafe() {
   }
 }
 
+// Atomic hydrate: build new Maps locally, swap into state only on full success.
+// On failure (timeout, RLS, network), existing state is preserved.
 async function hydrateFromDB() {
-  state.summits.clear(); state.routes.clear(); state.planned.clear();
   let s, r, pl;
   try {
     [s, r, pl] = await withTimeout(Promise.all([
@@ -705,17 +819,24 @@ async function hydrateFromDB() {
       sb.from("planned").select("peak_id, target_date")
     ]), 10000, "hydrate");
   } catch (e) {
-    console.warn("[14ers] hydrate slow/failed; will retry on next auth event:", e);
+    console.warn("[14ers] hydrate slow/failed; keeping existing state:", e);
     return false;
   }
   if (s.error || r.error || pl.error) {
     console.error(s.error || r.error || pl.error);
-    toast("Sync failed — working offline");
     return false;
   }
-  s.data.forEach(row => state.summits.set(row.peak_id, { summit_date: row.summit_date }));
-  r.data.forEach(row => state.routes.set(row.route_key, { climbed_date: row.climbed_date, peak_id: row.peak_id }));
-  pl.data.forEach(row => state.planned.set(row.peak_id, { target_date: row.target_date }));
+  const newSummits = new Map();
+  const newRoutes  = new Map();
+  const newPlanned = new Map();
+  s.data.forEach(row => newSummits.set(row.peak_id, { summit_date: row.summit_date }));
+  r.data.forEach(row => newRoutes.set(row.route_key, { climbed_date: row.climbed_date, peak_id: row.peak_id }));
+  pl.data.forEach(row => newPlanned.set(row.peak_id, { target_date: row.target_date }));
+  // atomic swap
+  state.summits = newSummits;
+  state.routes  = newRoutes;
+  state.planned = newPlanned;
+  saveCache();
   return true;
 }
 
@@ -746,6 +867,7 @@ async function setSummit(peak_id, on, summit_date = null) {
       if (error) { toast("Delete failed: " + error.message); return false; }
       state.summits.delete(peak_id);
     }
+    saveCache();
   } else {
     if (on) state.summits.set(peak_id, { summit_date: null });
     else state.summits.delete(peak_id);
@@ -760,6 +882,7 @@ async function setSummitDate(peak_id, summit_date) {
   if (!state.user) return;
   const { error } = await sb.from("summits").upsert({ user_id: state.user.id, peak_id, summit_date });
   if (error) toast("Save failed: " + error.message);
+  else saveCache();
 }
 
 async function setRoute(route_key, peak_id, on, climbed_date = null) {
@@ -773,6 +896,7 @@ async function setRoute(route_key, peak_id, on, climbed_date = null) {
     if (error) { toast("Delete failed: " + error.message); return false; }
     state.routes.delete(route_key);
   }
+  saveCache();
   return true;
 }
 
@@ -787,6 +911,7 @@ async function setPlanned(peak_id, on, target_date = null) {
     if (error) { toast("Delete failed: " + error.message); return false; }
     state.planned.delete(peak_id);
   }
+  saveCache();
   return true;
 }
 
@@ -1160,7 +1285,7 @@ function applyHash() {
 async function init() {
   state.ready = true;
   applyHash();
-  loadLegacy();
+  loadLegacy();                                  // anon path; replaced if cache hits below
   renderAuthStrip();
   render();
   if (state.openPeak) {
@@ -1177,16 +1302,26 @@ async function init() {
     return;
   }
 
+  // Try to recover the session quickly. If getSession is slow, the cache below
+  // still gives the user instant visual data — onAuthStateChange will catch
+  // up the rest when _initialize finishes.
   let session = null;
   try { session = await getSessionSafe(); }
   catch (e) { console.error("auth init failed:", e); }
   state.user = session?.user || null;
   authReady = true;
 
+  // Instant render from cache while hydrate runs
+  if (state.user && loadCache(state.user.id)) {
+    renderAuthStrip(); render();
+  }
+
   try {
     if (state.user) {
       const ok = await hydrateFromDB();
       if (ok) await migrateLegacyIfNeeded();
+      startRealtime();
+      startResyncTimer();
     }
   } catch (e) { console.error("hydrate failed:", e); }
 
