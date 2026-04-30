@@ -462,7 +462,7 @@ footer.page-footer {
 <div id="toast" class="toast"></div>
 
 <footer class="page-footer">
-  <span>v0.4.5</span>
+  <span>v0.4.6</span>
   <span>73 peaks &middot; 333 routes</span>
   <span>data: 14ers.com &middot; not a substitute for current conditions</span>
 </footer>
@@ -791,6 +791,23 @@ function saveCache() {
 }
 function clearCache() {
   try { localStorage.removeItem(CACHE_KEY); } catch (e) {}
+}
+
+// Read the supabase-stored session straight from localStorage so we can
+// render "signed in as X" on first paint, without waiting for the SDK's
+// _initialize to finish. Returns the parsed session if it looks valid and
+// not expired, otherwise null.
+function loadStoredSession() {
+  try {
+    const raw = localStorage.getItem("co14ers.auth");
+    if (!raw) return null;
+    let parsed = JSON.parse(raw);
+    // older supabase-js stored under .currentSession; newer is flat
+    if (parsed && parsed.currentSession) parsed = parsed.currentSession;
+    if (!parsed || !parsed.access_token || !parsed.user || !parsed.user.id) return null;
+    if (parsed.expires_at && Date.now() / 1000 > parsed.expires_at) return null;
+    return parsed;
+  } catch (e) { return null; }
 }
 
 function withTimeout(promise, ms, label) {
@@ -1296,6 +1313,17 @@ async function init() {
   state.ready = true;
   applyHash();
   loadLegacy();                                  // anon path; replaced if cache hits below
+
+  // Optimistic auth: trust localStorage to render "signed in as X" instantly.
+  // The SDK's _initialize will catch up in the background — if it disagrees
+  // (token revoked, etc.), onAuthStateChange will fire SIGNED_OUT and clean up.
+  const stored = loadStoredSession();
+  if (stored) {
+    state.user = stored.user;
+    authReady = true;
+    loadCache(state.user.id);
+  }
+
   renderAuthStrip();
   render();
   if (state.openPeak) {
@@ -1312,18 +1340,16 @@ async function init() {
     return;
   }
 
-  // Try to recover the session quickly. If getSession is slow, the cache below
-  // still gives the user instant visual data — onAuthStateChange will catch
-  // up the rest when _initialize finishes.
+  // Validate the optimistic state via the SDK. getSessionSafe returns null on
+  // both timeout and "no session" — only update state.user on a positive
+  // confirmation. Treat null as "wait for onAuthStateChange to be authoritative."
   let session = null;
   try { session = await getSessionSafe(); }
   catch (e) { console.error("auth init failed:", e); }
-  state.user = session?.user || null;
   authReady = true;
-
-  // Instant render from cache while hydrate runs
-  if (state.user && loadCache(state.user.id)) {
-    renderAuthStrip(); render();
+  if (session?.user) {
+    state.user = session.user;
+    if (!loadCache(state.user.id)) {/* cache may have been wiped — hydrate will refill */}
   }
 
   try {
