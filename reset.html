@@ -59,7 +59,12 @@ const SUPABASE_URL = "https://ifuhruklphwmwqattwvk.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmdWhydWtscGh3bXdxYXR0d3ZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1Njg0OTksImV4cCI6MjA5MzE0NDQ5OX0.OEea65dtlZRJvZrDpmqaRtQg7tMwMw1OS2yF4i4YRlc";
 
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: { persistSession: true, autoRefreshToken: true, storageKey: "co14ers.auth" }
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    storageKey: "co14ers.auth",
+    lock: async (_name, _acquireTimeout, fn) => fn()
+  }
 });
 
 const card = document.getElementById("card");
