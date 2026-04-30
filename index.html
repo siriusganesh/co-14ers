@@ -6,6 +6,7 @@
 <title>Colorado 14ers</title>
 <meta name="description" content="Quick reference for the 53 ranked Colorado 14,000 ft peaks. Routes, difficulty, distances, ratings.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23ffffff'/%3E%3Cpolygon points='4,26 12,12 16,18 22,8 28,26' fill='none' stroke='%23011f5b' stroke-width='2' stroke-linejoin='round'/%3E%3Ccircle cx='22' cy='8' r='2' fill='%23a8443a'/%3E%3C/svg%3E">
+<script src="vendor/supabase.min.js" defer></script>
 <style>
 @font-face {
   font-family: "IBM Plex Mono"; font-style: normal; font-weight: 400; font-display: swap;
@@ -461,7 +462,7 @@ footer.page-footer {
 <div id="toast" class="toast"></div>
 
 <footer class="page-footer">
-  <span>v0.4.2</span>
+  <span>v0.4.3</span>
   <span>73 peaks &middot; 333 routes</span>
   <span>data: 14ers.com &middot; not a substitute for current conditions</span>
 </footer>
@@ -629,9 +630,9 @@ function stopResyncTimer() {
   if (resyncTimer) { clearInterval(resyncTimer); resyncTimer = null; }
 }
 
-async function loadSupabase() {
-  const { createClient } = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
-  sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+function setupSupabase() {
+  if (!window.supabase) throw new Error("supabase-js bundle did not load");
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     auth: {
       persistSession: true,
       autoRefreshToken: false,                    // leader handles refresh
@@ -1294,9 +1295,9 @@ async function init() {
   }
 
   try {
-    await loadSupabase();
+    setupSupabase();
   } catch (e) {
-    console.error("[14ers] supabase load failed:", e);
+    console.error("[14ers] supabase setup failed:", e);
     authReady = true;
     renderAuthStrip();
     return;

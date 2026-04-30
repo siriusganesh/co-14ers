@@ -92,6 +92,13 @@ begin
   begin alter publication supabase_realtime add table public.planned;        exception when others then null; end;
 end $$;
 
+-- replica identity FULL so DELETE events on the realtime publication
+-- include the full old row (not just the PK). Required for our
+-- user_id=eq.<self> filter to match DELETE events on the client.
+alter table public.summits        replica identity full;
+alter table public.routes_climbed replica identity full;
+alter table public.planned        replica identity full;
+
 -- =====================================================================
 -- post-flight check
 -- run these after the migration. each should return zero rows when
