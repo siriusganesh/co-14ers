@@ -275,7 +275,7 @@
 <div id="toast" class="toast"></div>
 
 <footer>
-  <span>v0.2.1 · 73 peaks · 333 routes · supabase-synced</span>
+  <span>v0.2.2 · 73 peaks · 333 routes · supabase-synced</span>
   <span>not a substitute for current conditions, weather, or judgment</span>
 </footer>
 
@@ -368,11 +368,18 @@ function saveLegacy() {
 
 async function hydrateFromDB() {
   state.summits.clear(); state.routes.clear(); state.planned.clear();
-  const [s, r, pl] = await Promise.all([
-    sb.from("summits").select("peak_id, summit_date"),
-    sb.from("routes_climbed").select("route_key, peak_id, climbed_date"),
-    sb.from("planned").select("peak_id, target_date")
-  ]);
+  let s, r, pl;
+  try {
+    [s, r, pl] = await withTimeout(Promise.all([
+      sb.from("summits").select("peak_id, summit_date"),
+      sb.from("routes_climbed").select("route_key, peak_id, climbed_date"),
+      sb.from("planned").select("peak_id, target_date")
+    ]), 6000, "hydrate");
+  } catch (e) {
+    console.error("[14ers] hydrate timeout/error:", e);
+    toast("Sync timed out — working offline");
+    return false;
+  }
   if (s.error || r.error || pl.error) {
     console.error(s.error || r.error || pl.error);
     toast("Sync failed — working offline");
@@ -792,18 +799,28 @@ function showDetail(p) {
   el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+function withTimeout(promise, ms, label) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms))
+  ]);
+}
+
 async function getSessionSafe() {
   try {
-    const { data: { session }, error } = await sb.auth.getSession();
+    const { data: { session }, error } = await withTimeout(sb.auth.getSession(), 4000, "getSession");
     if (error) throw error;
     return session;
   } catch (e) {
-    console.warn("getSession failed; clearing stored auth:", e);
+    console.warn("[14ers] getSession failed; clearing stored auth:", e);
     try { localStorage.removeItem("co14ers.auth"); } catch (_) {}
     try {
-      const { data: { session } } = await sb.auth.getSession();
+      const { data: { session } } = await withTimeout(sb.auth.getSession(), 2000, "getSession-retry");
       return session;
-    } catch (_) { return null; }
+    } catch (e2) {
+      console.warn("[14ers] retry also failed:", e2);
+      return null;
+    }
   }
 }
 
