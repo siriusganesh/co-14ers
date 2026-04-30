@@ -461,7 +461,7 @@ footer.page-footer {
 <div id="toast" class="toast"></div>
 
 <footer class="page-footer">
-  <span>v0.3.4</span>
+  <span>v0.3.5</span>
   <span>73 peaks &middot; 333 routes</span>
   <span>data: 14ers.com &middot; not a substitute for current conditions</span>
 </footer>
@@ -717,7 +717,6 @@ function renderAuthStrip() {
     <button class="linklike" id="signinBtn">sign in / sign up</button>`;
   document.getElementById("signinBtn").addEventListener("click", () => {
     state.authMode = "signin"; renderAuthCard();
-    document.getElementById("authCard").scrollIntoView({ behavior: "smooth", block: "start" });
   });
 }
 
