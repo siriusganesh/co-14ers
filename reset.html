@@ -89,43 +89,14 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 const SUPABASE_URL = "https://ifuhruklphwmwqattwvk.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmdWhydWtscGh3bXdxYXR0d3ZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1Njg0OTksImV4cCI6MjA5MzE0NDQ5OX0.OEea65dtlZRJvZrDpmqaRtQg7tMwMw1OS2yF4i4YRlc";
 
-async function lsLock(name, acquireTimeoutMs, fn) {
-  const key = "co14ers.lock." + name;
-  const id = (crypto?.randomUUID?.() || (Math.random().toString(36).slice(2) + Date.now()));
-  const TTL = 30000;
-  const start = Date.now();
-  const deadline = (acquireTimeoutMs && acquireTimeoutMs > 0) ? acquireTimeoutMs : 5000;
-  while (true) {
-    let current = null;
-    try { const raw = localStorage.getItem(key); current = raw ? JSON.parse(raw) : null; } catch (_) {}
-    const stale = !current || (Date.now() - (current.t || 0) > TTL);
-    if (stale) {
-      try { localStorage.setItem(key, JSON.stringify({ id, t: Date.now() })); } catch (_) {}
-      await new Promise(r => setTimeout(r, 10));
-      let after = null;
-      try { const raw = localStorage.getItem(key); after = raw ? JSON.parse(raw) : null; } catch (_) {}
-      if (after && after.id === id) {
-        try { return await fn(); }
-        finally {
-          try {
-            const raw = localStorage.getItem(key);
-            const final = raw ? JSON.parse(raw) : null;
-            if (final && final.id === id) localStorage.removeItem(key);
-          } catch (_) {}
-        }
-      }
-    }
-    if (Date.now() - start > deadline) return await fn();
-    await new Promise(r => setTimeout(r, 50 + Math.random() * 50));
-  }
-}
-
+// Single-purpose page; leader-election lives in index.html. Disable
+// per-tab autoRefresh so we never race with the main app's leader.
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
     persistSession: true,
-    autoRefreshToken: true,
+    autoRefreshToken: false,
     storageKey: "co14ers.auth",
-    lock: lsLock
+    lock: async (_n, _t, fn) => fn()
   }
 });
 

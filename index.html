@@ -461,7 +461,7 @@ footer.page-footer {
 <div id="toast" class="toast"></div>
 
 <footer class="page-footer">
-  <span>v0.3.6</span>
+  <span>v0.4.0</span>
   <span>73 peaks &middot; 333 routes</span>
   <span>data: 14ers.com &middot; not a substitute for current conditions</span>
 </footer>
@@ -473,40 +473,101 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 let sb = null;
 let authReady = false;
 
-async function lsLock(name, acquireTimeoutMs, fn) {
-  const key = "co14ers.lock." + name;
-  const id = (crypto?.randomUUID?.() || (Math.random().toString(36).slice(2) + Date.now()));
-  const TTL = 30000;
-  const start = Date.now();
-  const deadline = (acquireTimeoutMs && acquireTimeoutMs > 0) ? acquireTimeoutMs : 5000;
+// === Cross-tab auth coordinator ===
+// Elects one tab as "leader" via BroadcastChannel. Only the leader runs the
+// auto-refresh timer, eliminating the multi-tab refresh-token race that was
+// signing everyone out. supabase-js's built-in storage listener keeps
+// in-memory session state aligned across tabs without us broadcasting.
+const tabId = (crypto?.randomUUID?.() || (Math.random().toString(36).slice(2) + Date.now()));
+let bc = null;
+let isLeader = false;
+let leaderId = null;
+let lastBeat = 0;
+let beatTimer = null;
+let refreshTimer = null;
+let healthTimer = null;
 
-  while (true) {
-    let current = null;
-    try { const raw = localStorage.getItem(key); current = raw ? JSON.parse(raw) : null; } catch (_) {}
-    const stale = !current || (Date.now() - (current.t || 0) > TTL);
+function coordStart() {
+  if (typeof BroadcastChannel === "undefined") {
+    console.warn("[14ers] BroadcastChannel unsupported; refreshing as solo tab");
+    becomeLeader();
+    return;
+  }
+  bc = new BroadcastChannel("co14ers-auth-leader");
+  bc.onmessage = (e) => coordOnMessage(e.data);
+  window.addEventListener("beforeunload", () => {
+    if (isLeader && bc) bc.postMessage({ type: "leaving", id: tabId });
+  });
+  startElection();
+  healthTimer = setInterval(coordHealthCheck, 2000);
+}
 
-    if (stale) {
-      try { localStorage.setItem(key, JSON.stringify({ id, t: Date.now() })); } catch (_) {}
-      await new Promise(r => setTimeout(r, 10));
-      let after = null;
-      try { const raw = localStorage.getItem(key); after = raw ? JSON.parse(raw) : null; } catch (_) {}
-      if (after && after.id === id) {
-        try { return await fn(); }
-        finally {
-          try {
-            const raw = localStorage.getItem(key);
-            const final = raw ? JSON.parse(raw) : null;
-            if (final && final.id === id) localStorage.removeItem(key);
-          } catch (_) {}
-        }
-      }
-    }
+function startElection() {
+  leaderId = null;
+  if (bc) bc.postMessage({ type: "elect", id: tabId });
+  setTimeout(() => { if (!leaderId) becomeLeader(); }, 300);
+}
 
-    if (Date.now() - start > deadline) {
-      console.warn("[14ers] lock '" + name + "' timed out; proceeding without coordination");
-      return await fn();
-    }
-    await new Promise(r => setTimeout(r, 50 + Math.random() * 50));
+function becomeLeader() {
+  if (isLeader) return;
+  isLeader = true;
+  leaderId = tabId;
+  if (bc) bc.postMessage({ type: "leader", id: tabId });
+  beatTimer = setInterval(() => { if (bc) bc.postMessage({ type: "beat", id: tabId }); }, 2000);
+  scheduleNextRefresh();
+}
+
+function stepDown(newLeaderId) {
+  isLeader = false;
+  leaderId = newLeaderId;
+  lastBeat = Date.now();
+  if (beatTimer) { clearInterval(beatTimer); beatTimer = null; }
+  if (refreshTimer) { clearTimeout(refreshTimer); refreshTimer = null; }
+}
+
+async function scheduleNextRefresh() {
+  if (!isLeader || !sb) return;
+  if (refreshTimer) { clearTimeout(refreshTimer); refreshTimer = null; }
+  let session = null;
+  try { const r = await sb.auth.getSession(); session = r.data.session; }
+  catch (e) { console.warn("[14ers] leader getSession err:", e); }
+  if (!session) {
+    refreshTimer = setTimeout(scheduleNextRefresh, 30000);
+    return;
+  }
+  const expiresMs = (session.expires_at || 0) * 1000;
+  const delay = Math.max(expiresMs - 60000 - Date.now(), 1000);
+  refreshTimer = setTimeout(async () => {
+    if (!isLeader) return;
+    try { await sb.auth.refreshSession(); }
+    catch (e) { console.warn("[14ers] leader refresh failed:", e); }
+    scheduleNextRefresh();
+  }, delay);
+}
+
+function coordOnMessage(m) {
+  if (!m || m.id === tabId) return;
+  if (m.type === "elect") {
+    if (isLeader && bc) bc.postMessage({ type: "leader", id: tabId });
+    else if (!leaderId || m.id < leaderId) leaderId = m.id;
+  } else if (m.type === "leader") {
+    if (isLeader && m.id < tabId) stepDown(m.id);
+    else if (!isLeader) { leaderId = m.id; lastBeat = Date.now(); }
+  } else if (m.type === "beat") {
+    if (m.id === leaderId) lastBeat = Date.now();
+  } else if (m.type === "leaving") {
+    if (m.id === leaderId) startElection();
+  }
+}
+
+function coordHealthCheck() {
+  if (isLeader) return;
+  if (leaderId && Date.now() - lastBeat > 6000) { leaderId = null; startElection(); }
+}
+
+function coordOnAuthChange(event) {
+  if (isLeader && (event === "SIGNED_IN" || event === "TOKEN_REFRESHED" || event === "SIGNED_OUT" || event === "INITIAL_SESSION")) {
+    scheduleNextRefresh();
   }
 }
 
@@ -515,9 +576,9 @@ async function loadSupabase() {
   sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     auth: {
       persistSession: true,
-      autoRefreshToken: true,
+      autoRefreshToken: false,                    // leader handles refresh
       storageKey: "co14ers.auth",
-      lock: lsLock
+      lock: async (_n, _t, fn) => fn()            // safe: only leader refreshes
     }
   });
   sb.auth.onAuthStateChange(async (event, session) => {
@@ -532,8 +593,10 @@ async function loadSupabase() {
       loadLegacy();
       if (event === "SIGNED_OUT") toast("Signed out");
     }
+    coordOnAuthChange(event);
     renderAuthStrip(); renderAuthCard(); render();
   });
+  coordStart();
   return sb;
 }
 
