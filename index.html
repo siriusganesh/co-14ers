@@ -462,7 +462,7 @@ footer.page-footer {
 <div id="toast" class="toast"></div>
 
 <footer class="page-footer">
-  <span>v0.4.3</span>
+  <span>v0.4.4</span>
   <span>73 peaks &middot; 333 routes</span>
   <span>data: 14ers.com &middot; not a substitute for current conditions</span>
 </footer>
@@ -578,16 +578,19 @@ let realtimeChannel = null;
 function startRealtime() {
   if (!sb || !state.user || realtimeChannel) return;
   const uid = state.user.id;
+  // No filter: Supabase Realtime's postgres_changes filter silently drops
+  // DELETE events. RLS handles the scoping (own-rows-only policies on every
+  // table mean we only receive our own rows).
   realtimeChannel = sb
     .channel("user-data-" + uid)
     .on("postgres_changes",
-      { event: "*", schema: "public", table: "summits", filter: "user_id=eq." + uid },
+      { event: "*", schema: "public", table: "summits" },
       (p) => applyRealtimeRow("summits", p))
     .on("postgres_changes",
-      { event: "*", schema: "public", table: "routes_climbed", filter: "user_id=eq." + uid },
+      { event: "*", schema: "public", table: "routes_climbed" },
       (p) => applyRealtimeRow("routes", p))
     .on("postgres_changes",
-      { event: "*", schema: "public", table: "planned", filter: "user_id=eq." + uid },
+      { event: "*", schema: "public", table: "planned" },
       (p) => applyRealtimeRow("planned", p))
     .subscribe();
 }
