@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reset password — Colorado 14ers</title>
+<style>
+  :root {
+    --bg: #fafaf7; --fg: #1a1a1a; --muted: #6b6b6b;
+    --line: #d8d6cf; --accent: #b8543b; --c1: #2e7d32; --c4: #c62828;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #14140f; --fg: #ececec; --muted: #9a978d; --line: #353330; --accent: #e8a08c; }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: ui-sans-serif, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px; line-height: 1.5;
+    background: var(--bg); color: var(--fg);
+    padding: 32px 24px 96px; max-width: 520px; margin: 0 auto;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  hr { border: none; border-top: 1px solid var(--line); margin: 24px 0; }
+  h1 { font-size: 44px; margin: 0 0 8px; letter-spacing: -0.02em; }
+  h1 .dot { color: var(--accent); }
+  .card { border: 1px solid var(--line); border-radius: 6px; padding: 20px; margin-top: 16px; }
+  label { display: block; font-size: 13px; color: var(--muted); margin: 8px 0 4px; }
+  input {
+    width: 100%; font: inherit; padding: 8px 10px;
+    border: 1px solid var(--line); border-radius: 4px;
+    background: var(--bg); color: var(--fg);
+  }
+  button.primary {
+    margin-top: 14px; font: inherit; font-weight: 600; padding: 8px 16px;
+    background: var(--accent); color: white; border: none; border-radius: 4px; cursor: pointer;
+  }
+  button.primary:disabled { opacity: 0.5; cursor: progress; }
+  .err { color: var(--c4); font-size: 13px; margin-top: 8px; min-height: 1em; }
+  .ok  { color: var(--c1); font-size: 13px; margin-top: 8px; }
+  .muted { color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<a href="./" class="muted">← back to 14ers</a>
+<h1>reset<span class="dot">.</span></h1>
+<p class="muted">Set a new password for your Colorado 14ers account.</p>
+
+<div class="card" id="card">
+  <p class="muted" id="status">Verifying recovery link…</p>
+</div>
+
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const SUPABASE_URL = "https://ifuhruklphwmwqattwvk.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmdWhydWtscGh3bXdxYXR0d3ZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1Njg0OTksImV4cCI6MjA5MzE0NDQ5OX0.OEea65dtlZRJvZrDpmqaRtQg7tMwMw1OS2yF4i4YRlc";
+
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true, storageKey: "co14ers.auth" }
+});
+
+const card = document.getElementById("card");
+
+function showForm() {
+  card.innerHTML = `
+    <label>new password</label>
+    <input type="password" id="pw1" autocomplete="new-password">
+    <label>confirm password</label>
+    <input type="password" id="pw2" autocomplete="new-password">
+    <button class="primary" id="go">save new password</button>
+    <p class="err" id="err"></p>
+  `;
+  document.getElementById("go").addEventListener("click", async () => {
+    const pw1 = document.getElementById("pw1").value;
+    const pw2 = document.getElementById("pw2").value;
+    const err = document.getElementById("err");
+    err.textContent = "";
+    if (pw1.length < 8) { err.textContent = "Password must be at least 8 characters."; return; }
+    if (pw1 !== pw2)    { err.textContent = "Passwords don't match."; return; }
+    const btn = document.getElementById("go"); btn.disabled = true;
+    const { error } = await sb.auth.updateUser({ password: pw1 });
+    if (error) { err.textContent = error.message; btn.disabled = false; return; }
+    card.innerHTML = `<p class="ok">Password updated. Redirecting…</p>`;
+    setTimeout(() => { window.location.href = "./"; }, 1500);
+  });
+}
+
+sb.auth.onAuthStateChange((event, session) => {
+  if (event === "PASSWORD_RECOVERY" || (session && session.user)) {
+    showForm();
+  }
+});
+
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session && session.user) {
+    showForm();
+  } else {
+    setTimeout(async () => {
+      const { data: { session: s2 } } = await sb.auth.getSession();
+      if (s2 && s2.user) showForm();
+      else card.innerHTML = `<p class="err">Recovery link is missing or expired. Request a new one from the <a href="./">main page</a>.</p>`;
+    }, 1200);
+  }
+})();
+</script>
+</body>
+</html>

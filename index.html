@@ -18,6 +18,7 @@
     --c4: #c62828;
     --c5: #6a1b9a;
     --snow: #1565c0;
+    --planned: #8c6d1f;
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -43,32 +44,59 @@
   }
   a { color: var(--accent); text-decoration: none; }
   a:hover { text-decoration: underline; }
-  hr {
-    border: none;
-    border-top: 1px solid var(--line);
-    margin: 24px 0;
-  }
+  hr { border: none; border-top: 1px solid var(--line); margin: 24px 0; }
   header.top {
     display: flex; justify-content: space-between; align-items: baseline;
     font-size: 14px; color: var(--muted);
     flex-wrap: wrap; gap: 12px;
   }
   header.top a { color: var(--muted); }
-  h1 {
-    font-size: 64px; line-height: 1; margin: 16px 0 8px;
-    letter-spacing: -0.02em; font-weight: 700;
-  }
+  header.top a:hover { color: var(--accent); }
+  h1 { font-size: 64px; line-height: 1; margin: 16px 0 8px; letter-spacing: -0.02em; font-weight: 700; }
   h1 .dot { color: var(--accent); }
   .tagline { color: var(--muted); margin: 0 0 8px; font-size: 16px; }
-  h2 {
-    font-size: 18px; font-weight: 600; margin: 32px 0 12px;
-    text-transform: lowercase;
-  }
+  h2 { font-size: 18px; font-weight: 600; margin: 32px 0 12px; text-transform: lowercase; }
   h2 .count { color: var(--muted); font-weight: 400; font-size: 14px; }
 
+  .auth-strip {
+    margin-top: 8px; padding: 10px 14px;
+    border: 1px solid var(--line); border-radius: 6px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 12px; font-size: 14px;
+    background: var(--bg);
+  }
+  .auth-strip.you { border-style: dashed; }
+  .auth-strip .who { color: var(--muted); }
+  .auth-strip .who strong { color: var(--fg); font-weight: 600; }
+  .auth-strip button.linklike, .auth-strip a.linklike {
+    background: none; border: none; padding: 0; color: var(--accent);
+    font: inherit; cursor: pointer; text-decoration: underline;
+  }
+
+  .auth-card {
+    margin-top: 12px; border: 1px solid var(--line); border-radius: 6px;
+    padding: 20px; background: var(--bg); max-width: 420px;
+  }
+  .auth-card h3 { margin: 0 0 8px; font-size: 18px; font-weight: 600; }
+  .auth-card p.hint { color: var(--muted); font-size: 13px; margin: 0 0 12px; }
+  .auth-card label { display: block; font-size: 13px; color: var(--muted); margin: 8px 0 4px; }
+  .auth-card input {
+    width: 100%; font: inherit; padding: 8px 10px;
+    border: 1px solid var(--line); border-radius: 4px;
+    background: var(--bg); color: var(--fg);
+  }
+  .auth-card .row { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  .auth-card button.primary {
+    font: inherit; font-weight: 600; padding: 8px 16px;
+    background: var(--accent); color: white; border: none; border-radius: 4px; cursor: pointer;
+  }
+  .auth-card button.primary:disabled { opacity: 0.5; cursor: progress; }
+  .auth-card .switch { color: var(--muted); font-size: 13px; margin-top: 12px; }
+  .auth-card .err { color: var(--c4); font-size: 13px; margin-top: 8px; min-height: 1em; }
+  .auth-card .ok  { color: var(--c1); font-size: 13px; margin-top: 8px; }
+
   .controls {
-    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
-    margin: 12px 0;
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0;
   }
   .controls input, .controls select {
     font: inherit; padding: 6px 10px;
@@ -78,8 +106,7 @@
   .controls input[type=search] { min-width: 200px; }
   .controls .chip {
     padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px;
-    cursor: pointer; user-select: none; font-size: 13px;
-    background: var(--bg);
+    cursor: pointer; user-select: none; font-size: 13px; background: var(--bg);
   }
   .controls .chip.on { background: var(--accent); color: var(--bg); border-color: var(--accent); }
   .progress {
@@ -88,21 +115,20 @@
   }
 
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  th, td {
-    text-align: left; padding: 8px 10px;
-    border-bottom: 1px solid var(--line);
-    vertical-align: top;
-  }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
   th {
-    font-weight: 600; color: var(--muted); cursor: pointer;
-    user-select: none; font-size: 12px; text-transform: uppercase;
-    letter-spacing: 0.04em;
+    font-weight: 600; color: var(--muted); cursor: pointer; user-select: none;
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em;
   }
-  th.sort-asc::after { content: " ↑"; }
-  th.sort-desc::after { content: " ↓"; }
+  th.sort-asc::after { content: " \2191"; }
+  th.sort-desc::after { content: " \2193"; }
   tbody tr { cursor: pointer; }
   tbody tr:hover { background: var(--accent-soft); }
   tbody tr.summited td.peak-name { text-decoration: line-through; color: var(--muted); }
+  tbody tr.planned td.peak-name::after {
+    content: " \2022 planned"; font-size: 11px; color: var(--planned); margin-left: 4px;
+    text-decoration: none;
+  }
   td.elev, td.routes-col { font-variant-numeric: tabular-nums; }
   td.range { color: var(--muted); }
   .check {
@@ -112,10 +138,11 @@
   }
   .check.on { background: var(--accent); border-color: var(--accent); position: relative; }
   .check.on::after {
-    content: ""; position: absolute; left: 4px; top: 0px;
-    width: 4px; height: 9px; border: solid white;
-    border-width: 0 2px 2px 0; transform: rotate(45deg);
+    content: ""; position: absolute; left: 4px; top: 0px; width: 4px; height: 9px;
+    border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg);
   }
+  .check.sm { width: 14px; height: 14px; border-radius: 2px; }
+  .check.sm.on::after { left: 3px; top: -1px; width: 4px; height: 9px; }
 
   .badge {
     display: inline-block; padding: 1px 7px; border-radius: 3px;
@@ -128,33 +155,29 @@
   .badge.c4 { background: var(--c4); }
   .badge.c5 { background: var(--c5); }
   .badge.snow { background: var(--snow); }
-  .badge.outline {
-    background: transparent; color: var(--muted);
-    border: 1px solid var(--line); font-weight: 500;
-  }
+  .badge.outline { background: transparent; color: var(--muted); border: 1px solid var(--line); font-weight: 500; }
 
-  .panel {
-    border: 1px solid var(--line); border-radius: 6px;
-    padding: 20px 24px; margin-top: 16px; background: var(--bg);
-  }
+  .panel { border: 1px solid var(--line); border-radius: 6px; padding: 20px 24px; margin-top: 16px; background: var(--bg); }
   .panel-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
   .panel h3 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.01em; }
   .panel .meta { color: var(--muted); font-size: 14px; }
   .panel .note { color: var(--muted); font-size: 13px; font-style: italic; margin-top: 6px; }
+  .panel-actions { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  .panel-actions label { display: inline-flex; gap: 8px; align-items: center; cursor: pointer; user-select: none; font-size: 14px; }
+  .panel-actions input[type=date] {
+    font: inherit; padding: 4px 8px; border: 1px solid var(--line); border-radius: 4px;
+    background: var(--bg); color: var(--fg); font-size: 13px;
+  }
+
   .routes { margin-top: 16px; }
-  .route {
-    border-top: 1px solid var(--line); padding: 12px 0;
-  }
+  .route { border-top: 1px solid var(--line); padding: 12px 0; }
   .route:first-child { border-top: none; }
-  .route-head {
-    display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
-  }
+  .route-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
   .route-name { font-weight: 600; font-size: 16px; color: var(--fg); }
   a.route-name:hover { color: var(--accent); }
   .route-stats {
     margin-top: 6px; display: grid; gap: 6px 16px;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    font-size: 13px;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); font-size: 13px;
   }
   .route-stats .k { color: var(--muted); margin-right: 4px; text-transform: lowercase; }
   .ratings { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-top: 6px; }
@@ -163,13 +186,28 @@
   .rating-mod { color: var(--c3); }
   .rating-high { color: var(--c4); }
   .rating-extreme { color: var(--c5); }
+  .route-actions {
+    display: flex; gap: 12px; align-items: center; margin-top: 8px; font-size: 13px;
+    color: var(--muted); flex-wrap: wrap;
+  }
+  .route-actions label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+  .route-actions input[type=date] {
+    font: inherit; padding: 2px 6px; border: 1px solid var(--line); border-radius: 3px;
+    background: var(--bg); color: var(--fg); font-size: 12px;
+  }
 
   footer {
-    margin-top: 48px; padding-top: 16px;
-    border-top: 1px solid var(--line);
+    margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line);
     color: var(--muted); font-size: 12px;
     display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
   }
+  .toast {
+    position: fixed; bottom: 24px; right: 24px; padding: 10px 14px;
+    background: var(--fg); color: var(--bg); border-radius: 6px;
+    font-size: 13px; opacity: 0; transition: opacity 0.2s;
+    pointer-events: none; max-width: 320px;
+  }
+  .toast.show { opacity: 0.95; }
 
   @media (max-width: 640px) {
     body { padding: 20px 14px 64px; }
@@ -187,7 +225,12 @@
 </header>
 
 <h1>14ers<span class="dot">.</span></h1>
-<p class="tagline">Quick reference for the 53 ranked Colorado 14,000 ft peaks. Click a peak for routes, difficulty, gain, distance, and objective ratings. Tap the box to mark it summited — saved locally.</p>
+<p class="tagline">Quick reference for the 53 ranked Colorado 14,000 ft peaks. Routes, difficulty, gain, distance, objective ratings. Sign in to track summits, route lines, and a plan-to-climb list across devices.</p>
+
+<div id="authStrip" class="auth-strip">
+  <span class="who">Loading…</span>
+</div>
+<div id="authCard"></div>
 
 <hr>
 
@@ -207,6 +250,7 @@
   </select>
   <span class="chip" id="snowToggle" data-on="false">snow routes ok</span>
   <span class="chip" id="summitedToggle" data-on="false">hide summited</span>
+  <span class="chip" id="plannedToggle" data-on="false">planned only</span>
   <span class="progress" id="progress">0 / 53 summited</span>
 </div>
 
@@ -227,24 +271,41 @@
 
 <section id="detail" hidden></section>
 
+<div id="toast" class="toast"></div>
+
 <footer>
-  <span>v0.1 · 73 peaks · 333 routes</span>
+  <span>v0.2 · 73 peaks · 333 routes · supabase-synced</span>
   <span>not a substitute for current conditions, weather, or judgment</span>
 </footer>
 
-<script>
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const SUPABASE_URL = "https://ifuhruklphwmwqattwvk.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmdWhydWtscGh3bXdxYXR0d3ZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1Njg0OTksImV4cCI6MjA5MzE0NDQ5OX0.OEea65dtlZRJvZrDpmqaRtQg7tMwMw1OS2yF4i4YRlc";
+
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true, storageKey: "co14ers.auth" }
+});
+
 const PEAKS = [{"rank":1,"name":"Mount Elbert","elevation_ft":14438,"range":"Sawatch Range","peak_id":"10001","slug":"mount-elbert","note":"","unranked":false,"routes":[{"name":"Mt. Elbert - Northeast Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 1","gain":"4,500'","distance":"9.75 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"elbe1","summits":"Mt. Elbert"},{"name":"Mt. Elbert - East Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 1","gain":"4,200'","distance":"11.25 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Moderate","route_key":"elbe2","summits":"Mt. Elbert"},{"name":"Mt. Elbert - Southeast Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"5,300'","distance":"10.5 mi","exposure":"Low","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"elbe3","summits":"Mt. Elbert"},{"name":"Mt. Elbert - Box Creek Couloirs","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Difficult Class 2 Moderate Snow","gain":"4,150'","distance":"10 mi","exposure":"Considerable","rockfall":"Moderate","route_finding":"Moderate","commitment":"Considerable","route_key":"elbe4","summits":"Mt. Elbert"}]},{"rank":2,"name":"Mount Massive","elevation_ft":14427,"range":"Sawatch Range","peak_id":"10002","slug":"mount-massive","note":"","unranked":false,"routes":[{"name":"Mt. Massive - East Slopes","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"4,500'","distance":"13.75 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"mass1","summits":"Mt. Massive"},{"name":"Mt. Massive - Southwest Slopes","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"4,000'","distance":"8 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Moderate","route_key":"mass2","summits":"Mt. Massive"},{"name":"Mt. Massive - East Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Difficult Class 2","gain":"5,000'","distance":"14 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Considerable","commitment":"Considerable","route_key":"mass3","summits":"Mt. Massive"}]},{"rank":3,"name":"Mount Harvard","elevation_ft":14424,"range":"Sawatch Range","peak_id":"10003","slug":"mount-harvard","note":"","unranked":false,"routes":[{"name":"Mt. Harvard - South Slopes","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"4,600'","distance":"13.75 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"harv1","summits":"Mt. Harvard"},{"name":"Mt. Columbia - West Slopes","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"4,250'","distance":"12 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"colu2","summits":"Mt. Columbia"},{"name":"Mt. Harvard - South Face","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Class 2 Moderate Snow","gain":"4,600'","distance":"13.75 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Considerable","commitment":"Considerable","route_key":"harv3","summits":"Mt. Harvard"},{"name":"Combo: Harvard and Columbia Traverse","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"6,100'","distance":"15 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"High","commitment":"High","route_key":"harv4","summits":"COMBO"},{"name":"Mt. Columbia - Southeast Ridge","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"4,800'","distance":"11.25 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Considerable","commitment":"Moderate","route_key":"colu5","summits":"Mt. Columbia"},{"name":"Mt. Columbia - Southwest Couloir","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 2 Moderate Snow","gain":"4,800'","distance":"13.5 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Considerable","commitment":"Moderate","route_key":"colu6","summits":"Mt. Columbia"}]},{"rank":4,"name":"Blanca Peak","elevation_ft":14350,"range":"Sangre de Cristo","peak_id":"10004","slug":"blanca-peak","note":"","unranked":false,"routes":[{"name":"Blanca Peak - Northwest Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Difficult Class 2","gain":"6,500'","distance":"17 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Moderate","commitment":"Considerable","route_key":"blan1","summits":"Blanca Peak"},{"name":"Little Bear Peak - West Ridge and Hourglass","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 4","gain":"6,200'","distance":"14 mi","exposure":"High","rockfall":"High","route_finding":"High","commitment":"High","route_key":"litt6","summits":"Little Bear Peak"},{"name":"Ellingwood Point - South Face","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Difficult Class 2","gain":"6,200'","distance":"17 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"elli2","summits":"Ellingwood Point"},{"name":"Lake Como Approach","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"3,900'","distance":"11 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"como0","summits":"OTHER"},{"name":"Combo: Blanca and Ellingwood","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"6,800'","distance":"18 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"elli3","summits":"COMBO"},{"name":"Ellingwood Point - Southwest Ridge","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"2,200'","distance":"15 mi","exposure":"High","rockfall":"High","route_finding":"Considerable","commitment":"Considerable","route_key":"elli4","summits":"Ellingwood Point"},{"name":"Little Bear Peak - West Ridge Indirect","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 4","gain":"6,200'","distance":"14 mi","exposure":"Extreme","rockfall":"Considerable","route_finding":"High","commitment":"High","route_key":"litt8","summits":"Little Bear Peak"},{"name":"Combo: Little Bear + Blanca Traverse","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 5","gain":"8,000'","distance":"17 mi","exposure":"Extreme","rockfall":"Considerable","route_finding":"High","commitment":"Extreme","route_key":"litt3","summits":"COMBO"},{"name":"Ellingwood Point - North Ridge via South Zapata Creek","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Easy Class 3","gain":"5,200'","distance":"12.5 mi","exposure":"Considerable","rockfall":"High","route_finding":"High","commitment":"High","route_key":"elli5","summits":"Ellingwood Point"}]},{"rank":5,"name":"La Plata Peak","elevation_ft":14344,"range":"Sawatch Range","peak_id":"10005","slug":"la-plata-peak","note":"","unranked":false,"routes":[{"name":"La Plata Peak - Northwest Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"4,400'","distance":"9.25 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Moderate","route_key":"lapl1","summits":"La Plata Peak"},{"name":"La Plata Peak - Southwest Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"3,600'","distance":"7.5 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"Considerable","commitment":"Moderate","route_key":"lapl2","summits":"La Plata Peak"},{"name":"La Plata Peak - Ellingwood Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 3","gain":"5,900'","distance":"9.5 mi","exposure":"High","rockfall":"High","route_finding":"High","commitment":"High","route_key":"lapl3","summits":"La Plata Peak"},{"name":"La Plata Peak - North Face","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Difficult Class 2 Moderate Snow","gain":"4,500'","distance":"8.75 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"High","commitment":"Considerable","route_key":"lapl4","summits":"La Plata Peak"}]},{"rank":null,"name":"North Massive","elevation_ft":14337,"range":"Sawatch Range","peak_id":"10068","slug":"north-massive","note":"unranked subpoint; routes listed under parent peak","unranked":true,"routes":[]},{"rank":6,"name":"Uncompahgre Peak","elevation_ft":14318,"range":"San Juan Mountains","peak_id":"10006","slug":"uncompahgre-peak","note":"","unranked":false,"routes":[{"name":"Uncompahgre Peak - South Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"3,000'","distance":"7.5 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"unco1","summits":"Uncompahgre Peak"}]},{"rank":null,"name":"Massive Green","elevation_ft":14311,"range":"Sawatch Range","peak_id":"10069","slug":"massive-green","note":"unranked subpoint; routes listed under parent peak","unranked":true,"routes":[]},{"rank":7,"name":"Crestone Peak","elevation_ft":14299,"range":"Sangre de Cristo","peak_id":"10007","slug":"crestone-peak","note":"","unranked":false,"routes":[{"name":"Crestone Peak - South Face","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 3","gain":"5,700'","distance":"14 mi","exposure":"High","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"cpea2","summits":"Crestone Peak"},{"name":"Humboldt Peak - West Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"4,200'","distance":"11 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Low","route_key":"humb1","summits":"Humboldt Peak"},{"name":"Crestone Needle - South Face","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 4","gain":"4,400'","distance":"12 mi","exposure":"High","rockfall":"Considerable","route_finding":"High","commitment":"Considerable","route_key":"cnee1","summits":"Crestone Needle"},{"name":"Humboldt Peak - East Ridge","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"4,300'","distance":"8 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Considerable","commitment":"Moderate","route_key":"humb2","summits":"Humboldt Peak"},{"name":"Humboldt Peak - Southeast Gully","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 2 Moderate Snow","gain":"5,400'","distance":"8 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Considerable","commitment":"Moderate","route_key":"humb3","summits":"Humboldt Peak"},{"name":"Combo: Crestones Traverse","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 5","gain":"5,300'","distance":"14 mi","exposure":"Extreme","rockfall":"Considerable","route_finding":"High","commitment":"High","route_key":"cnee3","summits":"COMBO"},{"name":"Crestone Needle - Ellingwood Arete/Ledges","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 5","gain":"4,400'","distance":"11.25 mi","exposure":"Extreme","rockfall":"High","route_finding":"High","commitment":"Extreme","route_key":"cnee5","summits":"Crestone Needle"}]},{"rank":null,"name":"East Crestone","elevation_ft":14299,"range":"Sangre de Cristo","peak_id":"10071","slug":"east-crestone","note":"unranked subpoint; routes listed under parent peak","unranked":true,"routes":[]},{"rank":8,"name":"Mount Lincoln","elevation_ft":14293,"range":"Mosquito Range","peak_id":"10008","slug":"mount-lincoln","note":"","unranked":false,"routes":[{"name":"Mt. Lincoln - West Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"2,600'","distance":"6 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"linc1","summits":"Mt. Lincoln"},{"name":"Combo: Decalibron","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"3,500'","distance":"7.5 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Moderate","route_key":"bros6","summits":"COMBO"},{"name":"Mt. Bross - West Slopes","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"2,250'","distance":"3.25 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"bros2","summits":"Mt. Bross"},{"name":"Mt. Cameron - West Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"2,250'","distance":"4.75 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"came1","summits":"Mt. Cameron"},{"name":"Mt. Democrat - East Slope","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"2,150'","distance":"4 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"demo1","summits":"Mt. Democrat"},{"name":"Mt. Lincoln - East Slopes","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"2,650'","distance":"6.5 mi","exposure":"Low","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"linc3","summits":"Mt. Lincoln"},{"name":"Mt. Lincoln - Lincoln Amphitheatre","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"3,400'","distance":"4.75 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"linc2","summits":"Mt. Lincoln"},{"name":"Mt. Bross - East Slopes","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"2,900'","distance":"9 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"bros1","summits":"Mt. Bross"},{"name":"Mt. Bross - \"Dolly Varden Gully\"","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 2 Easy Snow","gain":"2,900'","distance":"4 mi","exposure":"Low","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"bros4","summits":"Mt. Bross"},{"name":"Mt. Bross - \"S Gully\"","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 2 Easy Snow","gain":"2,600'","distance":"9.5 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"bros3","summits":"Mt. Bross"},{"name":"Mt. Democrat - South Slope","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Difficult Class 2 Moderate Snow","gain":"2,150'","distance":"2.5 mi","exposure":"Considerable","rockfall":"Moderate","route_finding":"Considerable","commitment":"Moderate","route_key":"demo2","summits":"Mt. Democrat"}]},{"rank":9,"name":"Grays Peak","elevation_ft":14275,"range":"Front Range","peak_id":"10009","slug":"grays-peak","note":"","unranked":false,"routes":[{"name":"Grays Peak - North Slopes","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 1","gain":"3,000'","distance":"7.5 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"gray1","summits":"Grays Peak"},{"name":"Combo: Grays and Torreys","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"3,600'","distance":"8.25 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Moderate","route_key":"torr5","summits":"COMBO"},{"name":"Torreys Peak - South Slopes","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"3,000'","distance":"7.75 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"torr2","summits":"Torreys Peak"},{"name":"Grays Peak - South Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"3,250'","distance":"6.5 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"gray3","summits":"Grays Peak"},{"name":"Grays Peak - Southwest Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"3,800'","distance":"10.25 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"gray8","summits":"Grays Peak"},{"name":"Grays Peak - Lost Rat Couloir","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Class 3 Steep Snow","gain":"3,000'","distance":"6.5 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Moderate","commitment":"Considerable","route_key":"gray6","summits":"Grays Peak"},{"name":"Torreys Peak - West Ridge","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"5,500'","distance":"10 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Considerable","route_key":"torr11","summits":"Torreys Peak"},{"name":"Torreys Peak - Kelso Ridge","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"3,100'","distance":"6.75 mi","exposure":"High","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"torr4","summits":"Torreys Peak"},{"name":"Torreys Peak - Dead Dog Couloir","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 3 Steep Snow","gain":"3,000'","distance":"6 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Moderate","commitment":"Considerable","route_key":"torr7","summits":"Torreys Peak"},{"name":"Torreys Peak - Emperor Couloir","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 3 Steep Snow","gain":"4,500'","distance":"9.5 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"torr10","summits":"Torreys Peak"},{"name":"Torreys Peak - NW Face/Tuning Fork","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Difficult Class 2 Moderate Snow","gain":"4,500'","distance":"10.5 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"torr9","summits":"Torreys Peak"}]},{"rank":10,"name":"Castle Peak","elevation_ft":14274,"range":"Elk Mountains","peak_id":"10012","slug":"castle-peak","note":"","unranked":false,"routes":[{"name":"Castle Peak - Northeast Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Difficult Class 2","gain":"4,600'","distance":"13.5 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"cast1","summits":"Castle Peak"},{"name":"Combo: Castle and Conundrum","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Difficult Class 2","gain":"4,850'","distance":"14.5 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"cast4","summits":"COMBO"},{"name":"Conundrum Peak - South Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Difficult Class 2","gain":"4,400'","distance":"13.5 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"conu1","summits":"Conundrum Peak"},{"name":"Castle Peak - North Face Couloir","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Difficult Class 2 Moderate Snow","gain":"4,600'","distance":"13 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"cast3","summits":"Castle Peak"},{"name":"Castle Peak - Northwest Ridge","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Difficult Class 2 Moderate Snow","gain":"4,600'","distance":"13.5 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"cast2","summits":"Castle Peak"},{"name":"Conundrum Peak - Conundrum Couloir","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 3 Steep Snow","gain":"4,400'","distance":"12 mi","exposure":"High","rockfall":"Considerable","route_finding":"Moderate","commitment":"Considerable","route_key":"conu5","summits":"Conundrum Peak"}]},{"rank":11,"name":"Quandary Peak","elevation_ft":14272,"range":"Tenmile Range","peak_id":"10013","slug":"quandary-peak","note":"","unranked":false,"routes":[{"name":"Quandary Peak - East Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 1","gain":"3,450'","distance":"6.75 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"quan1","summits":"Quandary Peak"},{"name":"Quandary Peak - West Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 3","gain":"2,650'","distance":"4 mi","exposure":"High","rockfall":"Considerable","route_finding":"Considerable","commitment":"High","route_key":"quan3","summits":"Quandary Peak"},{"name":"Quandary Peak - North Gully aka Quandary Couloir","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Class 3 Steep Snow","gain":"3,250'","distance":"5.25 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Moderate","commitment":"Considerable","route_key":"quan4","summits":"Quandary Peak"},{"name":"Quandary Peak - South Gully aka Cristo Couloir","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Difficult Class 2 Moderate Snow","gain":"2,900'","distance":"3.5 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"Moderate","commitment":"Low","route_key":"quan2","summits":"Quandary Peak"}]},{"rank":12,"name":"Torreys Peak","elevation_ft":14272,"range":"Front Range","peak_id":"10011","slug":"torreys-peak","note":"","unranked":false,"routes":[{"name":"Torreys Peak - South Slopes","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 1","gain":"3,000'","distance":"7.75 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"torr2","summits":"Torreys Peak"},{"name":"Combo: Grays and Torreys","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"3,600'","distance":"8.25 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Moderate","route_key":"torr5","summits":"COMBO"},{"name":"Grays Peak - North Slopes","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"3,000'","distance":"7.5 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"gray1","summits":"Grays Peak"},{"name":"Torreys Peak - West Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"5,500'","distance":"10 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Considerable","route_key":"torr11","summits":"Torreys Peak"},{"name":"Torreys Peak - Kelso Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 3","gain":"3,100'","distance":"6.75 mi","exposure":"High","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"torr4","summits":"Torreys Peak"},{"name":"Torreys Peak - Dead Dog Couloir","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Class 3 Steep Snow","gain":"3,000'","distance":"6 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Moderate","commitment":"Considerable","route_key":"torr7","summits":"Torreys Peak"},{"name":"Torreys Peak - Emperor Couloir","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Class 3 Steep Snow","gain":"4,500'","distance":"9.5 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"torr10","summits":"Torreys Peak"},{"name":"Torreys Peak - NW Face/Tuning Fork","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Difficult Class 2 Moderate Snow","gain":"4,500'","distance":"10.5 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"torr9","summits":"Torreys Peak"},{"name":"Grays Peak - South Ridge","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"3,250'","distance":"6.5 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"gray3","summits":"Grays Peak"},{"name":"Grays Peak - Southwest Ridge","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"3,800'","distance":"10.25 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"gray8","summits":"Grays Peak"},{"name":"Grays Peak - Lost Rat Couloir","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 3 Steep Snow","gain":"3,000'","distance":"6.5 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Moderate","commitment":"Considerable","route_key":"gray6","summits":"Grays Peak"}]},{"rank":13,"name":"Mount Antero","elevation_ft":14271,"range":"Sawatch Range","peak_id":"10010","slug":"mount-antero","note":"","unranked":false,"routes":[{"name":"Mt. Antero - West Slopes","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"5,200'","distance":"15.5 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Moderate","route_key":"ante1","summits":"Mt. Antero"},{"name":"Mt. Antero - Via Little Browns Creek","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"5,550'","distance":"16.25 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"ante2","summits":"Mt. Antero"}]},{"rank":14,"name":"Mount Blue Sky","elevation_ft":14268,"range":"Front Range","peak_id":"10014","slug":"mount-blue-sky","note":"","unranked":false,"routes":[{"name":"Mt. Blue Sky - West Ridge from Summit Lake","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"2,000'","distance":"5.5 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"evan2","summits":"Mt. Blue Sky"},{"name":"Mt. Bierstadt - West Slopes","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"2,850'","distance":"7.25 mi","exposure":"Low","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"bier1","summits":"Mt. Bierstadt"},{"name":"Combo: Bierstadt, Sawtooth, Blue Sky","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"3,900'","distance":"10.5 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"High","route_key":"bier4","summits":"COMBO"},{"name":"Mt. Blue Sky - West Ridge from Echo Lake","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"5,600'","distance":"17 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Considerable","route_key":"evan1","summits":"Mt. Blue Sky"},{"name":"Mt. Blue Sky - West Ridge from Guanella Pass","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"3,100'","distance":"9.25 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"evan3","summits":"Mt. Blue Sky"},{"name":"Mt. Blue Sky - North Face Moderate","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Class 3 Moderate Snow","gain":"1,500'","distance":"2 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Low","commitment":"Moderate","route_key":"evan7","summits":"Mt. Blue Sky"},{"name":"Mt. Blue Sky - North Face Steep","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Class 3 Steep Snow","gain":"1,500'","distance":"2 mi","exposure":"High","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"evan8","summits":"Mt. Blue Sky"},{"name":"Mt. Blue Sky - West Gully","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Class 3 Steep Snow","gain":"1,650'","distance":"5.25 mi","exposure":"High","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"evan4","summits":"Mt. Blue Sky"},{"name":"Mt. Bierstadt - South Ridge","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"4,500'","distance":"14.25 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Considerable","commitment":"Moderate","route_key":"bier6","summits":"Mt. Bierstadt"},{"name":"Combo: Tour de Abyss Loop","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"3,000'","distance":"5.75 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"High","route_key":"bier5","summits":"COMBO"},{"name":"Mt. Bierstadt - East Ridge","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"3,000'","distance":"5 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"bier3","summits":"Mt. Bierstadt"}]},{"rank":15,"name":"Longs Peak","elevation_ft":14259,"range":"Front Range","peak_id":"10015","slug":"longs-peak","note":"","unranked":false,"routes":[{"name":"Longs Peak - Keyhole Route","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 3","gain":"5,100'","distance":"14.5 mi","exposure":"High","rockfall":"Considerable","route_finding":"Considerable","commitment":"High","route_key":"long1","summits":"Longs Peak"},{"name":"Longs Peak - Keplinger Couloir","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 3","gain":"5,900'","distance":"16 mi","exposure":"High","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"long5","summits":"Longs Peak"},{"name":"Longs Peak - Loft Route","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 3","gain":"5,300'","distance":"13 mi","exposure":"High","rockfall":"Considerable","route_finding":"High","commitment":"High","route_key":"long2","summits":"Longs Peak"}]},{"rank":null,"name":"West Evans","elevation_ft":14257,"range":"Front Range","peak_id":"10072","slug":"west-evans","note":"unranked subpoint; routes listed under parent peak","unranked":true,"routes":[]},{"rank":16,"name":"Mount Wilson","elevation_ft":14256,"range":"San Juan Mountains","peak_id":"10016","slug":"mount-wilson","note":"","unranked":false,"routes":[{"name":"Mt. Wilson - Southwest Slopes","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 3","gain":"4,400'","distance":"12.5 mi","exposure":"High","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"mwil6","summits":"Mt. Wilson"},{"name":"El Diente Peak - South Slopes","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"4,400'","distance":"12 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"High","commitment":"Considerable","route_key":"eldi4","summits":"El Diente Peak"},{"name":"Wilson Peak - Southwest Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"3,900'","distance":"10 mi","exposure":"High","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"wils1","summits":"Wilson Peak"},{"name":"Mt. Wilson - East Face","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Class 3 Moderate Snow","gain":"4,900'","distance":"12 mi","exposure":"High","rockfall":"Considerable","route_finding":"High","commitment":"High","route_key":"mwil7","summits":"Mt. Wilson"},{"name":"Mt. Wilson - North Slopes","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 4","gain":"5,100'","distance":"16 mi","exposure":"High","rockfall":"High","route_finding":"High","commitment":"Considerable","route_key":"mwil2","summits":"Mt. Wilson"},{"name":"Kilpacker Approach","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"800'","distance":"6 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"kilp0","summits":"OTHER"},{"name":"Navajo Lake Approach","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"2,000'","distance":"9.5 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"nava0","summits":"OTHER"},{"name":"Rock of Ages Approach","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"2,800'","distance":"8.5 mi","exposure":"Moderate","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"silv0","summits":"OTHER"},{"name":"Woods Lake Approach","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"2,115'","distance":"9 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"wood0","summits":"OTHER"},{"name":"El Diente Peak - North Slopes","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"5,000'","distance":"15 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"High","commitment":"Considerable","route_key":"eldi3","summits":"El Diente Peak"},{"name":"Combo: Mt. Wilson + El Diente Traverse","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 4","gain":"500'","distance":"1 mi","exposure":"High","rockfall":"High","route_finding":"High","commitment":"High","route_key":"mwil5","summits":"COMBO"},{"name":"El Diente Peak - North Buttress","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 4","gain":"3,200'","distance":"5 mi","exposure":"High","rockfall":"Considerable","route_finding":"High","commitment":"High","route_key":"eldi8","summits":"El Diente Peak"}]},{"rank":null,"name":"Northeast Crestone","elevation_ft":14251,"range":"Sangre de Cristo","peak_id":"10070","slug":"northeast-crestone","note":"unranked subpoint; routes listed under parent peak","unranked":true,"routes":[]},{"rank":null,"name":"Mount Cameron","elevation_ft":14248,"range":"Mosquito Range","peak_id":"10063","slug":"mount-cameron","note":"unranked-but-named peak; has own routes","unranked":true,"routes":[{"name":"Mt. Cameron - West Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"2,250'","distance":"4.75 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"came1","summits":"Mt. Cameron"},{"name":"Combo: Decalibron","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"3,500'","distance":"7.5 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Moderate","route_key":"bros6","summits":"COMBO"},{"name":"Mt. Bross - West Slopes","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"2,250'","distance":"3.25 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"bros2","summits":"Mt. Bross"},{"name":"Mt. Democrat - East Slope","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"2,150'","distance":"4 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"demo1","summits":"Mt. Democrat"},{"name":"Mt. Lincoln - West Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"2,600'","distance":"6 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"linc1","summits":"Mt. Lincoln"},{"name":"Mt. Bross - East Slopes","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"2,900'","distance":"9 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"bros1","summits":"Mt. Bross"},{"name":"Mt. Lincoln - East Slopes","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"2,650'","distance":"6.5 mi","exposure":"Low","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"linc3","summits":"Mt. Lincoln"},{"name":"Mt. Lincoln - Lincoln Amphitheatre","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"3,400'","distance":"4.75 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"linc2","summits":"Mt. Lincoln"},{"name":"Mt. Bross - \"Dolly Varden Gully\"","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 2 Easy Snow","gain":"2,900'","distance":"4 mi","exposure":"Low","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"bros4","summits":"Mt. Bross"},{"name":"Mt. Bross - \"S Gully\"","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 2 Easy Snow","gain":"2,600'","distance":"9.5 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"bros3","summits":"Mt. Bross"},{"name":"Mt. Democrat - South Slope","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Difficult Class 2 Moderate Snow","gain":"2,150'","distance":"2.5 mi","exposure":"Considerable","rockfall":"Moderate","route_finding":"Considerable","commitment":"Moderate","route_key":"demo2","summits":"Mt. Democrat"}]},{"rank":17,"name":"Mount Shavano","elevation_ft":14230,"range":"Sawatch Range","peak_id":"10017","slug":"mount-shavano","note":"","unranked":false,"routes":[{"name":"Mt. Shavano - East Slopes","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"4,500'","distance":"9.5 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Moderate","route_key":"shav1","summits":"Mt. Shavano"},{"name":"Tabeguache Peak - Via Mt. Shavano","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"5,600'","distance":"11.5 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Considerable","route_key":"tabe2","summits":"Tabeguache Peak"},{"name":"Mt. Shavano - Angel of Shavano","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Class 2 Easy Snow","gain":"4,600'","distance":"8 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Considerable","commitment":"Moderate","route_key":"shav4","summits":"Mt. Shavano"},{"name":"Tabeguache Peak - West Ridge","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"4,000'","distance":"8 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"tabe3w","summits":"Tabeguache Peak"}]},{"rank":18,"name":"Mount Belford","elevation_ft":14202,"range":"Sawatch Range","peak_id":"10018","slug":"mount-belford","note":"","unranked":false,"routes":[{"name":"Mt. Belford - Northwest Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"4,500'","distance":"8 mi","exposure":"Low","rockfall":"Moderate","route_finding":"Low","commitment":"Moderate","route_key":"belf1","summits":"Mt. Belford"},{"name":"Missouri Mountain - Northwest Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"4,500'","distance":"10.5 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Low","commitment":"Moderate","route_key":"miss1","summits":"Missouri Mountain"},{"name":"Mt. Oxford - Via Mt. Belford","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"5,900'","distance":"11 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Considerable","route_key":"oxfo2","summits":"Mt. Oxford"},{"name":"Mt. Belford - Southwest Slopes","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"4,500'","distance":"11 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Moderate","route_key":"belf9","summits":"Mt. Belford"},{"name":"Mt. Belford - Northwest Gully","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Class 2 Easy Snow","gain":"4,500'","distance":"7 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"belf8","summits":"Mt. Belford"},{"name":"Missouri Mountain - West Ridge","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"4,250'","distance":"11.75 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"miss2","summits":"Missouri Mountain"},{"name":"Missouri Mountain - North Face Couloirs","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Difficult Class 2 Moderate Snow","gain":"4,500'","distance":"9 mi","exposure":"Considerable","rockfall":"Moderate","route_finding":"Considerable","commitment":"Considerable","route_key":"miss3","summits":"Missouri Mountain"}]},{"rank":19,"name":"Mount Princeton","elevation_ft":14200,"range":"Sawatch Range","peak_id":"10020","slug":"mount-princeton","note":"","unranked":false,"routes":[{"name":"Mt. Princeton - East Slopes","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"3,200'","distance":"6.5 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"prin1","summits":"Mt. Princeton"}]},{"rank":20,"name":"Mount Yale","elevation_ft":14200,"range":"Sawatch Range","peak_id":"10021","slug":"mount-yale","note":"","unranked":false,"routes":[{"name":"Mt. Yale - Southwest Slopes","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"4,300'","distance":"9.5 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Moderate","route_key":"yale1","summits":"Mt. Yale"},{"name":"Mt. Yale - East Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"5,000'","distance":"10.5 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"yale2","summits":"Mt. Yale"}]},{"rank":21,"name":"Crestone Needle","elevation_ft":14196,"range":"Sangre de Cristo","peak_id":"10019","slug":"crestone-needle","note":"","unranked":false,"routes":[{"name":"Crestone Needle - South Face","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 4","gain":"4,400'","distance":"12 mi","exposure":"High","rockfall":"Considerable","route_finding":"High","commitment":"Considerable","route_key":"cnee1","summits":"Crestone Needle"},{"name":"Humboldt Peak - West Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"4,200'","distance":"11 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Low","route_key":"humb1","summits":"Humboldt Peak"},{"name":"Crestone Peak - South Face","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"5,700'","distance":"14 mi","exposure":"High","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"cpea2","summits":"Crestone Peak"},{"name":"Crestone Needle - Ellingwood Arete/Ledges","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 5","gain":"4,400'","distance":"11.25 mi","exposure":"Extreme","rockfall":"High","route_finding":"High","commitment":"Extreme","route_key":"cnee5","summits":"Crestone Needle"},{"name":"Humboldt Peak - East Ridge","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"4,300'","distance":"8 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Considerable","commitment":"Moderate","route_key":"humb2","summits":"Humboldt Peak"},{"name":"Humboldt Peak - Southeast Gully","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 2 Moderate Snow","gain":"5,400'","distance":"8 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Considerable","commitment":"Moderate","route_key":"humb3","summits":"Humboldt Peak"},{"name":"Combo: Crestones Traverse","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 5","gain":"5,300'","distance":"14 mi","exposure":"Extreme","rockfall":"Considerable","route_finding":"High","commitment":"High","route_key":"cnee3","summits":"COMBO"}]},{"rank":null,"name":"East La Plata","elevation_ft":14186,"range":"Sawatch Range","peak_id":"10073","slug":"east-la-plata","note":"unranked subpoint; routes listed under parent peak","unranked":true,"routes":[]},{"rank":22,"name":"Mount Bross","elevation_ft":14178,"range":"Mosquito Range","peak_id":"10022","slug":"mount-bross","note":"","unranked":false,"routes":[{"name":"Mt. Bross - West Slopes","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"2,250'","distance":"3.25 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"bros2","summits":"Mt. Bross"},{"name":"Combo: Decalibron","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"3,500'","distance":"7.5 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Moderate","route_key":"bros6","summits":"COMBO"},{"name":"Mt. Cameron - West Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"2,250'","distance":"4.75 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"came1","summits":"Mt. Cameron"},{"name":"Mt. Democrat - East Slope","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"2,150'","distance":"4 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"demo1","summits":"Mt. Democrat"},{"name":"Mt. Lincoln - West Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"2,600'","distance":"6 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"linc1","summits":"Mt. Lincoln"},{"name":"Mt. Bross - East Slopes","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 1","gain":"2,900'","distance":"9 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"bros1","summits":"Mt. Bross"},{"name":"Mt. Bross - \"Dolly Varden Gully\"","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Class 2 Easy Snow","gain":"2,900'","distance":"4 mi","exposure":"Low","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"bros4","summits":"Mt. Bross"},{"name":"Mt. Bross - \"S Gully\"","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Class 2 Easy Snow","gain":"2,600'","distance":"9.5 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"bros3","summits":"Mt. Bross"},{"name":"Mt. Lincoln - East Slopes","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"2,650'","distance":"6.5 mi","exposure":"Low","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"linc3","summits":"Mt. Lincoln"},{"name":"Mt. Lincoln - Lincoln Amphitheatre","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"3,400'","distance":"4.75 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"linc2","summits":"Mt. Lincoln"},{"name":"Mt. Democrat - South Slope","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Difficult Class 2 Moderate Snow","gain":"2,150'","distance":"2.5 mi","exposure":"Considerable","rockfall":"Moderate","route_finding":"Considerable","commitment":"Moderate","route_key":"demo2","summits":"Mt. Democrat"}]},{"rank":null,"name":"El Diente Peak","elevation_ft":14175,"range":"San Juan Mountains","peak_id":"10064","slug":"el-diente-peak","note":"unranked-but-named peak; has own routes","unranked":true,"routes":[{"name":"El Diente Peak - South Slopes","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 3","gain":"4,400'","distance":"12 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"High","commitment":"Considerable","route_key":"eldi4","summits":"El Diente Peak"},{"name":"Mt. Wilson - Southwest Slopes","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"4,400'","distance":"12.5 mi","exposure":"High","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"mwil6","summits":"Mt. Wilson"},{"name":"Wilson Peak - Southwest Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"3,900'","distance":"10 mi","exposure":"High","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"wils1","summits":"Wilson Peak"},{"name":"El Diente Peak - North Slopes","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 3","gain":"5,000'","distance":"15 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"High","commitment":"Considerable","route_key":"eldi3","summits":"El Diente Peak"},{"name":"El Diente Peak - North Buttress","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 4","gain":"3,200'","distance":"5 mi","exposure":"High","rockfall":"Considerable","route_finding":"High","commitment":"High","route_key":"eldi8","summits":"El Diente Peak"},{"name":"Kilpacker Approach","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"800'","distance":"6 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"kilp0","summits":"OTHER"},{"name":"Navajo Lake Approach","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"2,000'","distance":"9.5 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"nava0","summits":"OTHER"},{"name":"Rock of Ages Approach","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"2,800'","distance":"8.5 mi","exposure":"Moderate","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"silv0","summits":"OTHER"},{"name":"Woods Lake Approach","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"2,115'","distance":"9 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"wood0","summits":"OTHER"},{"name":"Mt. Wilson - East Face","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 3 Moderate Snow","gain":"4,900'","distance":"12 mi","exposure":"High","rockfall":"Considerable","route_finding":"High","commitment":"High","route_key":"mwil7","summits":"Mt. Wilson"},{"name":"Combo: Mt. Wilson + El Diente Traverse","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 4","gain":"500'","distance":"1 mi","exposure":"High","rockfall":"High","route_finding":"High","commitment":"High","route_key":"mwil5","summits":"COMBO"},{"name":"Mt. Wilson - North Slopes","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 4","gain":"5,100'","distance":"16 mi","exposure":"High","rockfall":"High","route_finding":"High","commitment":"Considerable","route_key":"mwil2","summits":"Mt. Wilson"}]},{"rank":23,"name":"Kit Carson Peak","elevation_ft":14167,"range":"Sangre de Cristo","peak_id":"10023","slug":"kit-carson-peak","note":"","unranked":false,"routes":[{"name":"Kit Carson Peak - Via Challenger Point","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Easy Class 3","gain":"6,250'","distance":"15 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"kitc2","summits":"Kit Carson Peak"},{"name":"Challenger Point - North Slope","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Difficult Class 2","gain":"5,400'","distance":"13.5 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"Moderate","route_key":"chal1","summits":"Challenger Point"},{"name":"Kit Carson Peak - East Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 3","gain":"5,900'","distance":"14.5 mi","exposure":"High","rockfall":"Considerable","route_finding":"High","commitment":"High","route_key":"kitc3","summits":"Kit Carson Peak"},{"name":"Kit Carson Peak - Outward Bound Couloir","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Class 3 Steep Snow","gain":"5,500'","distance":"13.75 mi","exposure":"Considerable","rockfall":"Moderate","route_finding":"Considerable","commitment":"Considerable","route_key":"kitc6","summits":"Kit Carson Peak"},{"name":"Kit Carson Peak - North Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 4","gain":"5,315'","distance":"11.4 mi","exposure":"High","rockfall":"Considerable","route_finding":"Considerable","commitment":"High","route_key":"kitc4","summits":"Kit Carson Peak"},{"name":"Willow Creek Approach","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"2,850'","distance":"9.5 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"will0","summits":"OTHER"},{"name":"Challenger Point - Kirk Couloir","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 3 Steep Snow","gain":"5,400'","distance":"12.75 mi","exposure":"Considerable","rockfall":"Moderate","route_finding":"Considerable","commitment":"Considerable","route_key":"chal5","summits":"Challenger Point"}]},{"rank":24,"name":"Maroon Peak","elevation_ft":14163,"range":"Elk Mountains","peak_id":"10024","slug":"maroon-peak","note":"","unranked":false,"routes":[{"name":"Maroon Peak - South Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 3","gain":"4,800'","distance":"12 mi","exposure":"High","rockfall":"High","route_finding":"Extreme","commitment":"Extreme","route_key":"maro1","summits":"Maroon Peak"},{"name":"North Maroon Peak - Northeast Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 4","gain":"4,600'","distance":"9.25 mi","exposure":"High","rockfall":"High","route_finding":"High","commitment":"High","route_key":"nmar2","summits":"North Maroon Peak"},{"name":"Pyramid Peak - Northeast Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 4","gain":"4,500'","distance":"8.25 mi","exposure":"High","rockfall":"High","route_finding":"High","commitment":"High","route_key":"pyra1","summits":"Pyramid Peak"},{"name":"Maroon Peak - Bell Cord Couloir","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Class 4 Steep Snow","gain":"4,556'","distance":"8 mi","exposure":"High","rockfall":"High","route_finding":"High","commitment":"High","route_key":"maro3","summits":"Maroon Peak"},{"name":"Combo: Bells Traverse","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 5","gain":"4,850'","distance":"9.5 mi","exposure":"Extreme","rockfall":"High","route_finding":"Extreme","commitment":"Extreme","route_key":"nmar4","summits":"COMBO"}]},{"rank":25,"name":"Mount Oxford","elevation_ft":14158,"range":"Sawatch Range","peak_id":"10026","slug":"mount-oxford","note":"","unranked":false,"routes":[{"name":"Mt. Oxford - Via Mt. Belford","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"5,900'","distance":"11 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Considerable","route_key":"oxfo2","summits":"Mt. Oxford"},{"name":"Missouri Mountain - Northwest Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"4,500'","distance":"10.5 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Low","commitment":"Moderate","route_key":"miss1","summits":"Missouri Mountain"},{"name":"Mt. Belford - Northwest Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"4,500'","distance":"8 mi","exposure":"Low","rockfall":"Moderate","route_finding":"Low","commitment":"Moderate","route_key":"belf1","summits":"Mt. Belford"},{"name":"Missouri Mountain - West Ridge","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"4,250'","distance":"11.75 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"miss2","summits":"Missouri Mountain"},{"name":"Mt. Belford - Southwest Slopes","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"4,500'","distance":"11 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Moderate","route_key":"belf9","summits":"Mt. Belford"},{"name":"Mt. Belford - Northwest Gully","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 2 Easy Snow","gain":"4,500'","distance":"7 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"belf8","summits":"Mt. Belford"},{"name":"Missouri Mountain - North Face Couloirs","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Difficult Class 2 Moderate Snow","gain":"4,500'","distance":"9 mi","exposure":"Considerable","rockfall":"Moderate","route_finding":"Considerable","commitment":"Considerable","route_key":"miss3","summits":"Missouri Mountain"}]},{"rank":26,"name":"Tabeguache Peak","elevation_ft":14158,"range":"Sawatch Range","peak_id":"10025","slug":"tabeguache-peak","note":"","unranked":false,"routes":[{"name":"Tabeguache Peak - Via Mt. Shavano","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"5,600'","distance":"11.5 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Considerable","route_key":"tabe2","summits":"Tabeguache Peak"},{"name":"Mt. Shavano - East Slopes","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"4,500'","distance":"9.5 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Moderate","route_key":"shav1","summits":"Mt. Shavano"},{"name":"Tabeguache Peak - West Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"4,000'","distance":"8 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"tabe3w","summits":"Tabeguache Peak"},{"name":"Mt. Shavano - Angel of Shavano","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 2 Easy Snow","gain":"4,600'","distance":"8 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Considerable","commitment":"Moderate","route_key":"shav4","summits":"Mt. Shavano"}]},{"rank":null,"name":"South Massive","elevation_ft":14157,"range":"Sawatch Range","peak_id":"10075","slug":"south-massive","note":"unranked subpoint; routes listed under parent peak","unranked":true,"routes":[]},{"rank":27,"name":"Mount Sneffels","elevation_ft":14155,"range":"San Juan Mountains","peak_id":"10027","slug":"mount-sneffels","note":"","unranked":false,"routes":[{"name":"Mt. Sneffels - South Slopes","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Easy Class 3","gain":"2,900'","distance":"6 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"snef1","summits":"Mt. Sneffels"},{"name":"Mt. Sneffels - Southwest Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 3","gain":"2,950'","distance":"6.5 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"snef2","summits":"Mt. Sneffels"}]},{"rank":28,"name":"Mount Democrat","elevation_ft":14154,"range":"Mosquito Range","peak_id":"10028","slug":"mount-democrat","note":"","unranked":false,"routes":[{"name":"Mt. Democrat - East Slope","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"2,150'","distance":"4 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"demo1","summits":"Mt. Democrat"},{"name":"Combo: Decalibron","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"3,500'","distance":"7.5 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Moderate","route_key":"bros6","summits":"COMBO"},{"name":"Mt. Bross - West Slopes","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"2,250'","distance":"3.25 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"bros2","summits":"Mt. Bross"},{"name":"Mt. Cameron - West Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"2,250'","distance":"4.75 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"came1","summits":"Mt. Cameron"},{"name":"Mt. Lincoln - West Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"2,600'","distance":"6 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"linc1","summits":"Mt. Lincoln"},{"name":"Mt. Democrat - South Slope","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Difficult Class 2 Moderate Snow","gain":"2,150'","distance":"2.5 mi","exposure":"Considerable","rockfall":"Moderate","route_finding":"Considerable","commitment":"Moderate","route_key":"demo2","summits":"Mt. Democrat"},{"name":"Mt. Bross - East Slopes","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"2,900'","distance":"9 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"bros1","summits":"Mt. Bross"},{"name":"Mt. Lincoln - East Slopes","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"2,650'","distance":"6.5 mi","exposure":"Low","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"linc3","summits":"Mt. Lincoln"},{"name":"Mt. Lincoln - Lincoln Amphitheatre","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"3,400'","distance":"4.75 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"linc2","summits":"Mt. Lincoln"},{"name":"Mt. Bross - \"Dolly Varden Gully\"","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 2 Easy Snow","gain":"2,900'","distance":"4 mi","exposure":"Low","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"bros4","summits":"Mt. Bross"},{"name":"Mt. Bross - \"S Gully\"","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 2 Easy Snow","gain":"2,600'","distance":"9.5 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"bros3","summits":"Mt. Bross"}]},{"rank":29,"name":"Capitol Peak","elevation_ft":14138,"range":"Elk Mountains","peak_id":"10029","slug":"capitol-peak","note":"","unranked":false,"routes":[{"name":"Capitol Peak - Northeast Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 4","gain":"5,300'","distance":"17 mi","exposure":"High","rockfall":"High","route_finding":"High","commitment":"Extreme","route_key":"capi1","summits":"Capitol Peak"}]},{"rank":null,"name":"South Elbert","elevation_ft":14129,"range":"Sawatch Range","peak_id":"10074","slug":"south-elbert","note":"unranked subpoint; routes listed under parent peak","unranked":true,"routes":[]},{"rank":30,"name":"Pikes Peak","elevation_ft":14109,"range":"Front Range","peak_id":"10030","slug":"pikes-peak","note":"","unranked":false,"routes":[{"name":"Pikes Peak - East Slopes","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 1","gain":"7,600'","distance":"24 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Moderate","route_key":"pikeeast","summits":"Pikes Peak"},{"name":"Pikes Peak - Northwest Slopes","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"4,300'","distance":"14 mi","exposure":"Low","rockfall":"Moderate","route_finding":"Low","commitment":"Moderate","route_key":"pike1","summits":"Pikes Peak"}]},{"rank":31,"name":"Snowmass Mountain","elevation_ft":14105,"range":"Elk Mountains","peak_id":"10031","slug":"snowmass-mountain","note":"","unranked":false,"routes":[{"name":"Snowmass Mountain - East Slopes","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 3","gain":"5,800'","distance":"22 mi","exposure":"High","rockfall":"Considerable","route_finding":"Considerable","commitment":"High","route_key":"snow1","summits":"Snowmass Mountain"},{"name":"Snowmass Mountain - West Slope","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 3","gain":"4,500'","distance":"9 mi","exposure":"High","rockfall":"High","route_finding":"High","commitment":"High","route_key":"snow2","summits":"Snowmass Mountain"}]},{"rank":null,"name":"South Wilson","elevation_ft":14105,"range":"San Juan Mountains","peak_id":"10076","slug":"south-wilson","note":"unranked subpoint; routes listed under parent peak","unranked":true,"routes":[]},{"rank":null,"name":"West Wilson","elevation_ft":14101,"range":"San Juan Mountains","peak_id":"10077","slug":"west-wilson","note":"unranked subpoint; routes listed under parent peak","unranked":true,"routes":[]},{"rank":32,"name":"Windom Peak","elevation_ft":14089,"range":"San Juan Mountains","peak_id":"10033","slug":"windom-peak","note":"","unranked":false,"routes":[{"name":"Windom Peak - West Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Difficult Class 2","gain":"3,000'","distance":"6 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"wind1","summits":"Windom Peak"},{"name":"Mt. Eolus - Northeast Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"3,100'","distance":"6 mi","exposure":"High","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"eolu3","summits":"Mt. Eolus"},{"name":"North Eolus - South Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"250'","distance":"0.2 mi","exposure":"Considerable","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"neol4","summits":"North Eolus"},{"name":"Sunlight Peak - South Face","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 4","gain":"3,000'","distance":"6 mi","exposure":"Extreme","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"sunl2","summits":"Sunlight Peak"},{"name":"Chicago Basin Approach","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"2,800'","distance":"12 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"chib1","summits":"OTHER"}]},{"rank":33,"name":"Mount Eolus","elevation_ft":14087,"range":"San Juan Mountains","peak_id":"10032","slug":"mount-eolus","note":"","unranked":false,"routes":[{"name":"Mt. Eolus - Northeast Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 3","gain":"3,100'","distance":"6 mi","exposure":"High","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"eolu3","summits":"Mt. Eolus"},{"name":"North Eolus - South Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"250'","distance":"0.2 mi","exposure":"Considerable","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"neol4","summits":"North Eolus"},{"name":"Sunlight Peak - South Face","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 4","gain":"3,000'","distance":"6 mi","exposure":"Extreme","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"sunl2","summits":"Sunlight Peak"},{"name":"Windom Peak - West Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Difficult Class 2","gain":"3,000'","distance":"6 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"wind1","summits":"Windom Peak"},{"name":"Chicago Basin Approach","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"2,800'","distance":"12 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"chib1","summits":"OTHER"}]},{"rank":null,"name":"Challenger Point","elevation_ft":14086,"range":"Sangre de Cristo","peak_id":"10034","slug":"challenger-point","note":"unranked-but-named peak; has own routes","unranked":true,"routes":[{"name":"Challenger Point - North Slope","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Difficult Class 2","gain":"5,400'","distance":"13.5 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"Moderate","route_key":"chal1","summits":"Challenger Point"},{"name":"Kit Carson Peak - Via Challenger Point","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Easy Class 3","gain":"6,250'","distance":"15 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"kitc2","summits":"Kit Carson Peak"},{"name":"Challenger Point - Kirk Couloir","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Class 3 Steep Snow","gain":"5,400'","distance":"12.75 mi","exposure":"Considerable","rockfall":"Moderate","route_finding":"Considerable","commitment":"Considerable","route_key":"chal5","summits":"Challenger Point"},{"name":"Willow Creek Approach","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"2,850'","distance":"9.5 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"will0","summits":"OTHER"},{"name":"Kit Carson Peak - East Ridge","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"5,900'","distance":"14.5 mi","exposure":"High","rockfall":"Considerable","route_finding":"High","commitment":"High","route_key":"kitc3","summits":"Kit Carson Peak"},{"name":"Kit Carson Peak - Outward Bound Couloir","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 3 Steep Snow","gain":"5,500'","distance":"13.75 mi","exposure":"Considerable","rockfall":"Moderate","route_finding":"Considerable","commitment":"Considerable","route_key":"kitc6","summits":"Kit Carson Peak"},{"name":"Kit Carson Peak - North Ridge","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 4","gain":"5,315'","distance":"11.4 mi","exposure":"High","rockfall":"Considerable","route_finding":"Considerable","commitment":"High","route_key":"kitc4","summits":"Kit Carson Peak"}]},{"rank":34,"name":"Mount Columbia","elevation_ft":14075,"range":"Sawatch Range","peak_id":"10035","slug":"mount-columbia","note":"","unranked":false,"routes":[{"name":"Mt. Columbia - West Slopes","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"4,250'","distance":"12 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"colu2","summits":"Mt. Columbia"},{"name":"Mt. Harvard - South Slopes","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"4,600'","distance":"13.75 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"harv1","summits":"Mt. Harvard"},{"name":"Mt. Columbia - Southeast Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"4,800'","distance":"11.25 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Considerable","commitment":"Moderate","route_key":"colu5","summits":"Mt. Columbia"},{"name":"Mt. Columbia - Southwest Couloir","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Class 2 Moderate Snow","gain":"4,800'","distance":"13.5 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Considerable","commitment":"Moderate","route_key":"colu6","summits":"Mt. Columbia"},{"name":"Combo: Harvard and Columbia Traverse","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"6,100'","distance":"15 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"High","commitment":"High","route_key":"harv4","summits":"COMBO"},{"name":"Mt. Harvard - South Face","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 2 Moderate Snow","gain":"4,600'","distance":"13.75 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Considerable","commitment":"Considerable","route_key":"harv3","summits":"Mt. Harvard"}]},{"rank":35,"name":"Missouri Mountain","elevation_ft":14071,"range":"Sawatch Range","peak_id":"10036","slug":"missouri-mountain","note":"","unranked":false,"routes":[{"name":"Missouri Mountain - Northwest Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"4,500'","distance":"10.5 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Low","commitment":"Moderate","route_key":"miss1","summits":"Missouri Mountain"},{"name":"Mt. Belford - Northwest Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"4,500'","distance":"8 mi","exposure":"Low","rockfall":"Moderate","route_finding":"Low","commitment":"Moderate","route_key":"belf1","summits":"Mt. Belford"},{"name":"Mt. Oxford - Via Mt. Belford","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"5,900'","distance":"11 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Considerable","route_key":"oxfo2","summits":"Mt. Oxford"},{"name":"Missouri Mountain - West Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"4,250'","distance":"11.75 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"miss2","summits":"Missouri Mountain"},{"name":"Missouri Mountain - North Face Couloirs","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Difficult Class 2 Moderate Snow","gain":"4,500'","distance":"9 mi","exposure":"Considerable","rockfall":"Moderate","route_finding":"Considerable","commitment":"Considerable","route_key":"miss3","summits":"Missouri Mountain"},{"name":"Mt. Belford - Southwest Slopes","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"4,500'","distance":"11 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Moderate","route_key":"belf9","summits":"Mt. Belford"},{"name":"Mt. Belford - Northwest Gully","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 2 Easy Snow","gain":"4,500'","distance":"7 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"belf8","summits":"Mt. Belford"}]},{"rank":36,"name":"Humboldt Peak","elevation_ft":14068,"range":"Sangre de Cristo","peak_id":"10037","slug":"humboldt-peak","note":"","unranked":false,"routes":[{"name":"Humboldt Peak - West Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"4,200'","distance":"11 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Low","route_key":"humb1","summits":"Humboldt Peak"},{"name":"Crestone Peak - South Face","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"5,700'","distance":"14 mi","exposure":"High","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"cpea2","summits":"Crestone Peak"},{"name":"Crestone Needle - South Face","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 4","gain":"4,400'","distance":"12 mi","exposure":"High","rockfall":"Considerable","route_finding":"High","commitment":"Considerable","route_key":"cnee1","summits":"Crestone Needle"},{"name":"Humboldt Peak - East Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"4,300'","distance":"8 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Considerable","commitment":"Moderate","route_key":"humb2","summits":"Humboldt Peak"},{"name":"Humboldt Peak - Southeast Gully","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Class 2 Moderate Snow","gain":"5,400'","distance":"8 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Considerable","commitment":"Moderate","route_key":"humb3","summits":"Humboldt Peak"},{"name":"Combo: Crestones Traverse","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 5","gain":"5,300'","distance":"14 mi","exposure":"Extreme","rockfall":"Considerable","route_finding":"High","commitment":"High","route_key":"cnee3","summits":"COMBO"},{"name":"Crestone Needle - Ellingwood Arete/Ledges","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 5","gain":"4,400'","distance":"11.25 mi","exposure":"Extreme","rockfall":"High","route_finding":"High","commitment":"Extreme","route_key":"cnee5","summits":"Crestone Needle"}]},{"rank":null,"name":"Southeast Longs","elevation_ft":14067,"range":"Front Range","peak_id":"10078","slug":"southeast-longs","note":"unranked subpoint; routes listed under parent peak","unranked":true,"routes":[]},{"rank":37,"name":"Mount Bierstadt","elevation_ft":14066,"range":"Front Range","peak_id":"10038","slug":"mount-bierstadt","note":"","unranked":false,"routes":[{"name":"Mt. Bierstadt - West Slopes","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"2,850'","distance":"7.25 mi","exposure":"Low","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"bier1","summits":"Mt. Bierstadt"},{"name":"Mt. Blue Sky - West Ridge from Summit Lake","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"2,000'","distance":"5.5 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"evan2","summits":"Mt. Blue Sky"},{"name":"Combo: Bierstadt, Sawtooth, Blue Sky","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"3,900'","distance":"10.5 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"High","route_key":"bier4","summits":"COMBO"},{"name":"Mt. Bierstadt - South Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"4,500'","distance":"14.25 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Considerable","commitment":"Moderate","route_key":"bier6","summits":"Mt. Bierstadt"},{"name":"Mt. Bierstadt - East Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 3","gain":"3,000'","distance":"5 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"bier3","summits":"Mt. Bierstadt"},{"name":"Mt. Blue Sky - West Ridge from Echo Lake","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"5,600'","distance":"17 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Considerable","route_key":"evan1","summits":"Mt. Blue Sky"},{"name":"Mt. Blue Sky - West Ridge from Guanella Pass","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"3,100'","distance":"9.25 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"evan3","summits":"Mt. Blue Sky"},{"name":"Combo: Tour de Abyss Loop","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"3,000'","distance":"5.75 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"High","route_key":"bier5","summits":"COMBO"},{"name":"Mt. Blue Sky - North Face Moderate","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 3 Moderate Snow","gain":"1,500'","distance":"2 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Low","commitment":"Moderate","route_key":"evan7","summits":"Mt. Blue Sky"},{"name":"Mt. Blue Sky - North Face Steep","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 3 Steep Snow","gain":"1,500'","distance":"2 mi","exposure":"High","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"evan8","summits":"Mt. Blue Sky"},{"name":"Mt. Blue Sky - West Gully","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 3 Steep Snow","gain":"1,650'","distance":"5.25 mi","exposure":"High","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"evan4","summits":"Mt. Blue Sky"}]},{"rank":38,"name":"Sunlight Peak","elevation_ft":14061,"range":"San Juan Mountains","peak_id":"10039","slug":"sunlight-peak","note":"","unranked":false,"routes":[{"name":"Sunlight Peak - South Face","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 4","gain":"3,000'","distance":"6 mi","exposure":"Extreme","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"sunl2","summits":"Sunlight Peak"},{"name":"Mt. Eolus - Northeast Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"3,100'","distance":"6 mi","exposure":"High","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"eolu3","summits":"Mt. Eolus"},{"name":"North Eolus - South Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"250'","distance":"0.2 mi","exposure":"Considerable","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"neol4","summits":"North Eolus"},{"name":"Windom Peak - West Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Difficult Class 2","gain":"3,000'","distance":"6 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"wind1","summits":"Windom Peak"},{"name":"Chicago Basin Approach","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"2,800'","distance":"12 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"chib1","summits":"OTHER"}]},{"rank":39,"name":"Handies Peak","elevation_ft":14058,"range":"San Juan Mountains","peak_id":"10040","slug":"handies-peak","note":"","unranked":false,"routes":[{"name":"Handies Peak - Southwest Slopes","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 1","gain":"2,500'","distance":"5.75 mi","exposure":"Moderate","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"hand1","summits":"Handies Peak"},{"name":"Handies Peak - East Slopes","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"3,650'","distance":"8 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Moderate","route_key":"hand2","summits":"Handies Peak"},{"name":"Handies Peak - West Slopes","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Class 2 Moderate Snow","gain":"2,800'","distance":"5 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Considerable","commitment":"Moderate","route_key":"hand3","summits":"Handies Peak"}]},{"rank":40,"name":"Ellingwood Point","elevation_ft":14057,"range":"Sangre de Cristo","peak_id":"10042","slug":"ellingwood-point","note":"","unranked":false,"routes":[{"name":"Ellingwood Point - South Face","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Difficult Class 2","gain":"6,200'","distance":"17 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"elli2","summits":"Ellingwood Point"},{"name":"Little Bear Peak - West Ridge and Hourglass","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 4","gain":"6,200'","distance":"14 mi","exposure":"High","rockfall":"High","route_finding":"High","commitment":"High","route_key":"litt6","summits":"Little Bear Peak"},{"name":"Blanca Peak - Northwest Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Difficult Class 2","gain":"6,500'","distance":"17 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Moderate","commitment":"Considerable","route_key":"blan1","summits":"Blanca Peak"},{"name":"Ellingwood Point - Southwest Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 3","gain":"2,200'","distance":"15 mi","exposure":"High","rockfall":"High","route_finding":"Considerable","commitment":"Considerable","route_key":"elli4","summits":"Ellingwood Point"},{"name":"Ellingwood Point - North Ridge via South Zapata Creek","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Easy Class 3","gain":"5,200'","distance":"12.5 mi","exposure":"Considerable","rockfall":"High","route_finding":"High","commitment":"High","route_key":"elli5","summits":"Ellingwood Point"},{"name":"Lake Como Approach","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"3,900'","distance":"11 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"como0","summits":"OTHER"},{"name":"Combo: Blanca and Ellingwood","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"6,800'","distance":"18 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"elli3","summits":"COMBO"},{"name":"Little Bear Peak - West Ridge Indirect","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 4","gain":"6,200'","distance":"14 mi","exposure":"Extreme","rockfall":"Considerable","route_finding":"High","commitment":"High","route_key":"litt8","summits":"Little Bear Peak"},{"name":"Combo: Little Bear + Blanca Traverse","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 5","gain":"8,000'","distance":"17 mi","exposure":"Extreme","rockfall":"Considerable","route_finding":"High","commitment":"Extreme","route_key":"litt3","summits":"COMBO"}]},{"rank":41,"name":"Mount Lindsey","elevation_ft":14055,"range":"Sangre de Cristo","peak_id":"10043","slug":"mount-lindsey","note":"","unranked":false,"routes":[{"name":"Mt. Lindsey - Northwest Gully","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Easy Class 3","gain":"3,500'","distance":"8.25 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"Moderate","route_key":"lind1","summits":"Mt. Lindsey"},{"name":"Mt. Lindsey - North Couloir","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Class 2 Moderate Snow","gain":"3,900'","distance":"8.75 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Considerable","commitment":"Considerable","route_key":"lind3","summits":"Mt. Lindsey"},{"name":"Mt. Lindsey - Northwest Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 3","gain":"3,500'","distance":"8.25 mi","exposure":"High","rockfall":"Moderate","route_finding":"Considerable","commitment":"Considerable","route_key":"lind2","summits":"Mt. Lindsey"}]},{"rank":42,"name":"Culebra Peak","elevation_ft":14053,"range":"Sangre de Cristo","peak_id":"10041","slug":"culebra-peak","note":"","unranked":false,"routes":[{"name":"Culebra Peak - Northwest Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"2,700'","distance":"5 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"cule1","summits":"Culebra Peak"}]},{"rank":43,"name":"Mount Sherman","elevation_ft":14043,"range":"Mosquito Range","peak_id":"10045","slug":"mount-sherman","note":"","unranked":false,"routes":[{"name":"Mt. Sherman - Southwest Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 1","gain":"2,100'","distance":"5.25 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"sher1","summits":"Mt. Sherman"},{"name":"Mt. Sherman - West Slopes","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 1","gain":"2,150'","distance":"4.5 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"sher2","summits":"Mt. Sherman"},{"name":"Mt. Sherman - South Slope","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Class 2 Easy Snow","gain":"3,100'","distance":"8.5 mi","exposure":"Low","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"sher3","summits":"Mt. Sherman"}]},{"rank":null,"name":"North Eolus","elevation_ft":14042,"range":"San Juan Mountains","peak_id":"10066","slug":"north-eolus","note":"unranked-but-named peak; has own routes","unranked":true,"routes":[{"name":"North Eolus - South Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 3","gain":"250'","distance":"0.2 mi","exposure":"Considerable","rockfall":"Moderate","route_finding":"Moderate","commitment":"Moderate","route_key":"neol4","summits":"North Eolus"},{"name":"Mt. Eolus - Northeast Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"3,100'","distance":"6 mi","exposure":"High","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"eolu3","summits":"Mt. Eolus"},{"name":"Sunlight Peak - South Face","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 4","gain":"3,000'","distance":"6 mi","exposure":"Extreme","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"sunl2","summits":"Sunlight Peak"},{"name":"Windom Peak - West Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Difficult Class 2","gain":"3,000'","distance":"6 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"wind1","summits":"Windom Peak"},{"name":"Chicago Basin Approach","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"2,800'","distance":"12 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"chib1","summits":"OTHER"}]},{"rank":null,"name":"Pin Point","elevation_ft":14042,"range":"San Juan Mountains","peak_id":"10851","slug":"pin-point","note":"unranked subpoint; routes listed under parent peak","unranked":true,"routes":[]},{"rank":44,"name":"Little Bear Peak","elevation_ft":14041,"range":"Sangre de Cristo","peak_id":"10044","slug":"little-bear-peak","note":"","unranked":false,"routes":[{"name":"Little Bear Peak - West Ridge and Hourglass","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 4","gain":"6,200'","distance":"14 mi","exposure":"High","rockfall":"High","route_finding":"High","commitment":"High","route_key":"litt6","summits":"Little Bear Peak"},{"name":"Blanca Peak - Northwest Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Difficult Class 2","gain":"6,500'","distance":"17 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Moderate","commitment":"Considerable","route_key":"blan1","summits":"Blanca Peak"},{"name":"Ellingwood Point - South Face","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Difficult Class 2","gain":"6,200'","distance":"17 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"elli2","summits":"Ellingwood Point"},{"name":"Little Bear Peak - West Ridge Indirect","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 4","gain":"6,200'","distance":"14 mi","exposure":"Extreme","rockfall":"Considerable","route_finding":"High","commitment":"High","route_key":"litt8","summits":"Little Bear Peak"},{"name":"Lake Como Approach","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"3,900'","distance":"11 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"como0","summits":"OTHER"},{"name":"Combo: Blanca and Ellingwood","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"6,800'","distance":"18 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"elli3","summits":"COMBO"},{"name":"Ellingwood Point - Southwest Ridge","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"2,200'","distance":"15 mi","exposure":"High","rockfall":"High","route_finding":"Considerable","commitment":"Considerable","route_key":"elli4","summits":"Ellingwood Point"},{"name":"Combo: Little Bear + Blanca Traverse","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 5","gain":"8,000'","distance":"17 mi","exposure":"Extreme","rockfall":"Considerable","route_finding":"High","commitment":"Extreme","route_key":"litt3","summits":"COMBO"},{"name":"Ellingwood Point - North Ridge via South Zapata Creek","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Easy Class 3","gain":"5,200'","distance":"12.5 mi","exposure":"Considerable","rockfall":"High","route_finding":"High","commitment":"High","route_key":"elli5","summits":"Ellingwood Point"}]},{"rank":45,"name":"Redcloud Peak","elevation_ft":14037,"range":"San Juan Mountains","peak_id":"10046","slug":"redcloud-peak","note":"","unranked":false,"routes":[{"name":"Redcloud Peak - Northeast Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"3,700'","distance":"9 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"redc1","summits":"Redcloud Peak"},{"name":"Sunshine Peak - Via Redcloud Peak","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"4,800'","distance":"12.25 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Considerable","route_key":"suns2","summits":"Sunshine Peak"},{"name":"Sunshine Peak - East Ridge","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"4,600'","distance":"7 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"Considerable","commitment":"Moderate","route_key":"suns4","summits":"Sunshine Peak"},{"name":"Sunshine Peak - Northwest Face","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Difficult Class 2","gain":"3,800'","distance":"8.5 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"Considerable","commitment":"Moderate","route_key":"suns3","summits":"Sunshine Peak"}]},{"rank":null,"name":"Conundrum Peak","elevation_ft":14037,"range":"Elk Mountains","peak_id":"10065","slug":"conundrum-peak","note":"unranked-but-named peak; has own routes","unranked":true,"routes":[{"name":"Conundrum Peak - South Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Difficult Class 2","gain":"4,400'","distance":"13.5 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"conu1","summits":"Conundrum Peak"},{"name":"Castle Peak - Northeast Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Difficult Class 2","gain":"4,600'","distance":"13.5 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"cast1","summits":"Castle Peak"},{"name":"Combo: Castle and Conundrum","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Difficult Class 2","gain":"4,850'","distance":"14.5 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"cast4","summits":"COMBO"},{"name":"Conundrum Peak - Conundrum Couloir","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Class 3 Steep Snow","gain":"4,400'","distance":"12 mi","exposure":"High","rockfall":"Considerable","route_finding":"Moderate","commitment":"Considerable","route_key":"conu5","summits":"Conundrum Peak"},{"name":"Castle Peak - North Face Couloir","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Difficult Class 2 Moderate Snow","gain":"4,600'","distance":"13 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"cast3","summits":"Castle Peak"},{"name":"Castle Peak - Northwest Ridge","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Difficult Class 2 Moderate Snow","gain":"4,600'","distance":"13.5 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Moderate","commitment":"Moderate","route_key":"cast2","summits":"Castle Peak"}]},{"rank":46,"name":"Pyramid Peak","elevation_ft":14029,"range":"Elk Mountains","peak_id":"10047","slug":"pyramid-peak","note":"","unranked":false,"routes":[{"name":"Pyramid Peak - Northeast Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 4","gain":"4,500'","distance":"8.25 mi","exposure":"High","rockfall":"High","route_finding":"High","commitment":"High","route_key":"pyra1","summits":"Pyramid Peak"},{"name":"Maroon Peak - South Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"4,800'","distance":"12 mi","exposure":"High","rockfall":"High","route_finding":"Extreme","commitment":"Extreme","route_key":"maro1","summits":"Maroon Peak"},{"name":"North Maroon Peak - Northeast Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 4","gain":"4,600'","distance":"9.25 mi","exposure":"High","rockfall":"High","route_finding":"High","commitment":"High","route_key":"nmar2","summits":"North Maroon Peak"},{"name":"Maroon Peak - Bell Cord Couloir","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 4 Steep Snow","gain":"4,556'","distance":"8 mi","exposure":"High","rockfall":"High","route_finding":"High","commitment":"High","route_key":"maro3","summits":"Maroon Peak"},{"name":"Combo: Bells Traverse","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 5","gain":"4,850'","distance":"9.5 mi","exposure":"Extreme","rockfall":"High","route_finding":"Extreme","commitment":"Extreme","route_key":"nmar4","summits":"COMBO"}]},{"rank":null,"name":"South Little Bear","elevation_ft":14028,"range":"Sangre de Cristo","peak_id":"10080","slug":"south-little-bear","note":"unranked subpoint; routes listed under parent peak","unranked":true,"routes":[]},{"rank":null,"name":"North Snowmass","elevation_ft":14024,"range":"Elk Mountains","peak_id":"10081","slug":"north-snowmass","note":"unranked subpoint; routes listed under parent peak","unranked":true,"routes":[]},{"rank":47,"name":"San Luis Peak","elevation_ft":14023,"range":"San Juan Mountains","peak_id":"10050","slug":"san-luis-peak","note":"","unranked":false,"routes":[{"name":"San Luis Peak - Northeast Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 1","gain":"3,600'","distance":"13.5 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"sanl1","summits":"San Luis Peak"},{"name":"San Luis Peak - South Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 1","gain":"3,400'","distance":"11.25 mi","exposure":"Low","rockfall":"Moderate","route_finding":"Moderate","commitment":"Low","route_key":"sanl2","summits":"San Luis Peak"}]},{"rank":48,"name":"North Maroon Peak","elevation_ft":14022,"range":"Elk Mountains","peak_id":"10067","slug":"north-maroon-peak","note":"","unranked":false,"routes":[{"name":"North Maroon Peak - Northeast Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 4","gain":"4,600'","distance":"9.25 mi","exposure":"High","rockfall":"High","route_finding":"High","commitment":"High","route_key":"nmar2","summits":"North Maroon Peak"},{"name":"Maroon Peak - South Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"4,800'","distance":"12 mi","exposure":"High","rockfall":"High","route_finding":"Extreme","commitment":"Extreme","route_key":"maro1","summits":"Maroon Peak"},{"name":"Pyramid Peak - Northeast Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 4","gain":"4,500'","distance":"8.25 mi","exposure":"High","rockfall":"High","route_finding":"High","commitment":"High","route_key":"pyra1","summits":"Pyramid Peak"},{"name":"Maroon Peak - Bell Cord Couloir","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 4 Steep Snow","gain":"4,556'","distance":"8 mi","exposure":"High","rockfall":"High","route_finding":"High","commitment":"High","route_key":"maro3","summits":"Maroon Peak"},{"name":"Combo: Bells Traverse","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 5","gain":"4,850'","distance":"9.5 mi","exposure":"Extreme","rockfall":"High","route_finding":"Extreme","commitment":"Extreme","route_key":"nmar4","summits":"COMBO"}]},{"rank":49,"name":"Wetterhorn Peak","elevation_ft":14021,"range":"San Juan Mountains","peak_id":"10049","slug":"wetterhorn-peak","note":"","unranked":false,"routes":[{"name":"Wetterhorn Peak - Southeast Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 3","gain":"3,300'","distance":"7 mi","exposure":"High","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"wett1","summits":"Wetterhorn Peak"},{"name":"Wetterhorn Peak - East Face","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Class 3 Steep Snow","gain":"3,300'","distance":"6.5 mi","exposure":"High","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"wett2","summits":"Wetterhorn Peak"}]},{"rank":50,"name":"Wilson Peak","elevation_ft":14021,"range":"San Juan Mountains","peak_id":"10048","slug":"wilson-peak","note":"","unranked":false,"routes":[{"name":"Wilson Peak - Southwest Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 3","gain":"3,900'","distance":"10 mi","exposure":"High","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"wils1","summits":"Wilson Peak"},{"name":"El Diente Peak - South Slopes","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"4,400'","distance":"12 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"High","commitment":"Considerable","route_key":"eldi4","summits":"El Diente Peak"},{"name":"Mt. Wilson - Southwest Slopes","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"4,400'","distance":"12.5 mi","exposure":"High","rockfall":"Considerable","route_finding":"Considerable","commitment":"Considerable","route_key":"mwil6","summits":"Mt. Wilson"},{"name":"Kilpacker Approach","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"800'","distance":"6 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"kilp0","summits":"OTHER"},{"name":"Navajo Lake Approach","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"2,000'","distance":"9.5 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"nava0","summits":"OTHER"},{"name":"Rock of Ages Approach","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"2,800'","distance":"8.5 mi","exposure":"Moderate","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"silv0","summits":"OTHER"},{"name":"Woods Lake Approach","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 1","gain":"2,115'","distance":"9 mi","exposure":"Low","rockfall":"Low","route_finding":"Low","commitment":"Low","route_key":"wood0","summits":"OTHER"},{"name":"El Diente Peak - North Slopes","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 3","gain":"5,000'","distance":"15 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"High","commitment":"Considerable","route_key":"eldi3","summits":"El Diente Peak"},{"name":"Mt. Wilson - East Face","is_standard":false,"is_snow_climb":true,"is_primary":false,"difficulty":"Class 3 Moderate Snow","gain":"4,900'","distance":"12 mi","exposure":"High","rockfall":"Considerable","route_finding":"High","commitment":"High","route_key":"mwil7","summits":"Mt. Wilson"},{"name":"Combo: Mt. Wilson + El Diente Traverse","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 4","gain":"500'","distance":"1 mi","exposure":"High","rockfall":"High","route_finding":"High","commitment":"High","route_key":"mwil5","summits":"COMBO"},{"name":"El Diente Peak - North Buttress","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 4","gain":"3,200'","distance":"5 mi","exposure":"High","rockfall":"Considerable","route_finding":"High","commitment":"High","route_key":"eldi8","summits":"El Diente Peak"},{"name":"Mt. Wilson - North Slopes","is_standard":false,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 4","gain":"5,100'","distance":"16 mi","exposure":"High","rockfall":"High","route_finding":"High","commitment":"Considerable","route_key":"mwil2","summits":"Mt. Wilson"}]},{"rank":null,"name":"South Bross","elevation_ft":14020,"range":"Mosquito Range","peak_id":"10079","slug":"south-bross","note":"unranked subpoint; routes listed under parent peak","unranked":true,"routes":[]},{"rank":51,"name":"Mount of the Holy Cross","elevation_ft":14007,"range":"Sawatch Range","peak_id":"10051","slug":"mt-of-the-holy-cross","note":"","unranked":false,"routes":[{"name":"Mt. of the Holy Cross - North Ridge","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"5,600'","distance":"11.25 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Considerable","route_key":"holy1","summits":"Mt. of the Holy Cross"},{"name":"Mt. of the Holy Cross - Cross Couloir","is_standard":false,"is_snow_climb":true,"is_primary":true,"difficulty":"Class 3 Steep Snow","gain":"5,600'","distance":"12.25 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"High","route_key":"holy2","summits":"Mt. of the Holy Cross"},{"name":"Mt. of the Holy Cross - Halo Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Difficult Class 2","gain":"5,210'","distance":"15 mi","exposure":"Considerable","rockfall":"Considerable","route_finding":"Considerable","commitment":"High","route_key":"holy3","summits":"Mt. of the Holy Cross"}]},{"rank":52,"name":"Huron Peak","elevation_ft":14006,"range":"Sawatch Range","peak_id":"10052","slug":"huron-peak","note":"","unranked":false,"routes":[{"name":"Huron Peak - Northwest Slopes","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"3,500'","distance":"7 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"huro1","summits":"Huron Peak"},{"name":"Huron Peak - North Ridge from Lulu Gulch","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"3,980'","distance":"8.4 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Moderate","commitment":"Considerable","route_key":"huro4","summits":"Huron Peak"},{"name":"Huron Peak - Southwest Slopes","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"3,600'","distance":"9 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Considerable","commitment":"Moderate","route_key":"huro2","summits":"Huron Peak"}]},{"rank":53,"name":"Sunshine Peak","elevation_ft":14004,"range":"San Juan Mountains","peak_id":"10053","slug":"sunshine-peak","note":"","unranked":false,"routes":[{"name":"Sunshine Peak - Via Redcloud Peak","is_standard":true,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"4,800'","distance":"12.25 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Considerable","route_key":"suns2","summits":"Sunshine Peak"},{"name":"Redcloud Peak - Northeast Ridge","is_standard":true,"is_snow_climb":false,"is_primary":false,"difficulty":"Class 2","gain":"3,700'","distance":"9 mi","exposure":"Moderate","rockfall":"Moderate","route_finding":"Low","commitment":"Low","route_key":"redc1","summits":"Redcloud Peak"},{"name":"Sunshine Peak - East Ridge","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Class 2","gain":"4,600'","distance":"7 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"Considerable","commitment":"Moderate","route_key":"suns4","summits":"Sunshine Peak"},{"name":"Sunshine Peak - Northwest Face","is_standard":false,"is_snow_climb":false,"is_primary":true,"difficulty":"Difficult Class 2","gain":"3,800'","distance":"8.5 mi","exposure":"Moderate","rockfall":"Considerable","route_finding":"Considerable","commitment":"Moderate","route_key":"suns3","summits":"Sunshine Peak"}]}];
 
-const STORAGE_KEY = "co14ers.summited.v1";
-const summited = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"));
-function saveSummited() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify([...summited]));
-}
+const LEGACY_KEY = "co14ers.summited.v1";
 
-// ---- helpers ----
+const state = {
+  user: null,
+  ready: false,
+  summits: new Map(),       // peak_id -> { summit_date }
+  routes: new Map(),        // route_key -> { climbed_date, peak_id }
+  planned: new Map(),       // peak_id -> { target_date }
+  q: "", range: "", maxClass: "", snowOk: true,
+  hideSummited: false, plannedOnly: false,
+  sort: "rank", dir: "asc",
+  authMode: "signin"
+};
+
 function classBadge(diff) {
   if (!diff) return "";
-  // pull leading "Class N" or "Easy Class N" or "Difficult Class N"
   const m = diff.match(/Class\s*(\d)/i);
   const n = m ? m[1] : "?";
   const isSnow = /snow/i.test(diff);
@@ -267,10 +328,8 @@ function ratingClass(v) {
   return "";
 }
 
-// ---- precompute summary fields ----
 PEAKS.forEach(p => {
   p.route_count = p.routes.length;
-  // standard route summary
   const std = p.routes.find(r => r.is_standard) || p.routes[0];
   p.standard = std || null;
   p.standard_class = std ? classNumber(std.difficulty) : 99;
@@ -278,7 +337,6 @@ PEAKS.forEach(p => {
   p.min_class = Math.min(99, ...p.routes.map(r => classNumber(r.difficulty)));
 });
 
-// ---- ranges dropdown ----
 const ranges = [...new Set(PEAKS.map(p => p.range))].sort();
 const rangeSel = document.getElementById("rangeFilter");
 ranges.forEach(r => {
@@ -287,11 +345,225 @@ ranges.forEach(r => {
   rangeSel.appendChild(o);
 });
 
-// ---- state ----
-const state = {
-  q: "", range: "", maxClass: "", snowOk: true, hideSummited: false,
-  sort: "rank", dir: "asc"
-};
+let toastTimer = null;
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+function loadLegacy() {
+  state.summits.clear();
+  try {
+    const arr = JSON.parse(localStorage.getItem(LEGACY_KEY) || "[]");
+    arr.forEach(id => state.summits.set(id, { summit_date: null }));
+  } catch (e) {}
+}
+function saveLegacy() {
+  if (state.user) return;
+  localStorage.setItem(LEGACY_KEY, JSON.stringify([...state.summits.keys()]));
+}
+
+async function hydrateFromDB() {
+  state.summits.clear(); state.routes.clear(); state.planned.clear();
+  const [s, r, pl] = await Promise.all([
+    sb.from("summits").select("peak_id, summit_date"),
+    sb.from("routes_climbed").select("route_key, peak_id, climbed_date"),
+    sb.from("planned").select("peak_id, target_date")
+  ]);
+  if (s.error || r.error || pl.error) {
+    console.error(s.error || r.error || pl.error);
+    toast("Sync failed — working offline");
+    return false;
+  }
+  s.data.forEach(row => state.summits.set(row.peak_id, { summit_date: row.summit_date }));
+  r.data.forEach(row => state.routes.set(row.route_key, { climbed_date: row.climbed_date, peak_id: row.peak_id }));
+  pl.data.forEach(row => state.planned.set(row.peak_id, { target_date: row.target_date }));
+  return true;
+}
+
+async function migrateLegacyIfNeeded() {
+  if (!state.user) return;
+  const flagKey = "co14ers.migrated_at." + state.user.id;
+  if (localStorage.getItem(flagKey)) return;
+  if (state.summits.size > 0) {
+    localStorage.setItem(flagKey, new Date().toISOString());
+    return;
+  }
+  let legacy = [];
+  try { legacy = JSON.parse(localStorage.getItem(LEGACY_KEY) || "[]"); } catch (e) {}
+  if (!legacy.length) {
+    localStorage.setItem(flagKey, new Date().toISOString());
+    return;
+  }
+  const rows = legacy.map(peak_id => ({ user_id: state.user.id, peak_id, summit_date: null }));
+  const { error } = await sb.from("summits").upsert(rows);
+  if (error) { console.error(error); toast("Migration failed; will retry next sign-in"); return; }
+  legacy.forEach(id => state.summits.set(id, { summit_date: null }));
+  localStorage.setItem(flagKey, new Date().toISOString());
+  toast(`Migrated ${legacy.length} summited peak${legacy.length === 1 ? "" : "s"}`);
+}
+
+async function setSummit(peak_id, on, summit_date = null) {
+  if (state.user) {
+    if (on) {
+      const { error } = await sb.from("summits").upsert({ user_id: state.user.id, peak_id, summit_date });
+      if (error) { toast("Save failed: " + error.message); return false; }
+      state.summits.set(peak_id, { summit_date });
+    } else {
+      const { error } = await sb.from("summits").delete().eq("peak_id", peak_id);
+      if (error) { toast("Delete failed: " + error.message); return false; }
+      state.summits.delete(peak_id);
+    }
+  } else {
+    if (on) state.summits.set(peak_id, { summit_date: null });
+    else state.summits.delete(peak_id);
+    saveLegacy();
+  }
+  return true;
+}
+
+async function setSummitDate(peak_id, summit_date) {
+  if (!state.summits.has(peak_id)) return;
+  state.summits.set(peak_id, { summit_date });
+  if (!state.user) return;
+  const { error } = await sb.from("summits").upsert({ user_id: state.user.id, peak_id, summit_date });
+  if (error) toast("Save failed: " + error.message);
+}
+
+async function setRoute(route_key, peak_id, on, climbed_date = null) {
+  if (!state.user) { toast("Sign in to track routes"); return false; }
+  if (on) {
+    const { error } = await sb.from("routes_climbed").upsert({ user_id: state.user.id, route_key, peak_id, climbed_date });
+    if (error) { toast("Save failed: " + error.message); return false; }
+    state.routes.set(route_key, { climbed_date, peak_id });
+  } else {
+    const { error } = await sb.from("routes_climbed").delete().eq("route_key", route_key);
+    if (error) { toast("Delete failed: " + error.message); return false; }
+    state.routes.delete(route_key);
+  }
+  return true;
+}
+
+async function setPlanned(peak_id, on, target_date = null) {
+  if (!state.user) { toast("Sign in to plan trips"); return false; }
+  if (on) {
+    const { error } = await sb.from("planned").upsert({ user_id: state.user.id, peak_id, target_date });
+    if (error) { toast("Save failed: " + error.message); return false; }
+    state.planned.set(peak_id, { target_date });
+  } else {
+    const { error } = await sb.from("planned").delete().eq("peak_id", peak_id);
+    if (error) { toast("Delete failed: " + error.message); return false; }
+    state.planned.delete(peak_id);
+  }
+  return true;
+}
+
+function renderAuthStrip() {
+  const el = document.getElementById("authStrip");
+  if (!state.ready) {
+    el.innerHTML = `<span class="who">Loading…</span>`;
+    el.classList.remove("you");
+    return;
+  }
+  if (state.user) {
+    el.innerHTML = `
+      <span class="who">Signed in as <strong>${state.user.email}</strong></span>
+      <button class="linklike" id="logoutBtn">log out</button>`;
+    el.classList.add("you");
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      await sb.auth.signOut();
+    });
+  } else {
+    el.innerHTML = `
+      <span class="who">Not signed in — changes save to this browser only.</span>
+      <button class="linklike" id="signinBtn">sign in or sign up</button>`;
+    el.classList.remove("you");
+    document.getElementById("signinBtn").addEventListener("click", () => {
+      state.authMode = "signin";
+      renderAuthCard();
+      document.getElementById("authCard").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+}
+
+function renderAuthCard(msg) {
+  const el = document.getElementById("authCard");
+  if (state.user || state.authMode === null) { el.innerHTML = ""; return; }
+  const isSignup = state.authMode === "signup";
+  const isReset = state.authMode === "reset";
+  el.innerHTML = `
+    <div class="auth-card">
+      <h3>${isSignup ? "create account" : isReset ? "reset password" : "sign in"}</h3>
+      <p class="hint">${
+        isSignup ? "Email + password. We send a one-time verification link." :
+        isReset  ? "We email you a link to set a new password." :
+                   "Welcome back."
+      }</p>
+      <label>email</label>
+      <input type="email" id="authEmail" autocomplete="email" inputmode="email">
+      ${isReset ? "" : `
+        <label>password</label>
+        <input type="password" id="authPw" autocomplete="${isSignup ? "new-password" : "current-password"}">
+      `}
+      <div class="row">
+        <button class="primary" id="authGo">${isSignup ? "create account" : isReset ? "send reset link" : "sign in"}</button>
+        <button class="linklike" id="authClose">close</button>
+      </div>
+      <p class="err" id="authErr">${msg && msg.err ? msg.err : ""}</p>
+      ${msg && msg.ok ? `<p class="ok">${msg.ok}</p>` : ""}
+      <p class="switch">
+        ${isSignup
+          ? `Have an account? <button class="linklike" id="toSignin">sign in</button>`
+          : isReset
+            ? `<button class="linklike" id="toSignin">back to sign in</button>`
+            : `New here? <button class="linklike" id="toSignup">create account</button> · <button class="linklike" id="toReset">forgot password</button>`}
+      </p>
+    </div>`;
+
+  document.getElementById("authClose").addEventListener("click", () => {
+    state.authMode = null; renderAuthCard();
+  });
+  const toSignin = document.getElementById("toSignin");
+  if (toSignin) toSignin.addEventListener("click", () => { state.authMode = "signin"; renderAuthCard(); });
+  const toSignup = document.getElementById("toSignup");
+  if (toSignup) toSignup.addEventListener("click", () => { state.authMode = "signup"; renderAuthCard(); });
+  const toReset = document.getElementById("toReset");
+  if (toReset) toReset.addEventListener("click", () => { state.authMode = "reset"; renderAuthCard(); });
+
+  document.getElementById("authGo").addEventListener("click", async () => {
+    const email = document.getElementById("authEmail").value.trim();
+    const pwEl = document.getElementById("authPw");
+    const pw = pwEl ? pwEl.value : "";
+    const err = document.getElementById("authErr");
+    err.textContent = "";
+    const btn = document.getElementById("authGo");
+    btn.disabled = true;
+    try {
+      if (isSignup) {
+        const { error } = await sb.auth.signUp({
+          email, password: pw,
+          options: { emailRedirectTo: window.location.origin + window.location.pathname }
+        });
+        if (error) { err.textContent = error.message; return; }
+        renderAuthCard({ ok: "Check your email for the verification link." });
+      } else if (isReset) {
+        const redirect = window.location.origin + window.location.pathname.replace(/index\.html?$/, "") + "reset.html";
+        const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: redirect });
+        if (error) { err.textContent = error.message; return; }
+        renderAuthCard({ ok: "Check your email for the reset link." });
+      } else {
+        const { error } = await sb.auth.signInWithPassword({ email, password: pw });
+        if (error) { err.textContent = error.message; return; }
+      }
+    } catch (e) {
+      err.textContent = e.message || String(e);
+    } finally {
+      btn.disabled = false;
+    }
+  });
+}
 
 document.getElementById("search").addEventListener("input", e => { state.q = e.target.value.trim().toLowerCase(); render(); });
 rangeSel.addEventListener("change", e => { state.range = e.target.value; render(); });
@@ -309,6 +581,12 @@ sumChip.addEventListener("click", () => {
   sumChip.dataset.on = !on; sumChip.classList.toggle("on", !on);
   state.hideSummited = !on; render();
 });
+const planChip = document.getElementById("plannedToggle");
+planChip.addEventListener("click", () => {
+  const on = planChip.dataset.on === "true";
+  planChip.dataset.on = !on; planChip.classList.toggle("on", !on);
+  state.plannedOnly = !on; render();
+});
 
 document.querySelectorAll("th[data-sort]").forEach(th => {
   th.addEventListener("click", () => {
@@ -321,7 +599,7 @@ document.querySelectorAll("th[data-sort]").forEach(th => {
 
 function applyFilters() {
   return PEAKS.filter(p => {
-    if (p.unranked) return false; // hide subpoints from main table
+    if (p.unranked) return false;
     if (state.q && !(p.name.toLowerCase().includes(state.q) || p.range.toLowerCase().includes(state.q))) return false;
     if (state.range && p.range !== state.range) return false;
     if (state.maxClass) {
@@ -329,10 +607,10 @@ function applyFilters() {
       const easiest = state.snowOk ? p.min_class : Math.min(99, ...p.routes.filter(r => !r.is_snow_climb).map(r => classNumber(r.difficulty)));
       if (easiest > mc) return false;
     } else if (!state.snowOk) {
-      // need at least one non-snow route
       if (!p.routes.some(r => !r.is_snow_climb)) return false;
     }
-    if (state.hideSummited && summited.has(p.peak_id)) return false;
+    if (state.hideSummited && state.summits.has(p.peak_id)) return false;
+    if (state.plannedOnly && !state.planned.has(p.peak_id)) return false;
     return true;
   });
 }
@@ -355,14 +633,16 @@ function render() {
 
   document.getElementById("peakCount").textContent = `— ${rows.length} shown`;
   const ranked = PEAKS.filter(p => !p.unranked);
-  const done = ranked.filter(p => summited.has(p.peak_id)).length;
-  document.getElementById("progress").textContent = `${done} / ${ranked.length} summited`;
+  const done = ranked.filter(p => state.summits.has(p.peak_id)).length;
+  const planCount = ranked.filter(p => state.planned.has(p.peak_id)).length;
+  document.getElementById("progress").textContent = `${done} / ${ranked.length} summited${planCount ? ` · ${planCount} planned` : ""}`;
 
   const tb = document.getElementById("peakBody");
   tb.innerHTML = "";
   rows.forEach(p => {
     const tr = document.createElement("tr");
-    if (summited.has(p.peak_id)) tr.classList.add("summited");
+    if (state.summits.has(p.peak_id)) tr.classList.add("summited");
+    if (state.planned.has(p.peak_id)) tr.classList.add("planned");
     tr.innerHTML = `
       <td>${p.rank ?? ""}</td>
       <td class="peak-name">${p.name}</td>
@@ -370,14 +650,15 @@ function render() {
       <td class="range hide-sm">${p.range}</td>
       <td class="hide-sm">${p.standard ? classBadge(p.standard.difficulty) : '<span class="badge outline">—</span>'}</td>
       <td class="hide-sm routes-col">${p.route_count}</td>
-      <td><span class="check ${summited.has(p.peak_id) ? "on" : ""}" data-id="${p.peak_id}" title="mark summited"></span></td>
+      <td><span class="check ${state.summits.has(p.peak_id) ? "on" : ""}" data-id="${p.peak_id}" title="mark summited"></span></td>
     `;
     tr.addEventListener("click", e => {
       if (e.target.classList.contains("check")) {
         e.stopPropagation();
         const id = e.target.dataset.id;
-        if (summited.has(id)) summited.delete(id); else summited.add(id);
-        saveSummited(); render(); return;
+        const on = !state.summits.has(id);
+        setSummit(id, on).then(ok => { if (ok) render(); });
+        return;
       }
       showDetail(p);
     });
@@ -392,8 +673,10 @@ function fmtRating(label, v) {
 function showDetail(p) {
   const el = document.getElementById("detail");
   el.hidden = false;
-  const isSummited = summited.has(p.peak_id);
-  const subpoints = PEAKS.filter(s => s.unranked && s.note && s.note.toLowerCase().includes(p.slug.split("-")[0]));
+  const summit = state.summits.get(p.peak_id);
+  const isSummited = !!summit;
+  const isPlanned = state.planned.has(p.peak_id);
+  const planTarget = state.planned.get(p.peak_id)?.target_date || "";
   el.innerHTML = `
     <div class="panel">
       <div class="panel-head">
@@ -402,17 +685,34 @@ function showDetail(p) {
           <div class="meta">${p.elevation_ft.toLocaleString()} ft · ${p.range} · rank #${p.rank ?? "—"}</div>
           ${p.note ? `<div class="note">${p.note}</div>` : ""}
         </div>
-        <div>
-          <label style="cursor:pointer; user-select:none; display:inline-flex; align-items:center; gap:8px;">
+        <div class="panel-actions">
+          <label>
             <span class="check ${isSummited ? "on" : ""}" id="detailCheck"></span>
             <span>${isSummited ? "summited" : "mark summited"}</span>
           </label>
+          ${isSummited ? `
+            <label>
+              <span style="color: var(--muted); font-size: 12px;">date:</span>
+              <input type="date" id="summitDate" value="${summit.summit_date || ""}">
+            </label>` : ""}
+          <label>
+            <span class="check ${isPlanned ? "on" : ""}" id="planCheck"></span>
+            <span>${isPlanned ? "planned" : "plan it"}</span>
+          </label>
+          ${isPlanned ? `
+            <label>
+              <span style="color: var(--muted); font-size: 12px;">target:</span>
+              <input type="date" id="planDate" value="${planTarget || ""}">
+            </label>` : ""}
         </div>
       </div>
       <h2 style="margin-top: 24px;">routes <span class="count">— ${p.routes.length}</span></h2>
       <div class="routes">
         ${p.routes.length === 0 ? '<div class="meta">No routes listed (subpoint or unranked).</div>' :
-          p.routes.map(r => `
+          p.routes.map(r => {
+            const climbed = state.routes.get(r.route_key);
+            const onR = !!climbed;
+            return `
             <div class="route">
               <div class="route-head">
                 <a class="route-name" href="https://www.14ers.com/route.php?route=${encodeURIComponent(r.route_key)}" target="_blank" rel="noopener">${r.name}</a>
@@ -431,8 +731,19 @@ function showDetail(p) {
                 ${fmtRating("route-finding", r.route_finding)}
                 ${fmtRating("commitment", r.commitment)}
               </div>
-            </div>
-          `).join("")
+              <div class="route-actions">
+                <label>
+                  <span class="check sm ${onR ? "on" : ""}" data-route="${r.route_key}" data-peak="${p.peak_id}"></span>
+                  <span>${onR ? "climbed this line" : "mark climbed"}</span>
+                </label>
+                ${onR ? `
+                  <label>
+                    <span style="font-size:12px;">date:</span>
+                    <input type="date" data-route-date="${r.route_key}" value="${climbed.climbed_date || ""}">
+                  </label>` : ""}
+              </div>
+            </div>`;
+          }).join("")
         }
       </div>
       <div style="margin-top: 16px;">
@@ -440,14 +751,80 @@ function showDetail(p) {
       </div>
     </div>
   `;
-  document.getElementById("detailCheck").addEventListener("click", () => {
-    if (summited.has(p.peak_id)) summited.delete(p.peak_id); else summited.add(p.peak_id);
-    saveSummited(); showDetail(p); render();
+
+  document.getElementById("detailCheck").addEventListener("click", async () => {
+    const on = !state.summits.has(p.peak_id);
+    if (await setSummit(p.peak_id, on)) { render(); showDetail(p); }
   });
+  document.getElementById("planCheck").addEventListener("click", async () => {
+    const on = !state.planned.has(p.peak_id);
+    if (await setPlanned(p.peak_id, on)) { render(); showDetail(p); }
+  });
+  const sd = document.getElementById("summitDate");
+  if (sd) sd.addEventListener("change", async e => {
+    await setSummitDate(p.peak_id, e.target.value || null);
+    toast("Summit date saved");
+  });
+  const pd = document.getElementById("planDate");
+  if (pd) pd.addEventListener("change", async e => {
+    if (await setPlanned(p.peak_id, true, e.target.value || null)) toast("Target date saved");
+  });
+
+  el.querySelectorAll("[data-route]").forEach(node => {
+    node.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const route_key = node.dataset.route;
+      const peak_id   = node.dataset.peak;
+      const on = !state.routes.has(route_key);
+      if (await setRoute(route_key, peak_id, on)) { render(); showDetail(p); }
+    });
+  });
+  el.querySelectorAll("[data-route-date]").forEach(node => {
+    node.addEventListener("change", async (e) => {
+      const route_key = node.dataset.routeDate;
+      const climbed = state.routes.get(route_key);
+      if (!climbed) return;
+      if (await setRoute(route_key, climbed.peak_id, true, e.target.value || null)) toast("Route date saved");
+    });
+  });
+
   el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-render();
+async function init() {
+  const { data: { session } } = await sb.auth.getSession();
+  state.user = session?.user || null;
+  state.ready = true;
+  if (state.user) {
+    const ok = await hydrateFromDB();
+    if (ok) await migrateLegacyIfNeeded();
+    else loadLegacy();
+  } else {
+    loadLegacy();
+  }
+  renderAuthStrip();
+  renderAuthCard();
+  render();
+}
+
+sb.auth.onAuthStateChange(async (event, session) => {
+  state.user = session?.user || null;
+  state.authMode = null;
+  if (state.user) {
+    const ok = await hydrateFromDB();
+    if (ok) await migrateLegacyIfNeeded();
+    if (event === "SIGNED_IN") toast("Signed in");
+  } else {
+    state.summits.clear(); state.routes.clear(); state.planned.clear();
+    loadLegacy();
+    if (event === "SIGNED_OUT") toast("Signed out");
+  }
+  renderAuthStrip();
+  renderAuthCard();
+  render();
+});
+
+init();
 </script>
 </body>
 </html>
