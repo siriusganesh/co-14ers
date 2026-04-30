@@ -435,8 +435,7 @@ footer.page-footer {
         <option value="3">Class 3 or easier</option>
         <option value="4">Class 4 or easier</option>
       </select>
-      <span class="chip" id="snowToggle" data-on="false">snow ok</span>
-      <span class="chip" id="summitedToggle" data-on="false">hide summited</span>
+      <span class="chip" id="summitedToggle" data-state="all">hide summited</span>
       <span class="chip" id="plannedToggle" data-on="false">planned only</span>
       <span class="progress" id="progress">0 / 53 summited</span>
     </div>
@@ -462,7 +461,7 @@ footer.page-footer {
 <div id="toast" class="toast"></div>
 
 <footer class="page-footer">
-  <span>v0.4.8</span>
+  <span>v0.4.9</span>
   <span>73 peaks &middot; 333 routes</span>
   <span>data: 14ers.com &middot; not a substitute for current conditions</span>
 </footer>
@@ -688,8 +687,9 @@ const LEGACY_KEY = "co14ers.summited.v1";
 const state = {
   user: null, ready: false,
   summits: new Map(), routes: new Map(), planned: new Map(),
-  q: "", range: "", maxClass: "", snowOk: true,
-  hideSummited: false, plannedOnly: false,
+  q: "", range: "", maxClass: "",
+  summitedFilter: "all",  // "all" | "hide" | "only"
+  plannedOnly: false,
   sort: "rank", dir: "asc", authMode: "signin",
   openPeak: null
 };
@@ -1068,18 +1068,17 @@ function renderAuthCard(msg) {
 document.getElementById("search").addEventListener("input", e => { state.q = e.target.value.trim().toLowerCase(); render(); });
 rangeSel.addEventListener("change", e => { state.range = e.target.value; render(); });
 document.getElementById("classFilter").addEventListener("change", e => { state.maxClass = e.target.value; render(); });
-const snowChip = document.getElementById("snowToggle");
-snowChip.classList.add("on"); snowChip.dataset.on = "true";
-snowChip.addEventListener("click", () => {
-  const on = snowChip.dataset.on === "true";
-  snowChip.dataset.on = !on; snowChip.classList.toggle("on", !on);
-  state.snowOk = !on; render();
-});
 const sumChip = document.getElementById("summitedToggle");
 sumChip.addEventListener("click", () => {
-  const on = sumChip.dataset.on === "true";
-  sumChip.dataset.on = !on; sumChip.classList.toggle("on", !on);
-  state.hideSummited = !on; render();
+  // cycle: all -> hide -> only -> all
+  const next = state.summitedFilter === "all" ? "hide"
+             : state.summitedFilter === "hide" ? "only"
+             : "all";
+  state.summitedFilter = next;
+  sumChip.dataset.state = next;
+  sumChip.classList.toggle("on", next !== "all");
+  sumChip.textContent = next === "only" ? "summited only" : "hide summited";
+  render();
 });
 const planChip = document.getElementById("plannedToggle");
 planChip.addEventListener("click", () => {
@@ -1104,12 +1103,10 @@ function applyFilters() {
     if (state.range && p.range !== state.range) return false;
     if (state.maxClass) {
       const mc = parseInt(state.maxClass, 10);
-      const easiest = state.snowOk ? p.min_class : Math.min(99, ...p.routes.filter(r => !r.is_snow_climb).map(r => classNumber(r.difficulty)));
-      if (easiest > mc) return false;
-    } else if (!state.snowOk) {
-      if (!p.routes.some(r => !r.is_snow_climb)) return false;
+      if (p.min_class > mc) return false;
     }
-    if (state.hideSummited && state.summits.has(p.peak_id)) return false;
+    if (state.summitedFilter === "hide" && state.summits.has(p.peak_id)) return false;
+    if (state.summitedFilter === "only" && !state.summits.has(p.peak_id)) return false;
     if (state.plannedOnly && !state.planned.has(p.peak_id)) return false;
     return true;
   });
@@ -1176,14 +1173,19 @@ function render() {
 }
 
 function togglePeak(p) {
-  if (state.openPeak === p.peak_id) {
-    state.openPeak = null;
-    if (location.hash) history.replaceState(null, "", location.pathname + location.search);
-  } else {
+  const opening = state.openPeak !== p.peak_id;
+  if (opening) {
     state.openPeak = p.peak_id;
     history.replaceState(null, "", "#" + p.slug);
+  } else {
+    state.openPeak = null;
+    if (location.hash) history.replaceState(null, "", location.pathname + location.search);
   }
   render();
+  if (opening) {
+    const row = document.querySelector("tbody tr.is-open");
+    if (row) row.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 }
 
 function fmtRating(label, v) {
