@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face {
+  font-family: "IBM Plex Mono"; font-style: normal; font-weight: 400; font-display: block;
+  src: url("fonts/ibm-plex-mono-400-latin.woff2") format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Mono"; font-style: normal; font-weight: 500; font-display: block;
+  src: url("fonts/ibm-plex-mono-500-latin.woff2") format("woff2");
+}
+:root {
+  --bg: #ffffff;
+  --bg-tint: #f7f7f4;
+  --text: #111113;
+  --text-heading: #303130;
+  --text-dim: #616160;
+  --text-faint: #717270;
+  --navy: #011f5b;
+  --navy-soft: #dbe3f5;
+  --rust: #a8443a;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1200px; height: 630px; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Verdana, Geneva, "DejaVu Sans", sans-serif;
+  position: relative;
+  padding: 80px 100px;
+}
+.rule {
+  width: 72px; height: 4px;
+  background: var(--navy);
+  margin-bottom: 36px;
+}
+.overline {
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  font-size: 22px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 36px;
+  font-weight: 400;
+}
+h1 {
+  font-size: 116px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  color: var(--text-heading);
+  margin-bottom: 30px;
+}
+h1 .accent { color: var(--rust); }
+.tagline {
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  font-size: 26px;
+  color: var(--text);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  max-width: 1000px;
+  line-height: 1.5;
+}
+.cta-row {
+  position: absolute;
+  left: 100px;
+  bottom: 80px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.cta {
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  font-size: 22px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  background: var(--navy);
+  color: #fff;
+  padding: 22px 36px;
+  border: 1px solid var(--navy);
+}
+.url {
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  font-size: 22px;
+  color: var(--text-dim);
+  letter-spacing: 0.02em;
+}
+.range-tag {
+  position: absolute;
+  right: 100px;
+  top: 80px;
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  font-size: 18px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  text-align: right;
+  line-height: 1.7;
+}
+.range-tag span { display: block; }
+.range-tag .num {
+  font-size: 56px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: var(--text-heading);
+  line-height: 1;
+  margin-bottom: 8px;
+  display: block;
+}
+</style>
+</head>
+<body>
+
+<div class="rule"></div>
+<div class="overline">Quick reference · Colorado 14,000 ft peaks</div>
+<h1>Colorado 14ers<span class="accent">.</span></h1>
+<p class="tagline">53 ranked peaks. Routes, difficulty, gain, distance,<br>and objective ratings. Track your summits.</p>
+
+<div class="cta-row">
+  <span class="cta">Try it →</span>
+  <span class="url">siriusganesh.github.io/co-14ers</span>
+</div>
+
+</body>
+</html>
