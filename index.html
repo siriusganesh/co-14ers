@@ -462,7 +462,7 @@ footer.page-footer {
 <div id="toast" class="toast"></div>
 
 <footer class="page-footer">
-  <span>v0.4.6</span>
+  <span>v0.4.7</span>
   <span>73 peaks &middot; 333 routes</span>
   <span>data: 14ers.com &middot; not a substitute for current conditions</span>
 </footer>
@@ -879,67 +879,86 @@ async function migrateLegacyIfNeeded() {
   toast(`Migrated ${legacy.length} summited peak${legacy.length === 1 ? "" : "s"}`);
 }
 
-async function setSummit(peak_id, on, summit_date = null) {
-  if (state.user) {
-    if (on) {
-      const { error } = await sb.from("summits").upsert({ user_id: state.user.id, peak_id, summit_date });
-      if (error) { toast("Save failed: " + error.message); return false; }
-      state.summits.set(peak_id, { summit_date });
-    } else {
-      const { error } = await sb.from("summits").delete().eq("peak_id", peak_id);
-      if (error) { toast("Delete failed: " + error.message); return false; }
-      state.summits.delete(peak_id);
-    }
-    saveCache();
-    broadcastChange({ kind: "summit", op: on ? "set" : "del", peak_id, summit_date, user_id: state.user.id });
-  } else {
-    if (on) state.summits.set(peak_id, { summit_date: null });
-    else state.summits.delete(peak_id);
-    saveLegacy();
-  }
-  return true;
-}
-
-async function setSummitDate(peak_id, summit_date) {
-  if (!state.summits.has(peak_id)) return;
-  state.summits.set(peak_id, { summit_date });
+// Optimistic mutations: update local state + render immediately, fire DB
+// write in the background, revert on error. UI never waits on the network.
+function setSummit(peak_id, on, summit_date = null) {
+  const prev = state.summits.get(peak_id);
+  if (on) state.summits.set(peak_id, { summit_date });
+  else state.summits.delete(peak_id);
+  if (state.user) saveCache(); else saveLegacy();
+  render();
   if (!state.user) return;
-  const { error } = await sb.from("summits").upsert({ user_id: state.user.id, peak_id, summit_date });
-  if (error) { toast("Save failed: " + error.message); return; }
-  saveCache();
+  broadcastChange({ kind: "summit", op: on ? "set" : "del", peak_id, summit_date, user_id: state.user.id });
+  const op = on
+    ? sb.from("summits").upsert({ user_id: state.user.id, peak_id, summit_date })
+    : sb.from("summits").delete().eq("peak_id", peak_id);
+  op.then(({ error }) => {
+    if (!error) return;
+    toast((on ? "Save" : "Delete") + " failed: " + error.message);
+    if (prev !== undefined) state.summits.set(peak_id, prev);
+    else state.summits.delete(peak_id);
+    saveCache(); render();
+    broadcastChange({ kind: "summit", op: prev !== undefined ? "set" : "del", peak_id, summit_date: prev?.summit_date ?? null, user_id: state.user.id });
+  });
+}
+
+function setSummitDate(peak_id, summit_date) {
+  if (!state.summits.has(peak_id)) return;
+  const prev = state.summits.get(peak_id);
+  state.summits.set(peak_id, { summit_date });
+  if (state.user) saveCache(); else saveLegacy();
+  render();
+  if (!state.user) return;
   broadcastChange({ kind: "summit", op: "set", peak_id, summit_date, user_id: state.user.id });
+  sb.from("summits").upsert({ user_id: state.user.id, peak_id, summit_date }).then(({ error }) => {
+    if (!error) return;
+    toast("Save failed: " + error.message);
+    state.summits.set(peak_id, prev);
+    saveCache(); render();
+    broadcastChange({ kind: "summit", op: "set", peak_id, summit_date: prev.summit_date, user_id: state.user.id });
+  });
 }
 
-async function setRoute(route_key, peak_id, on, climbed_date = null) {
-  if (!state.user) { toast("Sign in to track routes"); return false; }
-  if (on) {
-    const { error } = await sb.from("routes_climbed").upsert({ user_id: state.user.id, route_key, peak_id, climbed_date });
-    if (error) { toast("Save failed: " + error.message); return false; }
-    state.routes.set(route_key, { climbed_date, peak_id });
-  } else {
-    const { error } = await sb.from("routes_climbed").delete().eq("route_key", route_key);
-    if (error) { toast("Delete failed: " + error.message); return false; }
-    state.routes.delete(route_key);
-  }
+function setRoute(route_key, peak_id, on, climbed_date = null) {
+  if (!state.user) { toast("Sign in to track routes"); return; }
+  const prev = state.routes.get(route_key);
+  if (on) state.routes.set(route_key, { climbed_date, peak_id });
+  else state.routes.delete(route_key);
   saveCache();
+  render();
   broadcastChange({ kind: "route", op: on ? "set" : "del", route_key, peak_id, climbed_date, user_id: state.user.id });
-  return true;
+  const op = on
+    ? sb.from("routes_climbed").upsert({ user_id: state.user.id, route_key, peak_id, climbed_date })
+    : sb.from("routes_climbed").delete().eq("route_key", route_key);
+  op.then(({ error }) => {
+    if (!error) return;
+    toast((on ? "Save" : "Delete") + " failed: " + error.message);
+    if (prev !== undefined) state.routes.set(route_key, prev);
+    else state.routes.delete(route_key);
+    saveCache(); render();
+    broadcastChange({ kind: "route", op: prev !== undefined ? "set" : "del", route_key, peak_id: prev?.peak_id ?? peak_id, climbed_date: prev?.climbed_date ?? null, user_id: state.user.id });
+  });
 }
 
-async function setPlanned(peak_id, on, target_date = null) {
-  if (!state.user) { toast("Sign in to plan trips"); return false; }
-  if (on) {
-    const { error } = await sb.from("planned").upsert({ user_id: state.user.id, peak_id, target_date });
-    if (error) { toast("Save failed: " + error.message); return false; }
-    state.planned.set(peak_id, { target_date });
-  } else {
-    const { error } = await sb.from("planned").delete().eq("peak_id", peak_id);
-    if (error) { toast("Delete failed: " + error.message); return false; }
-    state.planned.delete(peak_id);
-  }
+function setPlanned(peak_id, on, target_date = null) {
+  if (!state.user) { toast("Sign in to plan trips"); return; }
+  const prev = state.planned.get(peak_id);
+  if (on) state.planned.set(peak_id, { target_date });
+  else state.planned.delete(peak_id);
   saveCache();
+  render();
   broadcastChange({ kind: "planned", op: on ? "set" : "del", peak_id, target_date, user_id: state.user.id });
-  return true;
+  const op = on
+    ? sb.from("planned").upsert({ user_id: state.user.id, peak_id, target_date })
+    : sb.from("planned").delete().eq("peak_id", peak_id);
+  op.then(({ error }) => {
+    if (!error) return;
+    toast((on ? "Save" : "Delete") + " failed: " + error.message);
+    if (prev !== undefined) state.planned.set(peak_id, prev);
+    else state.planned.delete(peak_id);
+    saveCache(); render();
+    broadcastChange({ kind: "planned", op: prev !== undefined ? "set" : "del", peak_id, target_date: prev?.target_date ?? null, user_id: state.user.id });
+  });
 }
 
 function renderAuthStrip() {
@@ -1139,7 +1158,7 @@ function render() {
         e.stopPropagation();
         const id = e.target.dataset.id;
         const on = !state.summits.has(id);
-        setSummit(id, on).then(ok => { if (ok) render(); });
+        setSummit(id, on);
         return;
       }
       togglePeak(p);
@@ -1263,20 +1282,18 @@ function detailHTML(p) {
 function bindDetailEvents(p, container) {
   container.addEventListener("click", e => e.stopPropagation());
 
-  container.querySelector('[data-act="summit"]').addEventListener("click", async () => {
-    const on = !state.summits.has(p.peak_id);
-    if (await setSummit(p.peak_id, on)) render();
+  container.querySelector('[data-act="summit"]').addEventListener("click", () => {
+    setSummit(p.peak_id, !state.summits.has(p.peak_id));
   });
-  container.querySelector('[data-act="plan"]').addEventListener("click", async () => {
-    const on = !state.planned.has(p.peak_id);
-    if (await setPlanned(p.peak_id, on)) render();
+  container.querySelector('[data-act="plan"]').addEventListener("click", () => {
+    setPlanned(p.peak_id, !state.planned.has(p.peak_id));
   });
   container.querySelector('[data-act="close"]').addEventListener("click", () => togglePeak(p));
 
   const sd = container.querySelector('[data-act="summit-date"]');
-  if (sd) sd.addEventListener("change", async e => { await setSummitDate(p.peak_id, e.target.value || null); toast("Summit date saved"); });
+  if (sd) sd.addEventListener("change", e => setSummitDate(p.peak_id, e.target.value || null));
   const pd = container.querySelector('[data-act="plan-date"]');
-  if (pd) pd.addEventListener("change", async e => { if (await setPlanned(p.peak_id, true, e.target.value || null)) toast("Target date saved"); });
+  if (pd) pd.addEventListener("change", e => setPlanned(p.peak_id, true, e.target.value || null));
 
   const copyBtn = container.querySelector('[data-act="copy"]');
   if (copyBtn) copyBtn.addEventListener("click", async () => {
@@ -1285,20 +1302,19 @@ function bindDetailEvents(p, container) {
   });
 
   container.querySelectorAll("[data-route]").forEach(node => {
-    node.addEventListener("click", async (e) => {
+    node.addEventListener("click", (e) => {
       e.preventDefault();
       const route_key = node.dataset.route;
       const peak_id   = node.dataset.peak;
-      const on = !state.routes.has(route_key);
-      if (await setRoute(route_key, peak_id, on)) render();
+      setRoute(route_key, peak_id, !state.routes.has(route_key));
     });
   });
   container.querySelectorAll("[data-route-date]").forEach(node => {
-    node.addEventListener("change", async (e) => {
+    node.addEventListener("change", (e) => {
       const route_key = node.dataset.routeDate;
       const climbed = state.routes.get(route_key);
       if (!climbed) return;
-      if (await setRoute(route_key, climbed.peak_id, true, e.target.value || null)) toast("Route date saved");
+      setRoute(route_key, climbed.peak_id, true, e.target.value || null);
     });
   });
 }
