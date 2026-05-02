@@ -286,8 +286,14 @@ section.block > header .meta {
    click produces — the red "summited only" state. Without this, the
    .chip.on rule ties .chip:hover on specificity and the chip looks
    inert. The match is the same soft-tint-on-hover shape the inactive
-   chip already uses, just in the red family. */
-.controls .chip.on[data-state="hide"]:hover {
+   chip already uses, just in the red family.
+
+   Suppressed via .suppress-hover-preview right after a click so the
+   chip rests on its solid active color for at least one beat — the
+   user has to move out and re-hover to see the next-state preview.
+   That prevents the chip from snapping straight from soft navy to
+   soft red without ever showing that the click landed. */
+.controls .chip.on[data-state="hide"]:hover:not(.suppress-hover-preview) {
   background: var(--rust-soft); color: var(--rust); border-color: var(--rust);
 }
 .progress {
@@ -1171,6 +1177,14 @@ sumChip.addEventListener("click", () => {
   sumChip.classList.toggle("on", next !== "all");
   sumChip.textContent = next === "only" ? "summited only" : "hide summited";
   render();
+  // Hold off the next-state hover preview until the user has moved
+  // off the chip and back on. Without this the cursor never leaves
+  // after the click, so the styling would skip the solid active
+  // color and jump straight from one soft tint to the next.
+  sumChip.classList.add("suppress-hover-preview");
+});
+sumChip.addEventListener("pointerleave", () => {
+  sumChip.classList.remove("suppress-hover-preview");
 });
 const planChip = document.getElementById("plannedToggle");
 planChip.addEventListener("click", () => {
