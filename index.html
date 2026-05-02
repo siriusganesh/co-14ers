@@ -296,6 +296,13 @@ section.block > header .meta {
 .controls .chip.on[data-state="hide"]:hover:not(.suppress-hover-preview) {
   background: var(--rust-soft); color: var(--rust); border-color: var(--rust);
 }
+/* Hover on the active "summited only" chip previews the inactive
+   "off" state — the gray look of the base .chip rule — since the
+   next click cycles back to all. Same suppress-hover-preview gate
+   so the solid red holds for one beat after the click. */
+.controls .chip.on[data-state="only"]:hover:not(.suppress-hover-preview) {
+  background: var(--bg-tint); color: var(--text-dim); border-color: var(--border);
+}
 .progress {
   margin-left: auto; font-family: var(--font-mono); font-size: .75rem;
   color: var(--text-faint); letter-spacing: .05em; font-variant-numeric: tabular-nums;
