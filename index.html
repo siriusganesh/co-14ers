@@ -1175,15 +1175,16 @@ rangeSel.addEventListener("change", e => { state.range = e.target.value; render(
 document.getElementById("classFilter").addEventListener("change", e => { state.maxClass = e.target.value; render(); });
 const sumChip = document.getElementById("summitedToggle");
 // The label the chip shows for a given filter state. When `preview`
-// is true, return what the chip *will* read after the next click —
-// used to swap the text during the next-state hover preview so the
-// label matches the soft-tint color treatment.
+// is true, return the next-state hint shown while hovering; otherwise
+// return the chip's resting label. The "only -> all" preview reads
+// "clear" rather than "hide summited" because the user has just been
+// looking at SUMMITED ONLY, and "clear" is the action they're about
+// to take, not the label of the resting state they'll land on.
 function sumChipLabel(filter, preview) {
-  // cycle: all -> hide -> only -> all
-  const target = preview
-    ? (filter === "all" ? "hide" : filter === "hide" ? "only" : "all")
-    : filter;
-  return target === "only" ? "summited only" : "hide summited";
+  if (!preview) return filter === "only" ? "summited only" : "hide summited";
+  if (filter === "all")  return "hide summited";
+  if (filter === "hide") return "summited only";
+  return "clear";
 }
 
 sumChip.addEventListener("click", () => {
