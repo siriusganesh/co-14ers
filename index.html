@@ -282,6 +282,14 @@ section.block > header .meta {
 .controls .chip.on[data-state="only"] {
   background: var(--rust); color: #fff; border-color: var(--rust);
 }
+/* Hover on the active "hide summited" chip previews what the next
+   click produces — the red "summited only" state. Without this, the
+   .chip.on rule ties .chip:hover on specificity and the chip looks
+   inert. The match is the same soft-tint-on-hover shape the inactive
+   chip already uses, just in the red family. */
+.controls .chip.on[data-state="hide"]:hover {
+  background: var(--rust-soft); color: var(--rust); border-color: var(--rust);
+}
 .progress {
   margin-left: auto; font-family: var(--font-mono); font-size: .75rem;
   color: var(--text-faint); letter-spacing: .05em; font-variant-numeric: tabular-nums;
