@@ -336,9 +336,9 @@ table { width: 100%; border-collapse: collapse; font-size: 14px; }
    Peak (col 2) is left auto so it absorbs the leftover space. */
 #peakTable { table-layout: fixed; }
 #peakTable th:nth-child(1), #peakTable td:nth-child(1) { width: 3.25rem; }
-#peakTable th:nth-child(3), #peakTable td:nth-child(3) { width: 6rem; }
-#peakTable th:nth-child(4), #peakTable td:nth-child(4) { width: 10rem; }
-#peakTable th:nth-child(5), #peakTable td:nth-child(5) { width: 10rem; }
+#peakTable th:nth-child(3), #peakTable td:nth-child(3) { width: 7rem; }
+#peakTable th:nth-child(4), #peakTable td:nth-child(4) { width: 11rem; }
+#peakTable th:nth-child(5), #peakTable td:nth-child(5) { width: 11rem; }
 #peakTable th:nth-child(6), #peakTable td:nth-child(6) { width: 5rem; }
 #peakTable th:nth-child(7), #peakTable td:nth-child(7) { width: 2.25rem; }
 th, td { text-align: left; padding: .6rem .7rem; border-bottom: 1px solid var(--border); vertical-align: top; }
@@ -347,6 +347,9 @@ th {
   letter-spacing: .12em; text-transform: uppercase; color: var(--text-faint);
   cursor: pointer; user-select: none; border-bottom: 1px solid var(--border-strong);
   background: var(--bg-tint);
+  /* Header label + sort arrow must stay on one line — wrap pushes
+     the arrow under the label and shifts row heights on every sort. */
+  white-space: nowrap;
 }
 th.sort-asc::after { content: " \2191"; color: var(--navy); }
 th.sort-desc::after { content: " \2193"; color: var(--navy); }
