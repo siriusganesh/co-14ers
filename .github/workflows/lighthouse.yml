@@ -1,0 +1,33 @@
+name: Lighthouse CI
+
+on:
+  pull_request:
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        form-factor: [mobile, desktop]
+    name: Lighthouse (${{ matrix.form-factor }})
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli@0.14.x
+
+      - name: Run Lighthouse CI (${{ matrix.form-factor }})
+        run: lhci autorun --config=./lighthouserc.${{ matrix.form-factor }}.json
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-${{ matrix.form-factor }}
+          path: .lighthouseci/
+          retention-days: 14
