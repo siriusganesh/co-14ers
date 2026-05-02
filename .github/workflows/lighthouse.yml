@@ -31,3 +31,4 @@ jobs:
           name: lighthouse-${{ matrix.form-factor }}
           path: .lighthouseci/
           retention-days: 14
+          include-hidden-files: true
