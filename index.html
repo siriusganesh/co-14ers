@@ -38,7 +38,7 @@
   --amber: #b8860b; --amber-soft: #f5ebcd;
   --font-sans: Verdana, Geneva, "DejaVu Sans", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  --measure: 72ch; --page-max: 1000px;
+  --measure: 72ch; --page-max: 880px;
 }
 * { box-sizing: border-box; }
 html { scrollbar-gutter: stable; }
@@ -304,15 +304,23 @@ section.block > header .meta {
 .controls .chip.on[data-state="only"]:hover:not(.suppress-hover-preview) {
   background: var(--bg-tint); color: var(--text-dim); border-color: var(--border);
 }
-/* Lock the summited chip to a fixed width across all three states
-   so the layout doesn't jitter when the label cycles between the
-   13-char "hide summited" / "summited only" and the 5-char "clear".
-   Sized for the longest label at the chip's font-size + letter
-   spacing + padding (border-box). text-align centers "clear" inside
-   the locked cell so it sits where the long labels did. */
-#summitedToggle {
+/* Lock both filter chips to a fixed width across all label states
+   so the layout doesn't jitter when the label cycles ("hide
+   summited" / "summited only" / "clear" on summited, "planned only"
+   / "clear" on planned). Sized for the longest label at the chip's
+   font-size + letter spacing + padding (border-box). text-align
+   centers the short "clear" label inside the locked cell so it
+   sits where the long labels did. */
+#summitedToggle, #plannedToggle {
   min-width: 8.5rem;
   text-align: center;
+}
+/* Hover on the active plannedToggle previews the inactive off state
+   — same gray treatment summitedToggle's only -> all transition uses.
+   Same suppress-hover-preview gate so the solid navy active color
+   holds for one beat after the click. */
+#plannedToggle.on:hover:not(.suppress-hover-preview) {
+  background: var(--bg-tint); color: var(--text-dim); border-color: var(--border);
 }
 .progress {
   margin-left: auto; font-family: var(--font-mono); font-size: .75rem;
@@ -329,8 +337,8 @@ table { width: 100%; border-collapse: collapse; font-size: 14px; }
 #peakTable { table-layout: fixed; }
 #peakTable th:nth-child(1), #peakTable td:nth-child(1) { width: 3.25rem; }
 #peakTable th:nth-child(3), #peakTable td:nth-child(3) { width: 6rem; }
-#peakTable th:nth-child(4), #peakTable td:nth-child(4) { width: 11rem; }
-#peakTable th:nth-child(5), #peakTable td:nth-child(5) { width: 6rem; }
+#peakTable th:nth-child(4), #peakTable td:nth-child(4) { width: 10rem; }
+#peakTable th:nth-child(5), #peakTable td:nth-child(5) { width: 9rem; }
 #peakTable th:nth-child(6), #peakTable td:nth-child(6) { width: 5rem; }
 #peakTable th:nth-child(7), #peakTable td:nth-child(7) { width: 2.25rem; }
 th, td { text-align: left; padding: .6rem .7rem; border-bottom: 1px solid var(--border); vertical-align: top; }
@@ -1239,6 +1247,26 @@ planChip.addEventListener("click", () => {
   const on = planChip.dataset.on === "true";
   planChip.dataset.on = !on; planChip.classList.toggle("on", !on);
   state.plannedOnly = !on; render();
+  // Reset the resting label after the click so a stale preview
+  // ("clear") from the moment of clicking doesn't linger if the
+  // cursor never leaves the chip.
+  planChip.textContent = "planned only";
+  // Same gate as the summited chip: suppress the hover preview until
+  // the cursor leaves and re-enters, so the chip rests on its new
+  // active/inactive state for one beat instead of jumping straight
+  // back to the soft-navy / off-state hover treatment.
+  planChip.classList.add("suppress-hover-preview");
+});
+planChip.addEventListener("pointerenter", () => {
+  if (planChip.classList.contains("suppress-hover-preview")) return;
+  // When active, next click clears the filter, so preview "clear".
+  // When inactive, the label stays "planned only" since clicking
+  // just turns the same filter on without renaming it.
+  if (planChip.classList.contains("on")) planChip.textContent = "clear";
+});
+planChip.addEventListener("pointerleave", () => {
+  planChip.classList.remove("suppress-hover-preview");
+  planChip.textContent = "planned only";
 });
 
 document.querySelectorAll("th[data-sort]").forEach(th => {
