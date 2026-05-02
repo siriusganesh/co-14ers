@@ -116,9 +116,63 @@ nav.topnav a {
 }
 nav.topnav a:hover { color: var(--navy); }
 
+/* ---------- Projects dropdown (mirrors siriusganesh.com toolbar) ---------- */
+nav.topnav .has-dropdown { position: relative; }
+nav.topnav details { display: inline; }
+nav.topnav details > summary {
+  display: inline; list-style: none; cursor: pointer;
+  font-family: var(--font-mono); font-size: .78rem;
+  color: var(--text-dim); letter-spacing: .04em;
+  user-select: none; white-space: nowrap;
+}
+nav.topnav details > summary::-webkit-details-marker { display: none; }
+nav.topnav details > summary::marker { content: ''; }
+nav.topnav details > summary::after {
+  content: '▾'; font-size: .65rem; margin-left: .3rem; opacity: .7;
+  display: inline-block; transition: transform 120ms ease;
+}
+nav.topnav details[open] > summary::after { transform: rotate(180deg); }
+nav.topnav details > summary:hover,
+nav.topnav details[open] > summary { color: var(--navy); }
+
+nav.topnav .dropdown-menu {
+  position: absolute; top: calc(100% + .4rem); right: 0;
+  min-width: 12rem; background: var(--bg);
+  border: 0; padding: 0; margin: 0; list-style: none;
+  display: flex; flex-direction: column;
+  align-items: stretch; gap: 0;
+  box-shadow: 0 6px 18px rgba(0,0,0,.14);
+  z-index: 20;
+}
+nav.topnav .dropdown-menu li { padding: 0; }
+nav.topnav .dropdown-menu a {
+  display: block; padding: .55rem .9rem; font-size: .78rem;
+  border: 1px solid transparent;
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+nav.topnav .dropdown-menu a:hover {
+  background: var(--navy-soft); border-color: var(--navy); color: var(--navy);
+}
+nav.topnav .dropdown-menu a.is-current,
+nav.topnav .dropdown-menu a.is-current:hover {
+  color: var(--text-faint);
+  background: transparent; border-color: transparent;
+  pointer-events: none; cursor: default;
+}
+nav.topnav .dropdown-menu .ext-arrow {
+  font-size: .85em; color: var(--text-faint); margin-left: .15rem;
+}
+nav.topnav .dropdown-menu a:hover .ext-arrow { color: var(--navy); }
+
 .hero { padding-top: 2rem; padding-bottom: 1rem; }
 .hero h1 { margin-bottom: 1.25rem; }
 .hero .lede { font-size: 1.05rem; color: var(--text); max-width: var(--measure); }
+.hero-source {
+  font-family: var(--font-mono); font-size: .75rem;
+  color: var(--text-dim); margin-top: -.25rem;
+}
+.hero-source a { color: var(--navy); border-bottom: 1px solid var(--navy-soft); }
+.hero-source a:hover { color: var(--navy-deep); border-bottom-color: var(--navy-deep); }
 
 section.block { margin: 3.5rem 0; }
 section.block > header {
@@ -403,11 +457,18 @@ footer.page-footer {
 
 <nav class="topnav">
   <div class="wrap">
-    <a class="brand" href="./">14ers</a>
+    <a class="brand" href="https://siriusganesh.com/">sirius ganesh</a>
     <ul>
-      <li><a href="https://14ers.com" target="_blank" rel="noopener">14ers.com</a></li>
-      <li><a href="https://github.com/siriusganesh/co-14ers" target="_blank" rel="noopener">github</a></li>
-      <li><a href="https://siriusganesh.com" target="_blank" rel="noopener">siriusganesh.com</a></li>
+      <li class="has-dropdown">
+        <details>
+          <summary>projects</summary>
+          <ul class="dropdown-menu">
+            <li><a href="https://siriusganesh.com/coffee">coffee</a></li>
+            <li><a class="is-current" aria-current="page">colorado 14ers <span class="ext-arrow" aria-hidden="true">↗</span></a></li>
+            <li><a href="https://siriusganesh.github.io/bananagrams-checker/" target="_blank" rel="noopener">bananagrams <span class="ext-arrow" aria-hidden="true">↗</span></a></li>
+          </ul>
+        </details>
+      </li>
     </ul>
   </div>
 </nav>
@@ -420,6 +481,10 @@ footer.page-footer {
       The 53 ranked peaks above 14,000 feet. Routes, difficulty, gain, distance, and objective ratings (exposure, rockfall, route-finding, commitment).
       Sign in to track <strong>summits, route lines, and a plan-to-climb list</strong> across devices &mdash;
       sign-out keeps your progress in this browser only.
+    </p>
+    <p class="hero-source">
+      data: <a href="https://14ers.com" target="_blank" rel="noopener">14ers.com</a>
+      &middot; code: <a href="https://github.com/siriusganesh/co-14ers" target="_blank" rel="noopener">github</a>
     </p>
     <div id="authStrip" class="auth-strip">
       <span class="who">Loading…</span>
@@ -1408,6 +1473,26 @@ init();
 
 window.addEventListener("error", e => console.error("[14ers] runtime error:", e.message, e.error));
 window.addEventListener("unhandledrejection", e => console.error("[14ers] unhandled rejection:", e.reason));
+
+// Projects dropdown: close on outside click or Escape so the menu doesn't
+// linger after the user has moved on.
+document.addEventListener("click", (event) => {
+  document.querySelectorAll("nav.topnav details[open]").forEach((d) => {
+    if (!d.contains(event.target)) d.open = false;
+  });
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    document.querySelectorAll("nav.topnav details[open]").forEach((d) => { d.open = false; });
+  }
+});
+// Collapse the dropdown after clicking any of its links.
+document.querySelectorAll("nav.topnav details .dropdown-menu a").forEach((a) => {
+  a.addEventListener("click", () => {
+    const d = a.closest("details");
+    if (d) d.open = false;
+  });
+});
 </script>
 </body>
 </html>
