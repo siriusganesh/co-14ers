@@ -271,7 +271,7 @@ section.block > header .meta {
   padding: .35rem .7rem; border: 1px solid var(--border); background: var(--bg-tint);
   color: var(--text-dim); cursor: pointer; user-select: none;
 }
-.controls .chip:hover { border-color: var(--navy); color: var(--navy); background: var(--navy-soft); }
+.controls .chip:hover:not(.suppress-hover-preview) { border-color: var(--navy); color: var(--navy); background: var(--navy-soft); }
 .controls .chip.on {
   background: var(--navy); color: #fff; border-color: var(--navy);
 }
@@ -1174,6 +1174,18 @@ document.getElementById("search").addEventListener("input", e => { state.q = e.t
 rangeSel.addEventListener("change", e => { state.range = e.target.value; render(); });
 document.getElementById("classFilter").addEventListener("change", e => { state.maxClass = e.target.value; render(); });
 const sumChip = document.getElementById("summitedToggle");
+// The label the chip shows for a given filter state. When `preview`
+// is true, return what the chip *will* read after the next click —
+// used to swap the text during the next-state hover preview so the
+// label matches the soft-tint color treatment.
+function sumChipLabel(filter, preview) {
+  // cycle: all -> hide -> only -> all
+  const target = preview
+    ? (filter === "all" ? "hide" : filter === "hide" ? "only" : "all")
+    : filter;
+  return target === "only" ? "summited only" : "hide summited";
+}
+
 sumChip.addEventListener("click", () => {
   // cycle: all -> hide -> only -> all
   const next = state.summitedFilter === "all" ? "hide"
@@ -1182,16 +1194,21 @@ sumChip.addEventListener("click", () => {
   state.summitedFilter = next;
   sumChip.dataset.state = next;
   sumChip.classList.toggle("on", next !== "all");
-  sumChip.textContent = next === "only" ? "summited only" : "hide summited";
+  sumChip.textContent = sumChipLabel(next, false);
   render();
   // Hold off the next-state hover preview until the user has moved
   // off the chip and back on. Without this the cursor never leaves
-  // after the click, so the styling would skip the solid active
-  // color and jump straight from one soft tint to the next.
+  // after the click, so the styling and label would skip the solid
+  // active state and jump straight to the next-state preview.
   sumChip.classList.add("suppress-hover-preview");
+});
+sumChip.addEventListener("pointerenter", () => {
+  if (sumChip.classList.contains("suppress-hover-preview")) return;
+  sumChip.textContent = sumChipLabel(state.summitedFilter, true);
 });
 sumChip.addEventListener("pointerleave", () => {
   sumChip.classList.remove("suppress-hover-preview");
+  sumChip.textContent = sumChipLabel(state.summitedFilter, false);
 });
 const planChip = document.getElementById("plannedToggle");
 planChip.addEventListener("click", () => {
