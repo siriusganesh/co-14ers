@@ -146,7 +146,8 @@ nav.topnav .dropdown-menu {
   z-index: 20;
 }
 nav.topnav .dropdown-menu li { padding: 0; }
-nav.topnav .dropdown-menu a {
+nav.topnav .dropdown-menu a,
+nav.topnav .dropdown-menu .is-current {
   display: block; padding: .55rem .9rem; font-size: .78rem;
   border: 1px solid transparent;
   transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
@@ -154,8 +155,8 @@ nav.topnav .dropdown-menu a {
 nav.topnav .dropdown-menu a:hover {
   background: var(--navy-soft); border-color: var(--navy); color: var(--navy);
 }
-nav.topnav .dropdown-menu a.is-current,
-nav.topnav .dropdown-menu a.is-current:hover {
+nav.topnav .dropdown-menu .is-current,
+nav.topnav .dropdown-menu .is-current:hover {
   color: var(--text-faint);
   background: transparent; border-color: transparent;
   pointer-events: none; cursor: default;
@@ -528,7 +529,7 @@ footer.page-footer {
           <summary>projects</summary>
           <ul class="dropdown-menu">
             <li><a href="https://siriusganesh.com/coffee">coffee</a></li>
-            <li><a class="is-current" aria-current="page">colorado 14ers <span class="ext-arrow" aria-hidden="true">↗</span></a></li>
+            <li><span class="is-current" aria-current="page">colorado 14ers <span class="ext-arrow" aria-hidden="true">↗</span></span></li>
             <li><a href="https://siriusganesh.github.io/bananagrams-checker/" target="_blank" rel="noopener">bananagrams <span class="ext-arrow" aria-hidden="true">↗</span></a></li>
           </ul>
         </details>
@@ -566,10 +567,10 @@ footer.page-footer {
 
     <div class="controls">
       <input type="search" id="search" placeholder="search by name" autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore>
-      <select id="rangeFilter" autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore>
+      <select id="rangeFilter" aria-label="filter by range" autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore>
         <option value="">all ranges</option>
       </select>
-      <select id="classFilter" autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore>
+      <select id="classFilter" aria-label="filter by difficulty class" autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore>
         <option value="">any difficulty</option>
         <option value="1">Class 1 only</option>
         <option value="2">Class 2 or easier</option>
