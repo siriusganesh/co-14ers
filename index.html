@@ -73,12 +73,15 @@ strong { color: var(--text-heading); font-weight: 700; }
 .hidden { display: none !important; }
 .accent { color: var(--rust); }
 
-.page { max-width: var(--page-max); margin: 0 auto; padding: 4rem 1.5rem; }
+.page { max-width: var(--page-max); margin: 0 auto; padding: 5rem 1.5rem; }
 
 .overline {
   font-family: var(--font-mono); font-size: .72rem;
   letter-spacing: .14em; text-transform: uppercase;
-  color: var(--text-dim); display: block; margin-bottom: 1.25rem;
+  /* Tight kicker→title gap so the overline reads as a label for the h1
+     beneath it; the h1's 1.25rem margin-bottom keeps the title→body break
+     visibly larger than this internal gap. */
+  color: var(--text-dim); display: block; margin-bottom: .75rem;
 }
 
 .rule { height: 2px; background: var(--navy); border: 0; margin: 3.5rem 0; max-width: 72px; }
@@ -166,7 +169,7 @@ nav.topnav .dropdown-menu .ext-arrow {
 }
 nav.topnav .dropdown-menu a:hover .ext-arrow { color: var(--navy); }
 
-.hero { padding-top: 2rem; padding-bottom: 1rem; }
+.hero { padding-top: 3rem; padding-bottom: 1rem; }
 .hero h1 { margin-bottom: 1.25rem; }
 .hero .lede { font-size: 1.05rem; color: var(--text); max-width: var(--measure); }
 .hero-source {
