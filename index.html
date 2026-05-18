@@ -163,6 +163,12 @@ nav.topnav .dropdown-menu .is-current:hover {
   color: var(--text-faint);
   background: transparent; border-color: transparent;
   pointer-events: none; cursor: default;
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+/* Keep the ↗ arrow un-struck on the current item. */
+nav.topnav .dropdown-menu .is-current .ext-arrow {
+  text-decoration: none;
 }
 nav.topnav .dropdown-menu .ext-arrow {
   font-size: .85em; color: var(--text-faint); margin-left: .15rem;
