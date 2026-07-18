@@ -1,334 +1,334 @@
-peak_rank,peak_name,peak_elevation_ft,peak_range,route_name,is_standard,is_snow_climb,is_primary_for_peak,route_summits,difficulty,elevation_gain,distance,exposure,rockfall,route_finding,commitment,route_key,peak_id,peak_slug
-1,Mount Elbert,14438,Sawatch Range,Mt. Elbert - Northeast Ridge,true,false,true,Mt. Elbert,Class 1,"4,500'",9.75 mi,Low,Low,Low,Low,elbe1,10001,mount-elbert
-1,Mount Elbert,14438,Sawatch Range,Mt. Elbert - Box Creek Couloirs,false,true,true,Mt. Elbert,Difficult Class 2 Moderate Snow,"4,150'",10 mi,Considerable,Moderate,Moderate,Considerable,elbe4,10001,mount-elbert
-1,Mount Elbert,14438,Sawatch Range,Mt. Elbert - East Ridge,false,false,true,Mt. Elbert,Class 1,"4,200'",11.25 mi,Low,Low,Low,Moderate,elbe2,10001,mount-elbert
-1,Mount Elbert,14438,Sawatch Range,Mt. Elbert - Southeast Ridge,false,false,true,Mt. Elbert,Class 2,"5,300'",10.5 mi,Low,Moderate,Moderate,Moderate,elbe3,10001,mount-elbert
-2,Mount Massive,14427,Sawatch Range,Mt. Massive - East Slopes,true,false,true,Mt. Massive,Class 2,"4,500'",13.75 mi,Moderate,Moderate,Moderate,Moderate,mass1,10002,mount-massive
-2,Mount Massive,14427,Sawatch Range,Mt. Massive - East Ridge,false,false,true,Mt. Massive,Difficult Class 2,"5,000'",14 mi,Moderate,Moderate,Considerable,Considerable,mass3,10002,mount-massive
-2,Mount Massive,14427,Sawatch Range,Mt. Massive - Southwest Slopes,false,false,true,Mt. Massive,Class 2,"4,000'",8 mi,Moderate,Moderate,Low,Moderate,mass2,10002,mount-massive
-3,Mount Harvard,14424,Sawatch Range,Mt. Columbia - West Slopes,true,false,false,Mt. Columbia,Class 2,"4,250'",12 mi,Moderate,Considerable,Moderate,Moderate,colu2,10003,mount-harvard
-3,Mount Harvard,14424,Sawatch Range,Mt. Harvard - South Slopes,true,false,true,Mt. Harvard,Class 2,"4,600'",13.75 mi,Moderate,Moderate,Moderate,Moderate,harv1,10003,mount-harvard
-3,Mount Harvard,14424,Sawatch Range,Combo: Harvard and Columbia Traverse,false,false,false,COMBO,Class 2,"6,100'",15 mi,Moderate,Considerable,High,High,harv4,10003,mount-harvard
-3,Mount Harvard,14424,Sawatch Range,Mt. Columbia - Southeast Ridge,false,false,false,Mt. Columbia,Class 2,"4,800'",11.25 mi,Moderate,Moderate,Considerable,Moderate,colu5,10003,mount-harvard
-3,Mount Harvard,14424,Sawatch Range,Mt. Columbia - Southwest Couloir,false,true,false,Mt. Columbia,Class 2 Moderate Snow,"4,800'",13.5 mi,Moderate,Moderate,Considerable,Moderate,colu6,10003,mount-harvard
-3,Mount Harvard,14424,Sawatch Range,Mt. Harvard - South Face,false,true,true,Mt. Harvard,Class 2 Moderate Snow,"4,600'",13.75 mi,Moderate,Moderate,Considerable,Considerable,harv3,10003,mount-harvard
-4,Blanca Peak,14350,Sangre de Cristo,Blanca Peak - Northwest Ridge,true,false,true,Blanca Peak,Difficult Class 2,"6,500'",17 mi,Considerable,Considerable,Moderate,Considerable,blan1,10004,blanca-peak
-4,Blanca Peak,14350,Sangre de Cristo,Ellingwood Point - South Face,true,false,false,Ellingwood Point,Difficult Class 2,"6,200'",17 mi,Considerable,Considerable,Considerable,Considerable,elli2,10004,blanca-peak
-4,Blanca Peak,14350,Sangre de Cristo,Little Bear Peak - West Ridge and Hourglass,true,false,false,Little Bear Peak,Class 4,"6,200'",14 mi,High,High,High,High,litt6,10004,blanca-peak
-4,Blanca Peak,14350,Sangre de Cristo,Combo: Blanca and Ellingwood,false,false,false,COMBO,Class 3,"6,800'",18 mi,Considerable,Considerable,Considerable,Considerable,elli3,10004,blanca-peak
-4,Blanca Peak,14350,Sangre de Cristo,Combo: Little Bear + Blanca Traverse,false,false,false,COMBO,Class 5,"8,000'",17 mi,Extreme,Considerable,High,Extreme,litt3,10004,blanca-peak
-4,Blanca Peak,14350,Sangre de Cristo,Ellingwood Point - North Ridge via South Zapata Creek,false,false,false,Ellingwood Point,Easy Class 3,"5,200'",12.5 mi,Considerable,High,High,High,elli5,10004,blanca-peak
-4,Blanca Peak,14350,Sangre de Cristo,Ellingwood Point - Southwest Ridge,false,false,false,Ellingwood Point,Class 3,"2,200'",15 mi,High,High,Considerable,Considerable,elli4,10004,blanca-peak
-4,Blanca Peak,14350,Sangre de Cristo,Lake Como Approach,false,false,false,OTHER,Class 1,"3,900'",11 mi,Low,Low,Low,Low,como0,10004,blanca-peak
-4,Blanca Peak,14350,Sangre de Cristo,Little Bear Peak - West Ridge Indirect,false,false,false,Little Bear Peak,Class 4,"6,200'",14 mi,Extreme,Considerable,High,High,litt8,10004,blanca-peak
-5,La Plata Peak,14344,Sawatch Range,La Plata Peak - Northwest Ridge,true,false,true,La Plata Peak,Class 2,"4,400'",9.25 mi,Moderate,Moderate,Low,Moderate,lapl1,10005,la-plata-peak
-5,La Plata Peak,14344,Sawatch Range,La Plata Peak - Ellingwood Ridge,false,false,true,La Plata Peak,Class 3,"5,900'",9.5 mi,High,High,High,High,lapl3,10005,la-plata-peak
-5,La Plata Peak,14344,Sawatch Range,La Plata Peak - North Face,false,true,true,La Plata Peak,Difficult Class 2 Moderate Snow,"4,500'",8.75 mi,Considerable,Considerable,High,Considerable,lapl4,10005,la-plata-peak
-5,La Plata Peak,14344,Sawatch Range,La Plata Peak - Southwest Ridge,false,false,true,La Plata Peak,Class 2,"3,600'",7.5 mi,Moderate,Considerable,Considerable,Moderate,lapl2,10005,la-plata-peak
-6,Uncompahgre Peak,14318,San Juan Mountains,Uncompahgre Peak - South Ridge,true,false,true,Uncompahgre Peak,Class 2,"3,000'",7.5 mi,Moderate,Considerable,Moderate,Moderate,unco1,10006,uncompahgre-peak
-7,Crestone Peak,14299,Sangre de Cristo,Crestone Needle - South Face,true,false,false,Crestone Needle,Class 4,"4,400'",12 mi,High,Considerable,High,Considerable,cnee1,10007,crestone-peak
-7,Crestone Peak,14299,Sangre de Cristo,Crestone Peak - South Face,true,false,true,Crestone Peak,Class 3,"5,700'",14 mi,High,Considerable,Considerable,Considerable,cpea2,10007,crestone-peak
-7,Crestone Peak,14299,Sangre de Cristo,Humboldt Peak - West Ridge,true,false,false,Humboldt Peak,Class 2,"4,200'",11 mi,Moderate,Moderate,Moderate,Low,humb1,10007,crestone-peak
-7,Crestone Peak,14299,Sangre de Cristo,Combo: Crestones Traverse,false,false,false,COMBO,Class 5,"5,300'",14 mi,Extreme,Considerable,High,High,cnee3,10007,crestone-peak
-7,Crestone Peak,14299,Sangre de Cristo,Crestone Needle - Ellingwood Arete/Ledges,false,false,false,Crestone Needle,Class 5,"4,400'",11.25 mi,Extreme,High,High,Extreme,cnee5,10007,crestone-peak
-7,Crestone Peak,14299,Sangre de Cristo,Humboldt Peak - East Ridge,false,false,false,Humboldt Peak,Class 2,"4,300'",8 mi,Moderate,Moderate,Considerable,Moderate,humb2,10007,crestone-peak
-7,Crestone Peak,14299,Sangre de Cristo,Humboldt Peak - Southeast Gully,false,true,false,Humboldt Peak,Class 2 Moderate Snow,"5,400'",8 mi,Moderate,Moderate,Considerable,Moderate,humb3,10007,crestone-peak
-8,Mount Lincoln,14293,Mosquito Range,Combo: Decalibron,true,false,false,COMBO,Class 2,"3,500'",7.5 mi,Moderate,Moderate,Low,Moderate,bros6,10008,mount-lincoln
-8,Mount Lincoln,14293,Mosquito Range,Mt. Bross - West Slopes,true,false,false,Mt. Bross,Class 2,"2,250'",3.25 mi,Moderate,Moderate,Low,Low,bros2,10008,mount-lincoln
-8,Mount Lincoln,14293,Mosquito Range,Mt. Cameron - West Ridge,true,false,false,Mt. Cameron,Class 2,"2,250'",4.75 mi,Moderate,Moderate,Low,Low,came1,10008,mount-lincoln
-8,Mount Lincoln,14293,Mosquito Range,Mt. Democrat - East Slope,true,false,false,Mt. Democrat,Class 2,"2,150'",4 mi,Moderate,Moderate,Low,Low,demo1,10008,mount-lincoln
-8,Mount Lincoln,14293,Mosquito Range,Mt. Lincoln - West Ridge,true,false,true,Mt. Lincoln,Class 2,"2,600'",6 mi,Moderate,Moderate,Low,Low,linc1,10008,mount-lincoln
-8,Mount Lincoln,14293,Mosquito Range,"Mt. Bross - ""Dolly Varden Gully""",false,true,false,Mt. Bross,Class 2 Easy Snow,"2,900'",4 mi,Low,Moderate,Moderate,Moderate,bros4,10008,mount-lincoln
-8,Mount Lincoln,14293,Mosquito Range,"Mt. Bross - ""S Gully""",false,true,false,Mt. Bross,Class 2 Easy Snow,"2,600'",9.5 mi,Moderate,Moderate,Moderate,Moderate,bros3,10008,mount-lincoln
-8,Mount Lincoln,14293,Mosquito Range,Mt. Bross - East Slopes,false,false,false,Mt. Bross,Class 1,"2,900'",9 mi,Low,Low,Low,Low,bros1,10008,mount-lincoln
-8,Mount Lincoln,14293,Mosquito Range,Mt. Democrat - South Slope,false,true,false,Mt. Democrat,Difficult Class 2 Moderate Snow,"2,150'",2.5 mi,Considerable,Moderate,Considerable,Moderate,demo2,10008,mount-lincoln
-8,Mount Lincoln,14293,Mosquito Range,Mt. Lincoln - East Slopes,false,false,true,Mt. Lincoln,Class 2,"2,650'",6.5 mi,Low,Moderate,Low,Low,linc3,10008,mount-lincoln
-8,Mount Lincoln,14293,Mosquito Range,Mt. Lincoln - Lincoln Amphitheatre,false,false,true,Mt. Lincoln,Class 2,"3,400'",4.75 mi,Moderate,Considerable,Moderate,Moderate,linc2,10008,mount-lincoln
-9,Grays Peak,14275,Front Range,Combo: Grays and Torreys,true,false,false,COMBO,Class 1,"3,600'",8.25 mi,Low,Low,Low,Moderate,torr5,10009,grays-peak
-9,Grays Peak,14275,Front Range,Grays Peak - North Slopes,true,false,true,Grays Peak,Class 1,"3,000'",7.5 mi,Low,Low,Low,Low,gray1,10009,grays-peak
-9,Grays Peak,14275,Front Range,Torreys Peak - South Slopes,true,false,false,Torreys Peak,Class 1,"3,000'",7.75 mi,Low,Low,Low,Low,torr2,10009,grays-peak
-9,Grays Peak,14275,Front Range,Grays Peak - Lost Rat Couloir,false,true,true,Grays Peak,Class 3 Steep Snow,"3,000'",6.5 mi,Considerable,Considerable,Moderate,Considerable,gray6,10009,grays-peak
-9,Grays Peak,14275,Front Range,Grays Peak - South Ridge,false,false,true,Grays Peak,Class 2,"3,250'",6.5 mi,Moderate,Moderate,Moderate,Moderate,gray3,10009,grays-peak
-9,Grays Peak,14275,Front Range,Grays Peak - Southwest Ridge,false,false,true,Grays Peak,Class 2,"3,800'",10.25 mi,Moderate,Moderate,Moderate,Moderate,gray8,10009,grays-peak
-9,Grays Peak,14275,Front Range,Torreys Peak - Dead Dog Couloir,false,true,false,Torreys Peak,Class 3 Steep Snow,"3,000'",6 mi,Considerable,Considerable,Moderate,Considerable,torr7,10009,grays-peak
-9,Grays Peak,14275,Front Range,Torreys Peak - Emperor Couloir,false,true,false,Torreys Peak,Class 3 Steep Snow,"4,500'",9.5 mi,Considerable,Considerable,Considerable,Considerable,torr10,10009,grays-peak
-9,Grays Peak,14275,Front Range,Torreys Peak - Kelso Ridge,false,false,false,Torreys Peak,Class 3,"3,100'",6.75 mi,High,Considerable,Considerable,Considerable,torr4,10009,grays-peak
-9,Grays Peak,14275,Front Range,Torreys Peak - NW Face/Tuning Fork,false,true,false,Torreys Peak,Difficult Class 2 Moderate Snow,"4,500'",10.5 mi,Moderate,Considerable,Considerable,Considerable,torr9,10009,grays-peak
-9,Grays Peak,14275,Front Range,Torreys Peak - West Ridge,false,false,false,Torreys Peak,Class 2,"5,500'",10 mi,Moderate,Moderate,Moderate,Considerable,torr11,10009,grays-peak
-10,Castle Peak,14274,Elk Mountains,Castle Peak - Northeast Ridge,true,false,true,Castle Peak,Difficult Class 2,"4,600'",13.5 mi,Considerable,Considerable,Considerable,Considerable,cast1,10012,castle-peak
-10,Castle Peak,14274,Elk Mountains,Combo: Castle and Conundrum,true,false,false,COMBO,Difficult Class 2,"4,850'",14.5 mi,Considerable,Considerable,Considerable,Considerable,cast4,10012,castle-peak
-10,Castle Peak,14274,Elk Mountains,Conundrum Peak - South Ridge,true,false,false,Conundrum Peak,Difficult Class 2,"4,400'",13.5 mi,Considerable,Considerable,Moderate,Moderate,conu1,10012,castle-peak
-10,Castle Peak,14274,Elk Mountains,Castle Peak - North Face Couloir,false,true,true,Castle Peak,Difficult Class 2 Moderate Snow,"4,600'",13 mi,Considerable,Considerable,Moderate,Moderate,cast3,10012,castle-peak
-10,Castle Peak,14274,Elk Mountains,Castle Peak - Northwest Ridge,false,true,true,Castle Peak,Difficult Class 2 Moderate Snow,"4,600'",13.5 mi,Considerable,Considerable,Moderate,Moderate,cast2,10012,castle-peak
-10,Castle Peak,14274,Elk Mountains,Conundrum Peak - Conundrum Couloir,false,true,false,Conundrum Peak,Class 3 Steep Snow,"4,400'",12 mi,High,Considerable,Moderate,Considerable,conu5,10012,castle-peak
-11,Quandary Peak,14272,Tenmile Range,Quandary Peak - East Ridge,true,false,true,Quandary Peak,Class 1,"3,450'",6.75 mi,Low,Low,Low,Low,quan1,10013,quandary-peak
-11,Quandary Peak,14272,Tenmile Range,Quandary Peak - North Gully aka Quandary Couloir,false,true,true,Quandary Peak,Class 3 Steep Snow,"3,250'",5.25 mi,Considerable,Considerable,Moderate,Considerable,quan4,10013,quandary-peak
-11,Quandary Peak,14272,Tenmile Range,Quandary Peak - South Gully aka Cristo Couloir,false,true,true,Quandary Peak,Difficult Class 2 Moderate Snow,"2,900'",3.5 mi,Moderate,Considerable,Moderate,Low,quan2,10013,quandary-peak
-11,Quandary Peak,14272,Tenmile Range,Quandary Peak - West Ridge,false,false,true,Quandary Peak,Class 3,"2,650'",4 mi,High,Considerable,Considerable,High,quan3,10013,quandary-peak
-12,Torreys Peak,14272,Front Range,Combo: Grays and Torreys,true,false,false,COMBO,Class 1,"3,600'",8.25 mi,Low,Low,Low,Moderate,torr5,10011,torreys-peak
-12,Torreys Peak,14272,Front Range,Grays Peak - North Slopes,true,false,false,Grays Peak,Class 1,"3,000'",7.5 mi,Low,Low,Low,Low,gray1,10011,torreys-peak
-12,Torreys Peak,14272,Front Range,Torreys Peak - South Slopes,true,false,true,Torreys Peak,Class 1,"3,000'",7.75 mi,Low,Low,Low,Low,torr2,10011,torreys-peak
-12,Torreys Peak,14272,Front Range,Grays Peak - Lost Rat Couloir,false,true,false,Grays Peak,Class 3 Steep Snow,"3,000'",6.5 mi,Considerable,Considerable,Moderate,Considerable,gray6,10011,torreys-peak
-12,Torreys Peak,14272,Front Range,Grays Peak - South Ridge,false,false,false,Grays Peak,Class 2,"3,250'",6.5 mi,Moderate,Moderate,Moderate,Moderate,gray3,10011,torreys-peak
-12,Torreys Peak,14272,Front Range,Grays Peak - Southwest Ridge,false,false,false,Grays Peak,Class 2,"3,800'",10.25 mi,Moderate,Moderate,Moderate,Moderate,gray8,10011,torreys-peak
-12,Torreys Peak,14272,Front Range,Torreys Peak - Dead Dog Couloir,false,true,true,Torreys Peak,Class 3 Steep Snow,"3,000'",6 mi,Considerable,Considerable,Moderate,Considerable,torr7,10011,torreys-peak
-12,Torreys Peak,14272,Front Range,Torreys Peak - Emperor Couloir,false,true,true,Torreys Peak,Class 3 Steep Snow,"4,500'",9.5 mi,Considerable,Considerable,Considerable,Considerable,torr10,10011,torreys-peak
-12,Torreys Peak,14272,Front Range,Torreys Peak - Kelso Ridge,false,false,true,Torreys Peak,Class 3,"3,100'",6.75 mi,High,Considerable,Considerable,Considerable,torr4,10011,torreys-peak
-12,Torreys Peak,14272,Front Range,Torreys Peak - NW Face/Tuning Fork,false,true,true,Torreys Peak,Difficult Class 2 Moderate Snow,"4,500'",10.5 mi,Moderate,Considerable,Considerable,Considerable,torr9,10011,torreys-peak
-12,Torreys Peak,14272,Front Range,Torreys Peak - West Ridge,false,false,true,Torreys Peak,Class 2,"5,500'",10 mi,Moderate,Moderate,Moderate,Considerable,torr11,10011,torreys-peak
-13,Mount Antero,14271,Sawatch Range,Mt. Antero - West Slopes,true,false,true,Mt. Antero,Class 2,"5,200'",15.5 mi,Moderate,Moderate,Low,Moderate,ante1,10010,mount-antero
-13,Mount Antero,14271,Sawatch Range,Mt. Antero - Via Little Browns Creek,false,false,true,Mt. Antero,Class 2,"5,550'",16.25 mi,Moderate,Moderate,Moderate,Moderate,ante2,10010,mount-antero
-14,Mount Blue Sky,14268,Front Range,"Combo: Bierstadt, Sawtooth, Blue Sky",true,false,false,COMBO,Class 3,"3,900'",10.5 mi,Considerable,Considerable,Considerable,High,bier4,10014,mount-blue-sky
-14,Mount Blue Sky,14268,Front Range,Mt. Bierstadt - West Slopes,true,false,false,Mt. Bierstadt,Class 2,"2,850'",7.25 mi,Low,Moderate,Low,Low,bier1,10014,mount-blue-sky
-14,Mount Blue Sky,14268,Front Range,Mt. Blue Sky - West Ridge from Summit Lake,true,false,true,Mt. Blue Sky,Class 2,"2,000'",5.5 mi,Moderate,Moderate,Moderate,Moderate,evan2,10014,mount-blue-sky
-14,Mount Blue Sky,14268,Front Range,Combo: Tour de Abyss Loop,false,false,false,COMBO,Class 3,"3,000'",5.75 mi,Considerable,Considerable,Considerable,High,bier5,10014,mount-blue-sky
-14,Mount Blue Sky,14268,Front Range,Mt. Bierstadt - East Ridge,false,false,false,Mt. Bierstadt,Class 3,"3,000'",5 mi,Considerable,Considerable,Considerable,Considerable,bier3,10014,mount-blue-sky
-14,Mount Blue Sky,14268,Front Range,Mt. Bierstadt - South Ridge,false,false,false,Mt. Bierstadt,Class 2,"4,500'",14.25 mi,Moderate,Moderate,Considerable,Moderate,bier6,10014,mount-blue-sky
-14,Mount Blue Sky,14268,Front Range,Mt. Blue Sky - North Face Moderate,false,true,true,Mt. Blue Sky,Class 3 Moderate Snow,"1,500'",2 mi,Considerable,Considerable,Low,Moderate,evan7,10014,mount-blue-sky
-14,Mount Blue Sky,14268,Front Range,Mt. Blue Sky - North Face Steep,false,true,true,Mt. Blue Sky,Class 3 Steep Snow,"1,500'",2 mi,High,Considerable,Moderate,Moderate,evan8,10014,mount-blue-sky
-14,Mount Blue Sky,14268,Front Range,Mt. Blue Sky - West Gully,false,true,true,Mt. Blue Sky,Class 3 Steep Snow,"1,650'",5.25 mi,High,Considerable,Moderate,Moderate,evan4,10014,mount-blue-sky
-14,Mount Blue Sky,14268,Front Range,Mt. Blue Sky - West Ridge from Echo Lake,false,false,true,Mt. Blue Sky,Class 2,"5,600'",17 mi,Moderate,Moderate,Moderate,Considerable,evan1,10014,mount-blue-sky
-14,Mount Blue Sky,14268,Front Range,Mt. Blue Sky - West Ridge from Guanella Pass,false,false,true,Mt. Blue Sky,Class 2,"3,100'",9.25 mi,Moderate,Considerable,Considerable,Considerable,evan3,10014,mount-blue-sky
-15,Longs Peak,14259,Front Range,Longs Peak - Keyhole Route,true,false,true,Longs Peak,Class 3,"5,100'",14.5 mi,High,Considerable,Considerable,High,long1,10015,longs-peak
-15,Longs Peak,14259,Front Range,Longs Peak - Keplinger Couloir,false,false,true,Longs Peak,Class 3,"5,900'",16 mi,High,Considerable,Considerable,Considerable,long5,10015,longs-peak
-15,Longs Peak,14259,Front Range,Longs Peak - Loft Route,false,false,true,Longs Peak,Class 3,"5,300'",13 mi,High,Considerable,High,High,long2,10015,longs-peak
-16,Mount Wilson,14256,San Juan Mountains,El Diente Peak - South Slopes,true,false,false,El Diente Peak,Class 3,"4,400'",12 mi,Considerable,Considerable,High,Considerable,eldi4,10016,mount-wilson
-16,Mount Wilson,14256,San Juan Mountains,Mt. Wilson - Southwest Slopes,true,false,true,Mt. Wilson,Class 3,"4,400'",12.5 mi,High,Considerable,Considerable,Considerable,mwil6,10016,mount-wilson
-16,Mount Wilson,14256,San Juan Mountains,Wilson Peak - Southwest Ridge,true,false,false,Wilson Peak,Class 3,"3,900'",10 mi,High,Considerable,Considerable,Considerable,wils1,10016,mount-wilson
-16,Mount Wilson,14256,San Juan Mountains,Combo: Mt. Wilson + El Diente Traverse,false,false,false,COMBO,Class 4,500',1 mi,High,High,High,High,mwil5,10016,mount-wilson
-16,Mount Wilson,14256,San Juan Mountains,El Diente Peak - North Buttress,false,false,false,El Diente Peak,Class 4,"3,200'",5 mi,High,Considerable,High,High,eldi8,10016,mount-wilson
-16,Mount Wilson,14256,San Juan Mountains,El Diente Peak - North Slopes,false,false,false,El Diente Peak,Class 3,"5,000'",15 mi,Considerable,Considerable,High,Considerable,eldi3,10016,mount-wilson
-16,Mount Wilson,14256,San Juan Mountains,Kilpacker Approach,false,false,false,OTHER,Class 1,800',6 mi,Low,Low,Low,Low,kilp0,10016,mount-wilson
-16,Mount Wilson,14256,San Juan Mountains,Mt. Wilson - East Face,false,true,true,Mt. Wilson,Class 3 Moderate Snow,"4,900'",12 mi,High,Considerable,High,High,mwil7,10016,mount-wilson
-16,Mount Wilson,14256,San Juan Mountains,Mt. Wilson - North Slopes,false,false,true,Mt. Wilson,Class 4,"5,100'",16 mi,High,High,High,Considerable,mwil2,10016,mount-wilson
-16,Mount Wilson,14256,San Juan Mountains,Navajo Lake Approach,false,false,false,OTHER,Class 1,"2,000'",9.5 mi,Low,Low,Low,Low,nava0,10016,mount-wilson
-16,Mount Wilson,14256,San Juan Mountains,Rock of Ages Approach,false,false,false,OTHER,Class 1,"2,800'",8.5 mi,Moderate,Low,Low,Low,silv0,10016,mount-wilson
-16,Mount Wilson,14256,San Juan Mountains,Woods Lake Approach,false,false,false,OTHER,Class 1,"2,115'",9 mi,Low,Low,Low,Low,wood0,10016,mount-wilson
-17,Mount Shavano,14230,Sawatch Range,Mt. Shavano - East Slopes,true,false,true,Mt. Shavano,Class 2,"4,500'",9.5 mi,Moderate,Moderate,Low,Moderate,shav1,10017,mount-shavano
-17,Mount Shavano,14230,Sawatch Range,Tabeguache Peak - Via Mt. Shavano,true,false,false,Tabeguache Peak,Class 2,"5,600'",11.5 mi,Moderate,Moderate,Moderate,Considerable,tabe2,10017,mount-shavano
-17,Mount Shavano,14230,Sawatch Range,Mt. Shavano - Angel of Shavano,false,true,true,Mt. Shavano,Class 2 Easy Snow,"4,600'",8 mi,Moderate,Moderate,Considerable,Moderate,shav4,10017,mount-shavano
-17,Mount Shavano,14230,Sawatch Range,Tabeguache Peak - West Ridge,false,false,false,Tabeguache Peak,Class 2,"4,000'",8 mi,Moderate,Considerable,Considerable,Considerable,tabe3w,10017,mount-shavano
-18,Mount Belford,14202,Sawatch Range,Missouri Mountain - Northwest Ridge,true,false,false,Missouri Mountain,Class 2,"4,500'",10.5 mi,Considerable,Considerable,Low,Moderate,miss1,10018,mount-belford
-18,Mount Belford,14202,Sawatch Range,Mt. Belford - Northwest Ridge,true,false,true,Mt. Belford,Class 2,"4,500'",8 mi,Low,Moderate,Low,Moderate,belf1,10018,mount-belford
-18,Mount Belford,14202,Sawatch Range,Mt. Oxford - Via Mt. Belford,true,false,false,Mt. Oxford,Class 2,"5,900'",11 mi,Moderate,Moderate,Low,Considerable,oxfo2,10018,mount-belford
-18,Mount Belford,14202,Sawatch Range,Missouri Mountain - North Face Couloirs,false,true,false,Missouri Mountain,Difficult Class 2 Moderate Snow,"4,500'",9 mi,Considerable,Moderate,Considerable,Considerable,miss3,10018,mount-belford
-18,Mount Belford,14202,Sawatch Range,Missouri Mountain - West Ridge,false,false,false,Missouri Mountain,Class 2,"4,250'",11.75 mi,Considerable,Considerable,Moderate,Moderate,miss2,10018,mount-belford
-18,Mount Belford,14202,Sawatch Range,Mt. Belford - Northwest Gully,false,true,true,Mt. Belford,Class 2 Easy Snow,"4,500'",7 mi,Moderate,Considerable,Moderate,Moderate,belf8,10018,mount-belford
-18,Mount Belford,14202,Sawatch Range,Mt. Belford - Southwest Slopes,false,false,true,Mt. Belford,Class 2,"4,500'",11 mi,Low,Low,Low,Moderate,belf9,10018,mount-belford
-19,Mount Princeton,14200,Sawatch Range,Mt. Princeton - East Slopes,true,false,true,Mt. Princeton,Class 2,"3,200'",6.5 mi,Moderate,Moderate,Moderate,Moderate,prin1,10020,mount-princeton
-20,Mount Yale,14200,Sawatch Range,Mt. Yale - Southwest Slopes,true,false,true,Mt. Yale,Class 2,"4,300'",9.5 mi,Moderate,Moderate,Low,Moderate,yale1,10021,mount-yale
-20,Mount Yale,14200,Sawatch Range,Mt. Yale - East Ridge,false,false,true,Mt. Yale,Class 2,"5,000'",10.5 mi,Moderate,Considerable,Considerable,Considerable,yale2,10021,mount-yale
-21,Crestone Needle,14196,Sangre de Cristo,Crestone Needle - South Face,true,false,true,Crestone Needle,Class 4,"4,400'",12 mi,High,Considerable,High,Considerable,cnee1,10019,crestone-needle
-21,Crestone Needle,14196,Sangre de Cristo,Crestone Peak - South Face,true,false,false,Crestone Peak,Class 3,"5,700'",14 mi,High,Considerable,Considerable,Considerable,cpea2,10019,crestone-needle
-21,Crestone Needle,14196,Sangre de Cristo,Humboldt Peak - West Ridge,true,false,false,Humboldt Peak,Class 2,"4,200'",11 mi,Moderate,Moderate,Moderate,Low,humb1,10019,crestone-needle
-21,Crestone Needle,14196,Sangre de Cristo,Combo: Crestones Traverse,false,false,false,COMBO,Class 5,"5,300'",14 mi,Extreme,Considerable,High,High,cnee3,10019,crestone-needle
-21,Crestone Needle,14196,Sangre de Cristo,Crestone Needle - Ellingwood Arete/Ledges,false,false,true,Crestone Needle,Class 5,"4,400'",11.25 mi,Extreme,High,High,Extreme,cnee5,10019,crestone-needle
-21,Crestone Needle,14196,Sangre de Cristo,Humboldt Peak - East Ridge,false,false,false,Humboldt Peak,Class 2,"4,300'",8 mi,Moderate,Moderate,Considerable,Moderate,humb2,10019,crestone-needle
-21,Crestone Needle,14196,Sangre de Cristo,Humboldt Peak - Southeast Gully,false,true,false,Humboldt Peak,Class 2 Moderate Snow,"5,400'",8 mi,Moderate,Moderate,Considerable,Moderate,humb3,10019,crestone-needle
-22,Mount Bross,14178,Mosquito Range,Combo: Decalibron,true,false,false,COMBO,Class 2,"3,500'",7.5 mi,Moderate,Moderate,Low,Moderate,bros6,10022,mount-bross
-22,Mount Bross,14178,Mosquito Range,Mt. Bross - West Slopes,true,false,true,Mt. Bross,Class 2,"2,250'",3.25 mi,Moderate,Moderate,Low,Low,bros2,10022,mount-bross
-22,Mount Bross,14178,Mosquito Range,Mt. Cameron - West Ridge,true,false,false,Mt. Cameron,Class 2,"2,250'",4.75 mi,Moderate,Moderate,Low,Low,came1,10022,mount-bross
-22,Mount Bross,14178,Mosquito Range,Mt. Democrat - East Slope,true,false,false,Mt. Democrat,Class 2,"2,150'",4 mi,Moderate,Moderate,Low,Low,demo1,10022,mount-bross
-22,Mount Bross,14178,Mosquito Range,Mt. Lincoln - West Ridge,true,false,false,Mt. Lincoln,Class 2,"2,600'",6 mi,Moderate,Moderate,Low,Low,linc1,10022,mount-bross
-22,Mount Bross,14178,Mosquito Range,"Mt. Bross - ""Dolly Varden Gully""",false,true,true,Mt. Bross,Class 2 Easy Snow,"2,900'",4 mi,Low,Moderate,Moderate,Moderate,bros4,10022,mount-bross
-22,Mount Bross,14178,Mosquito Range,"Mt. Bross - ""S Gully""",false,true,true,Mt. Bross,Class 2 Easy Snow,"2,600'",9.5 mi,Moderate,Moderate,Moderate,Moderate,bros3,10022,mount-bross
-22,Mount Bross,14178,Mosquito Range,Mt. Bross - East Slopes,false,false,true,Mt. Bross,Class 1,"2,900'",9 mi,Low,Low,Low,Low,bros1,10022,mount-bross
-22,Mount Bross,14178,Mosquito Range,Mt. Democrat - South Slope,false,true,false,Mt. Democrat,Difficult Class 2 Moderate Snow,"2,150'",2.5 mi,Considerable,Moderate,Considerable,Moderate,demo2,10022,mount-bross
-22,Mount Bross,14178,Mosquito Range,Mt. Lincoln - East Slopes,false,false,false,Mt. Lincoln,Class 2,"2,650'",6.5 mi,Low,Moderate,Low,Low,linc3,10022,mount-bross
-22,Mount Bross,14178,Mosquito Range,Mt. Lincoln - Lincoln Amphitheatre,false,false,false,Mt. Lincoln,Class 2,"3,400'",4.75 mi,Moderate,Considerable,Moderate,Moderate,linc2,10022,mount-bross
-23,Kit Carson Peak,14167,Sangre de Cristo,Challenger Point - North Slope,true,false,false,Challenger Point,Difficult Class 2,"5,400'",13.5 mi,Considerable,Considerable,Considerable,Moderate,chal1,10023,kit-carson-peak
-23,Kit Carson Peak,14167,Sangre de Cristo,Kit Carson Peak - Via Challenger Point,true,false,true,Kit Carson Peak,Easy Class 3,"6,250'",15 mi,Considerable,Considerable,Considerable,Considerable,kitc2,10023,kit-carson-peak
-23,Kit Carson Peak,14167,Sangre de Cristo,Challenger Point - Kirk Couloir,false,true,false,Challenger Point,Class 3 Steep Snow,"5,400'",12.75 mi,Considerable,Moderate,Considerable,Considerable,chal5,10023,kit-carson-peak
-23,Kit Carson Peak,14167,Sangre de Cristo,Kit Carson Peak - East Ridge,false,false,true,Kit Carson Peak,Class 3,"5,900'",14.5 mi,High,Considerable,High,High,kitc3,10023,kit-carson-peak
-23,Kit Carson Peak,14167,Sangre de Cristo,Kit Carson Peak - North Ridge,false,false,true,Kit Carson Peak,Class 4,"5,315'",11.4 mi,High,Considerable,Considerable,High,kitc4,10023,kit-carson-peak
-23,Kit Carson Peak,14167,Sangre de Cristo,Kit Carson Peak - Outward Bound Couloir,false,true,true,Kit Carson Peak,Class 3 Steep Snow,"5,500'",13.75 mi,Considerable,Moderate,Considerable,Considerable,kitc6,10023,kit-carson-peak
-23,Kit Carson Peak,14167,Sangre de Cristo,Willow Creek Approach,false,false,false,OTHER,Class 1,"2,850'",9.5 mi,Low,Low,Low,Low,will0,10023,kit-carson-peak
-24,Maroon Peak,14163,Elk Mountains,Maroon Peak - South Ridge,true,false,true,Maroon Peak,Class 3,"4,800'",12 mi,High,High,Extreme,Extreme,maro1,10024,maroon-peak
-24,Maroon Peak,14163,Elk Mountains,North Maroon Peak - Northeast Ridge,true,false,false,North Maroon Peak,Class 4,"4,600'",9.25 mi,High,High,High,High,nmar2,10024,maroon-peak
-24,Maroon Peak,14163,Elk Mountains,Pyramid Peak - Northeast Ridge,true,false,false,Pyramid Peak,Class 4,"4,500'",8.25 mi,High,High,High,High,pyra1,10024,maroon-peak
-24,Maroon Peak,14163,Elk Mountains,Combo: Bells Traverse,false,false,false,COMBO,Class 5,"4,850'",9.5 mi,Extreme,High,Extreme,Extreme,nmar4,10024,maroon-peak
-24,Maroon Peak,14163,Elk Mountains,Maroon Peak - Bell Cord Couloir,false,true,true,Maroon Peak,Class 4 Steep Snow,"4,556'",8 mi,High,High,High,High,maro3,10024,maroon-peak
-25,Mount Oxford,14158,Sawatch Range,Missouri Mountain - Northwest Ridge,true,false,false,Missouri Mountain,Class 2,"4,500'",10.5 mi,Considerable,Considerable,Low,Moderate,miss1,10026,mount-oxford
-25,Mount Oxford,14158,Sawatch Range,Mt. Belford - Northwest Ridge,true,false,false,Mt. Belford,Class 2,"4,500'",8 mi,Low,Moderate,Low,Moderate,belf1,10026,mount-oxford
-25,Mount Oxford,14158,Sawatch Range,Mt. Oxford - Via Mt. Belford,true,false,true,Mt. Oxford,Class 2,"5,900'",11 mi,Moderate,Moderate,Low,Considerable,oxfo2,10026,mount-oxford
-25,Mount Oxford,14158,Sawatch Range,Missouri Mountain - North Face Couloirs,false,true,false,Missouri Mountain,Difficult Class 2 Moderate Snow,"4,500'",9 mi,Considerable,Moderate,Considerable,Considerable,miss3,10026,mount-oxford
-25,Mount Oxford,14158,Sawatch Range,Missouri Mountain - West Ridge,false,false,false,Missouri Mountain,Class 2,"4,250'",11.75 mi,Considerable,Considerable,Moderate,Moderate,miss2,10026,mount-oxford
-25,Mount Oxford,14158,Sawatch Range,Mt. Belford - Northwest Gully,false,true,false,Mt. Belford,Class 2 Easy Snow,"4,500'",7 mi,Moderate,Considerable,Moderate,Moderate,belf8,10026,mount-oxford
-25,Mount Oxford,14158,Sawatch Range,Mt. Belford - Southwest Slopes,false,false,false,Mt. Belford,Class 2,"4,500'",11 mi,Low,Low,Low,Moderate,belf9,10026,mount-oxford
-26,Tabeguache Peak,14158,Sawatch Range,Mt. Shavano - East Slopes,true,false,false,Mt. Shavano,Class 2,"4,500'",9.5 mi,Moderate,Moderate,Low,Moderate,shav1,10025,tabeguache-peak
-26,Tabeguache Peak,14158,Sawatch Range,Tabeguache Peak - Via Mt. Shavano,true,false,true,Tabeguache Peak,Class 2,"5,600'",11.5 mi,Moderate,Moderate,Moderate,Considerable,tabe2,10025,tabeguache-peak
-26,Tabeguache Peak,14158,Sawatch Range,Mt. Shavano - Angel of Shavano,false,true,false,Mt. Shavano,Class 2 Easy Snow,"4,600'",8 mi,Moderate,Moderate,Considerable,Moderate,shav4,10025,tabeguache-peak
-26,Tabeguache Peak,14158,Sawatch Range,Tabeguache Peak - West Ridge,false,false,true,Tabeguache Peak,Class 2,"4,000'",8 mi,Moderate,Considerable,Considerable,Considerable,tabe3w,10025,tabeguache-peak
-27,Mount Sneffels,14155,San Juan Mountains,Mt. Sneffels - South Slopes,true,false,true,Mt. Sneffels,Easy Class 3,"2,900'",6 mi,Considerable,Considerable,Moderate,Moderate,snef1,10027,mount-sneffels
-27,Mount Sneffels,14155,San Juan Mountains,Mt. Sneffels - Southwest Ridge,false,false,true,Mt. Sneffels,Class 3,"2,950'",6.5 mi,Considerable,Considerable,Considerable,Considerable,snef2,10027,mount-sneffels
-28,Mount Democrat,14154,Mosquito Range,Combo: Decalibron,true,false,false,COMBO,Class 2,"3,500'",7.5 mi,Moderate,Moderate,Low,Moderate,bros6,10028,mount-democrat
-28,Mount Democrat,14154,Mosquito Range,Mt. Bross - West Slopes,true,false,false,Mt. Bross,Class 2,"2,250'",3.25 mi,Moderate,Moderate,Low,Low,bros2,10028,mount-democrat
-28,Mount Democrat,14154,Mosquito Range,Mt. Cameron - West Ridge,true,false,false,Mt. Cameron,Class 2,"2,250'",4.75 mi,Moderate,Moderate,Low,Low,came1,10028,mount-democrat
-28,Mount Democrat,14154,Mosquito Range,Mt. Democrat - East Slope,true,false,true,Mt. Democrat,Class 2,"2,150'",4 mi,Moderate,Moderate,Low,Low,demo1,10028,mount-democrat
-28,Mount Democrat,14154,Mosquito Range,Mt. Lincoln - West Ridge,true,false,false,Mt. Lincoln,Class 2,"2,600'",6 mi,Moderate,Moderate,Low,Low,linc1,10028,mount-democrat
-28,Mount Democrat,14154,Mosquito Range,"Mt. Bross - ""Dolly Varden Gully""",false,true,false,Mt. Bross,Class 2 Easy Snow,"2,900'",4 mi,Low,Moderate,Moderate,Moderate,bros4,10028,mount-democrat
-28,Mount Democrat,14154,Mosquito Range,"Mt. Bross - ""S Gully""",false,true,false,Mt. Bross,Class 2 Easy Snow,"2,600'",9.5 mi,Moderate,Moderate,Moderate,Moderate,bros3,10028,mount-democrat
-28,Mount Democrat,14154,Mosquito Range,Mt. Bross - East Slopes,false,false,false,Mt. Bross,Class 1,"2,900'",9 mi,Low,Low,Low,Low,bros1,10028,mount-democrat
-28,Mount Democrat,14154,Mosquito Range,Mt. Democrat - South Slope,false,true,true,Mt. Democrat,Difficult Class 2 Moderate Snow,"2,150'",2.5 mi,Considerable,Moderate,Considerable,Moderate,demo2,10028,mount-democrat
-28,Mount Democrat,14154,Mosquito Range,Mt. Lincoln - East Slopes,false,false,false,Mt. Lincoln,Class 2,"2,650'",6.5 mi,Low,Moderate,Low,Low,linc3,10028,mount-democrat
-28,Mount Democrat,14154,Mosquito Range,Mt. Lincoln - Lincoln Amphitheatre,false,false,false,Mt. Lincoln,Class 2,"3,400'",4.75 mi,Moderate,Considerable,Moderate,Moderate,linc2,10028,mount-democrat
-29,Capitol Peak,14138,Elk Mountains,Capitol Peak - Northeast Ridge,true,false,true,Capitol Peak,Class 4,"5,300'",17 mi,High,High,High,Extreme,capi1,10029,capitol-peak
-30,Pikes Peak,14109,Front Range,Pikes Peak - East Slopes,true,false,true,Pikes Peak,Class 1,"7,600'",24 mi,Low,Low,Low,Moderate,pikeeast,10030,pikes-peak
-30,Pikes Peak,14109,Front Range,Pikes Peak - Northwest Slopes,false,false,true,Pikes Peak,Class 2,"4,300'",14 mi,Low,Moderate,Low,Moderate,pike1,10030,pikes-peak
-31,Snowmass Mountain,14105,Elk Mountains,Snowmass Mountain - East Slopes,true,false,true,Snowmass Mountain,Class 3,"5,800'",22 mi,High,Considerable,Considerable,High,snow1,10031,snowmass-mountain
-31,Snowmass Mountain,14105,Elk Mountains,Snowmass Mountain - West Slope,false,false,true,Snowmass Mountain,Class 3,"4,500'",9 mi,High,High,High,High,snow2,10031,snowmass-mountain
-32,Windom Peak,14089,San Juan Mountains,Mt. Eolus - Northeast Ridge,true,false,false,Mt. Eolus,Class 3,"3,100'",6 mi,High,Considerable,Considerable,Considerable,eolu3,10033,windom-peak
-32,Windom Peak,14089,San Juan Mountains,North Eolus - South Ridge,true,false,false,North Eolus,Class 3,250',0.2 mi,Considerable,Moderate,Moderate,Moderate,neol4,10033,windom-peak
-32,Windom Peak,14089,San Juan Mountains,Sunlight Peak - South Face,true,false,false,Sunlight Peak,Class 4,"3,000'",6 mi,Extreme,Considerable,Considerable,Considerable,sunl2,10033,windom-peak
-32,Windom Peak,14089,San Juan Mountains,Windom Peak - West Ridge,true,false,true,Windom Peak,Difficult Class 2,"3,000'",6 mi,Considerable,Considerable,Moderate,Moderate,wind1,10033,windom-peak
-32,Windom Peak,14089,San Juan Mountains,Chicago Basin Approach,false,false,false,OTHER,Class 1,"2,800'",12 mi,Low,Low,Low,Low,chib1,10033,windom-peak
-33,Mount Eolus,14087,San Juan Mountains,Mt. Eolus - Northeast Ridge,true,false,true,Mt. Eolus,Class 3,"3,100'",6 mi,High,Considerable,Considerable,Considerable,eolu3,10032,mount-eolus
-33,Mount Eolus,14087,San Juan Mountains,North Eolus - South Ridge,true,false,false,North Eolus,Class 3,250',0.2 mi,Considerable,Moderate,Moderate,Moderate,neol4,10032,mount-eolus
-33,Mount Eolus,14087,San Juan Mountains,Sunlight Peak - South Face,true,false,false,Sunlight Peak,Class 4,"3,000'",6 mi,Extreme,Considerable,Considerable,Considerable,sunl2,10032,mount-eolus
-33,Mount Eolus,14087,San Juan Mountains,Windom Peak - West Ridge,true,false,false,Windom Peak,Difficult Class 2,"3,000'",6 mi,Considerable,Considerable,Moderate,Moderate,wind1,10032,mount-eolus
-33,Mount Eolus,14087,San Juan Mountains,Chicago Basin Approach,false,false,false,OTHER,Class 1,"2,800'",12 mi,Low,Low,Low,Low,chib1,10032,mount-eolus
-34,Mount Columbia,14075,Sawatch Range,Mt. Columbia - West Slopes,true,false,true,Mt. Columbia,Class 2,"4,250'",12 mi,Moderate,Considerable,Moderate,Moderate,colu2,10035,mount-columbia
-34,Mount Columbia,14075,Sawatch Range,Mt. Harvard - South Slopes,true,false,false,Mt. Harvard,Class 2,"4,600'",13.75 mi,Moderate,Moderate,Moderate,Moderate,harv1,10035,mount-columbia
-34,Mount Columbia,14075,Sawatch Range,Combo: Harvard and Columbia Traverse,false,false,false,COMBO,Class 2,"6,100'",15 mi,Moderate,Considerable,High,High,harv4,10035,mount-columbia
-34,Mount Columbia,14075,Sawatch Range,Mt. Columbia - Southeast Ridge,false,false,true,Mt. Columbia,Class 2,"4,800'",11.25 mi,Moderate,Moderate,Considerable,Moderate,colu5,10035,mount-columbia
-34,Mount Columbia,14075,Sawatch Range,Mt. Columbia - Southwest Couloir,false,true,true,Mt. Columbia,Class 2 Moderate Snow,"4,800'",13.5 mi,Moderate,Moderate,Considerable,Moderate,colu6,10035,mount-columbia
-34,Mount Columbia,14075,Sawatch Range,Mt. Harvard - South Face,false,true,false,Mt. Harvard,Class 2 Moderate Snow,"4,600'",13.75 mi,Moderate,Moderate,Considerable,Considerable,harv3,10035,mount-columbia
-35,Missouri Mountain,14071,Sawatch Range,Missouri Mountain - Northwest Ridge,true,false,true,Missouri Mountain,Class 2,"4,500'",10.5 mi,Considerable,Considerable,Low,Moderate,miss1,10036,missouri-mountain
-35,Missouri Mountain,14071,Sawatch Range,Mt. Belford - Northwest Ridge,true,false,false,Mt. Belford,Class 2,"4,500'",8 mi,Low,Moderate,Low,Moderate,belf1,10036,missouri-mountain
-35,Missouri Mountain,14071,Sawatch Range,Mt. Oxford - Via Mt. Belford,true,false,false,Mt. Oxford,Class 2,"5,900'",11 mi,Moderate,Moderate,Low,Considerable,oxfo2,10036,missouri-mountain
-35,Missouri Mountain,14071,Sawatch Range,Missouri Mountain - North Face Couloirs,false,true,true,Missouri Mountain,Difficult Class 2 Moderate Snow,"4,500'",9 mi,Considerable,Moderate,Considerable,Considerable,miss3,10036,missouri-mountain
-35,Missouri Mountain,14071,Sawatch Range,Missouri Mountain - West Ridge,false,false,true,Missouri Mountain,Class 2,"4,250'",11.75 mi,Considerable,Considerable,Moderate,Moderate,miss2,10036,missouri-mountain
-35,Missouri Mountain,14071,Sawatch Range,Mt. Belford - Northwest Gully,false,true,false,Mt. Belford,Class 2 Easy Snow,"4,500'",7 mi,Moderate,Considerable,Moderate,Moderate,belf8,10036,missouri-mountain
-35,Missouri Mountain,14071,Sawatch Range,Mt. Belford - Southwest Slopes,false,false,false,Mt. Belford,Class 2,"4,500'",11 mi,Low,Low,Low,Moderate,belf9,10036,missouri-mountain
-36,Humboldt Peak,14068,Sangre de Cristo,Crestone Needle - South Face,true,false,false,Crestone Needle,Class 4,"4,400'",12 mi,High,Considerable,High,Considerable,cnee1,10037,humboldt-peak
-36,Humboldt Peak,14068,Sangre de Cristo,Crestone Peak - South Face,true,false,false,Crestone Peak,Class 3,"5,700'",14 mi,High,Considerable,Considerable,Considerable,cpea2,10037,humboldt-peak
-36,Humboldt Peak,14068,Sangre de Cristo,Humboldt Peak - West Ridge,true,false,true,Humboldt Peak,Class 2,"4,200'",11 mi,Moderate,Moderate,Moderate,Low,humb1,10037,humboldt-peak
-36,Humboldt Peak,14068,Sangre de Cristo,Combo: Crestones Traverse,false,false,false,COMBO,Class 5,"5,300'",14 mi,Extreme,Considerable,High,High,cnee3,10037,humboldt-peak
-36,Humboldt Peak,14068,Sangre de Cristo,Crestone Needle - Ellingwood Arete/Ledges,false,false,false,Crestone Needle,Class 5,"4,400'",11.25 mi,Extreme,High,High,Extreme,cnee5,10037,humboldt-peak
-36,Humboldt Peak,14068,Sangre de Cristo,Humboldt Peak - East Ridge,false,false,true,Humboldt Peak,Class 2,"4,300'",8 mi,Moderate,Moderate,Considerable,Moderate,humb2,10037,humboldt-peak
-36,Humboldt Peak,14068,Sangre de Cristo,Humboldt Peak - Southeast Gully,false,true,true,Humboldt Peak,Class 2 Moderate Snow,"5,400'",8 mi,Moderate,Moderate,Considerable,Moderate,humb3,10037,humboldt-peak
-37,Mount Bierstadt,14066,Front Range,"Combo: Bierstadt, Sawtooth, Blue Sky",true,false,false,COMBO,Class 3,"3,900'",10.5 mi,Considerable,Considerable,Considerable,High,bier4,10038,mount-bierstadt
-37,Mount Bierstadt,14066,Front Range,Mt. Bierstadt - West Slopes,true,false,true,Mt. Bierstadt,Class 2,"2,850'",7.25 mi,Low,Moderate,Low,Low,bier1,10038,mount-bierstadt
-37,Mount Bierstadt,14066,Front Range,Mt. Blue Sky - West Ridge from Summit Lake,true,false,false,Mt. Blue Sky,Class 2,"2,000'",5.5 mi,Moderate,Moderate,Moderate,Moderate,evan2,10038,mount-bierstadt
-37,Mount Bierstadt,14066,Front Range,Combo: Tour de Abyss Loop,false,false,false,COMBO,Class 3,"3,000'",5.75 mi,Considerable,Considerable,Considerable,High,bier5,10038,mount-bierstadt
-37,Mount Bierstadt,14066,Front Range,Mt. Bierstadt - East Ridge,false,false,true,Mt. Bierstadt,Class 3,"3,000'",5 mi,Considerable,Considerable,Considerable,Considerable,bier3,10038,mount-bierstadt
-37,Mount Bierstadt,14066,Front Range,Mt. Bierstadt - South Ridge,false,false,true,Mt. Bierstadt,Class 2,"4,500'",14.25 mi,Moderate,Moderate,Considerable,Moderate,bier6,10038,mount-bierstadt
-37,Mount Bierstadt,14066,Front Range,Mt. Blue Sky - North Face Moderate,false,true,false,Mt. Blue Sky,Class 3 Moderate Snow,"1,500'",2 mi,Considerable,Considerable,Low,Moderate,evan7,10038,mount-bierstadt
-37,Mount Bierstadt,14066,Front Range,Mt. Blue Sky - North Face Steep,false,true,false,Mt. Blue Sky,Class 3 Steep Snow,"1,500'",2 mi,High,Considerable,Moderate,Moderate,evan8,10038,mount-bierstadt
-37,Mount Bierstadt,14066,Front Range,Mt. Blue Sky - West Gully,false,true,false,Mt. Blue Sky,Class 3 Steep Snow,"1,650'",5.25 mi,High,Considerable,Moderate,Moderate,evan4,10038,mount-bierstadt
-37,Mount Bierstadt,14066,Front Range,Mt. Blue Sky - West Ridge from Echo Lake,false,false,false,Mt. Blue Sky,Class 2,"5,600'",17 mi,Moderate,Moderate,Moderate,Considerable,evan1,10038,mount-bierstadt
-37,Mount Bierstadt,14066,Front Range,Mt. Blue Sky - West Ridge from Guanella Pass,false,false,false,Mt. Blue Sky,Class 2,"3,100'",9.25 mi,Moderate,Considerable,Considerable,Considerable,evan3,10038,mount-bierstadt
-38,Sunlight Peak,14061,San Juan Mountains,Mt. Eolus - Northeast Ridge,true,false,false,Mt. Eolus,Class 3,"3,100'",6 mi,High,Considerable,Considerable,Considerable,eolu3,10039,sunlight-peak
-38,Sunlight Peak,14061,San Juan Mountains,North Eolus - South Ridge,true,false,false,North Eolus,Class 3,250',0.2 mi,Considerable,Moderate,Moderate,Moderate,neol4,10039,sunlight-peak
-38,Sunlight Peak,14061,San Juan Mountains,Sunlight Peak - South Face,true,false,true,Sunlight Peak,Class 4,"3,000'",6 mi,Extreme,Considerable,Considerable,Considerable,sunl2,10039,sunlight-peak
-38,Sunlight Peak,14061,San Juan Mountains,Windom Peak - West Ridge,true,false,false,Windom Peak,Difficult Class 2,"3,000'",6 mi,Considerable,Considerable,Moderate,Moderate,wind1,10039,sunlight-peak
-38,Sunlight Peak,14061,San Juan Mountains,Chicago Basin Approach,false,false,false,OTHER,Class 1,"2,800'",12 mi,Low,Low,Low,Low,chib1,10039,sunlight-peak
-39,Handies Peak,14058,San Juan Mountains,Handies Peak - Southwest Slopes,true,false,true,Handies Peak,Class 1,"2,500'",5.75 mi,Moderate,Low,Low,Low,hand1,10040,handies-peak
-39,Handies Peak,14058,San Juan Mountains,Handies Peak - East Slopes,false,false,true,Handies Peak,Class 2,"3,650'",8 mi,Moderate,Moderate,Low,Moderate,hand2,10040,handies-peak
-39,Handies Peak,14058,San Juan Mountains,Handies Peak - West Slopes,false,true,true,Handies Peak,Class 2 Moderate Snow,"2,800'",5 mi,Moderate,Moderate,Considerable,Moderate,hand3,10040,handies-peak
-40,Ellingwood Point,14057,Sangre de Cristo,Blanca Peak - Northwest Ridge,true,false,false,Blanca Peak,Difficult Class 2,"6,500'",17 mi,Considerable,Considerable,Moderate,Considerable,blan1,10042,ellingwood-point
-40,Ellingwood Point,14057,Sangre de Cristo,Ellingwood Point - South Face,true,false,true,Ellingwood Point,Difficult Class 2,"6,200'",17 mi,Considerable,Considerable,Considerable,Considerable,elli2,10042,ellingwood-point
-40,Ellingwood Point,14057,Sangre de Cristo,Little Bear Peak - West Ridge and Hourglass,true,false,false,Little Bear Peak,Class 4,"6,200'",14 mi,High,High,High,High,litt6,10042,ellingwood-point
-40,Ellingwood Point,14057,Sangre de Cristo,Combo: Blanca and Ellingwood,false,false,false,COMBO,Class 3,"6,800'",18 mi,Considerable,Considerable,Considerable,Considerable,elli3,10042,ellingwood-point
-40,Ellingwood Point,14057,Sangre de Cristo,Combo: Little Bear + Blanca Traverse,false,false,false,COMBO,Class 5,"8,000'",17 mi,Extreme,Considerable,High,Extreme,litt3,10042,ellingwood-point
-40,Ellingwood Point,14057,Sangre de Cristo,Ellingwood Point - North Ridge via South Zapata Creek,false,false,true,Ellingwood Point,Easy Class 3,"5,200'",12.5 mi,Considerable,High,High,High,elli5,10042,ellingwood-point
-40,Ellingwood Point,14057,Sangre de Cristo,Ellingwood Point - Southwest Ridge,false,false,true,Ellingwood Point,Class 3,"2,200'",15 mi,High,High,Considerable,Considerable,elli4,10042,ellingwood-point
-40,Ellingwood Point,14057,Sangre de Cristo,Lake Como Approach,false,false,false,OTHER,Class 1,"3,900'",11 mi,Low,Low,Low,Low,como0,10042,ellingwood-point
-40,Ellingwood Point,14057,Sangre de Cristo,Little Bear Peak - West Ridge Indirect,false,false,false,Little Bear Peak,Class 4,"6,200'",14 mi,Extreme,Considerable,High,High,litt8,10042,ellingwood-point
-41,Mount Lindsey,14055,Sangre de Cristo,Mt. Lindsey - Northwest Gully,true,false,true,Mt. Lindsey,Easy Class 3,"3,500'",8.25 mi,Considerable,Considerable,Considerable,Moderate,lind1,10043,mount-lindsey
-41,Mount Lindsey,14055,Sangre de Cristo,Mt. Lindsey - North Couloir,false,true,true,Mt. Lindsey,Class 2 Moderate Snow,"3,900'",8.75 mi,Moderate,Moderate,Considerable,Considerable,lind3,10043,mount-lindsey
-41,Mount Lindsey,14055,Sangre de Cristo,Mt. Lindsey - Northwest Ridge,false,false,true,Mt. Lindsey,Class 3,"3,500'",8.25 mi,High,Moderate,Considerable,Considerable,lind2,10043,mount-lindsey
-42,Culebra Peak,14053,Sangre de Cristo,Culebra Peak - Northwest Ridge,true,false,true,Culebra Peak,Class 2,"2,700'",5 mi,Moderate,Moderate,Moderate,Moderate,cule1,10041,culebra-peak
-43,Mount Sherman,14043,Mosquito Range,Mt. Sherman - Southwest Ridge,true,false,true,Mt. Sherman,Class 1,"2,100'",5.25 mi,Moderate,Moderate,Low,Low,sher1,10045,mount-sherman
-43,Mount Sherman,14043,Mosquito Range,Mt. Sherman - South Slope,false,true,true,Mt. Sherman,Class 2 Easy Snow,"3,100'",8.5 mi,Low,Moderate,Moderate,Moderate,sher3,10045,mount-sherman
-43,Mount Sherman,14043,Mosquito Range,Mt. Sherman - West Slopes,false,false,true,Mt. Sherman,Class 1,"2,150'",4.5 mi,Moderate,Moderate,Low,Low,sher2,10045,mount-sherman
-44,Little Bear Peak,14041,Sangre de Cristo,Blanca Peak - Northwest Ridge,true,false,false,Blanca Peak,Difficult Class 2,"6,500'",17 mi,Considerable,Considerable,Moderate,Considerable,blan1,10044,little-bear-peak
-44,Little Bear Peak,14041,Sangre de Cristo,Ellingwood Point - South Face,true,false,false,Ellingwood Point,Difficult Class 2,"6,200'",17 mi,Considerable,Considerable,Considerable,Considerable,elli2,10044,little-bear-peak
-44,Little Bear Peak,14041,Sangre de Cristo,Little Bear Peak - West Ridge and Hourglass,true,false,true,Little Bear Peak,Class 4,"6,200'",14 mi,High,High,High,High,litt6,10044,little-bear-peak
-44,Little Bear Peak,14041,Sangre de Cristo,Combo: Blanca and Ellingwood,false,false,false,COMBO,Class 3,"6,800'",18 mi,Considerable,Considerable,Considerable,Considerable,elli3,10044,little-bear-peak
-44,Little Bear Peak,14041,Sangre de Cristo,Combo: Little Bear + Blanca Traverse,false,false,false,COMBO,Class 5,"8,000'",17 mi,Extreme,Considerable,High,Extreme,litt3,10044,little-bear-peak
-44,Little Bear Peak,14041,Sangre de Cristo,Ellingwood Point - North Ridge via South Zapata Creek,false,false,false,Ellingwood Point,Easy Class 3,"5,200'",12.5 mi,Considerable,High,High,High,elli5,10044,little-bear-peak
-44,Little Bear Peak,14041,Sangre de Cristo,Ellingwood Point - Southwest Ridge,false,false,false,Ellingwood Point,Class 3,"2,200'",15 mi,High,High,Considerable,Considerable,elli4,10044,little-bear-peak
-44,Little Bear Peak,14041,Sangre de Cristo,Lake Como Approach,false,false,false,OTHER,Class 1,"3,900'",11 mi,Low,Low,Low,Low,como0,10044,little-bear-peak
-44,Little Bear Peak,14041,Sangre de Cristo,Little Bear Peak - West Ridge Indirect,false,false,true,Little Bear Peak,Class 4,"6,200'",14 mi,Extreme,Considerable,High,High,litt8,10044,little-bear-peak
-45,Redcloud Peak,14037,San Juan Mountains,Redcloud Peak - Northeast Ridge,true,false,true,Redcloud Peak,Class 2,"3,700'",9 mi,Moderate,Moderate,Low,Low,redc1,10046,redcloud-peak
-45,Redcloud Peak,14037,San Juan Mountains,Sunshine Peak - Via Redcloud Peak,true,false,false,Sunshine Peak,Class 2,"4,800'",12.25 mi,Moderate,Moderate,Low,Considerable,suns2,10046,redcloud-peak
-45,Redcloud Peak,14037,San Juan Mountains,Sunshine Peak - East Ridge,false,false,false,Sunshine Peak,Class 2,"4,600'",7 mi,Moderate,Considerable,Considerable,Moderate,suns4,10046,redcloud-peak
-45,Redcloud Peak,14037,San Juan Mountains,Sunshine Peak - Northwest Face,false,false,false,Sunshine Peak,Difficult Class 2,"3,800'",8.5 mi,Moderate,Considerable,Considerable,Moderate,suns3,10046,redcloud-peak
-46,Pyramid Peak,14029,Elk Mountains,Maroon Peak - South Ridge,true,false,false,Maroon Peak,Class 3,"4,800'",12 mi,High,High,Extreme,Extreme,maro1,10047,pyramid-peak
-46,Pyramid Peak,14029,Elk Mountains,North Maroon Peak - Northeast Ridge,true,false,false,North Maroon Peak,Class 4,"4,600'",9.25 mi,High,High,High,High,nmar2,10047,pyramid-peak
-46,Pyramid Peak,14029,Elk Mountains,Pyramid Peak - Northeast Ridge,true,false,true,Pyramid Peak,Class 4,"4,500'",8.25 mi,High,High,High,High,pyra1,10047,pyramid-peak
-46,Pyramid Peak,14029,Elk Mountains,Combo: Bells Traverse,false,false,false,COMBO,Class 5,"4,850'",9.5 mi,Extreme,High,Extreme,Extreme,nmar4,10047,pyramid-peak
-46,Pyramid Peak,14029,Elk Mountains,Maroon Peak - Bell Cord Couloir,false,true,false,Maroon Peak,Class 4 Steep Snow,"4,556'",8 mi,High,High,High,High,maro3,10047,pyramid-peak
-47,San Luis Peak,14023,San Juan Mountains,San Luis Peak - Northeast Ridge,true,false,true,San Luis Peak,Class 1,"3,600'",13.5 mi,Low,Low,Low,Low,sanl1,10050,san-luis-peak
-47,San Luis Peak,14023,San Juan Mountains,San Luis Peak - South Ridge,false,false,true,San Luis Peak,Class 1,"3,400'",11.25 mi,Low,Moderate,Moderate,Low,sanl2,10050,san-luis-peak
-48,North Maroon Peak,14022,Elk Mountains,Maroon Peak - South Ridge,true,false,false,Maroon Peak,Class 3,"4,800'",12 mi,High,High,Extreme,Extreme,maro1,10067,north-maroon-peak
-48,North Maroon Peak,14022,Elk Mountains,North Maroon Peak - Northeast Ridge,true,false,true,North Maroon Peak,Class 4,"4,600'",9.25 mi,High,High,High,High,nmar2,10067,north-maroon-peak
-48,North Maroon Peak,14022,Elk Mountains,Pyramid Peak - Northeast Ridge,true,false,false,Pyramid Peak,Class 4,"4,500'",8.25 mi,High,High,High,High,pyra1,10067,north-maroon-peak
-48,North Maroon Peak,14022,Elk Mountains,Combo: Bells Traverse,false,false,false,COMBO,Class 5,"4,850'",9.5 mi,Extreme,High,Extreme,Extreme,nmar4,10067,north-maroon-peak
-48,North Maroon Peak,14022,Elk Mountains,Maroon Peak - Bell Cord Couloir,false,true,false,Maroon Peak,Class 4 Steep Snow,"4,556'",8 mi,High,High,High,High,maro3,10067,north-maroon-peak
-49,Wetterhorn Peak,14021,San Juan Mountains,Wetterhorn Peak - Southeast Ridge,true,false,true,Wetterhorn Peak,Class 3,"3,300'",7 mi,High,Considerable,Considerable,Considerable,wett1,10049,wetterhorn-peak
-49,Wetterhorn Peak,14021,San Juan Mountains,Wetterhorn Peak - East Face,false,true,true,Wetterhorn Peak,Class 3 Steep Snow,"3,300'",6.5 mi,High,Considerable,Considerable,Considerable,wett2,10049,wetterhorn-peak
-50,Wilson Peak,14021,San Juan Mountains,El Diente Peak - South Slopes,true,false,false,El Diente Peak,Class 3,"4,400'",12 mi,Considerable,Considerable,High,Considerable,eldi4,10048,wilson-peak
-50,Wilson Peak,14021,San Juan Mountains,Mt. Wilson - Southwest Slopes,true,false,false,Mt. Wilson,Class 3,"4,400'",12.5 mi,High,Considerable,Considerable,Considerable,mwil6,10048,wilson-peak
-50,Wilson Peak,14021,San Juan Mountains,Wilson Peak - Southwest Ridge,true,false,true,Wilson Peak,Class 3,"3,900'",10 mi,High,Considerable,Considerable,Considerable,wils1,10048,wilson-peak
-50,Wilson Peak,14021,San Juan Mountains,Combo: Mt. Wilson + El Diente Traverse,false,false,false,COMBO,Class 4,500',1 mi,High,High,High,High,mwil5,10048,wilson-peak
-50,Wilson Peak,14021,San Juan Mountains,El Diente Peak - North Buttress,false,false,false,El Diente Peak,Class 4,"3,200'",5 mi,High,Considerable,High,High,eldi8,10048,wilson-peak
-50,Wilson Peak,14021,San Juan Mountains,El Diente Peak - North Slopes,false,false,false,El Diente Peak,Class 3,"5,000'",15 mi,Considerable,Considerable,High,Considerable,eldi3,10048,wilson-peak
-50,Wilson Peak,14021,San Juan Mountains,Kilpacker Approach,false,false,false,OTHER,Class 1,800',6 mi,Low,Low,Low,Low,kilp0,10048,wilson-peak
-50,Wilson Peak,14021,San Juan Mountains,Mt. Wilson - East Face,false,true,false,Mt. Wilson,Class 3 Moderate Snow,"4,900'",12 mi,High,Considerable,High,High,mwil7,10048,wilson-peak
-50,Wilson Peak,14021,San Juan Mountains,Mt. Wilson - North Slopes,false,false,false,Mt. Wilson,Class 4,"5,100'",16 mi,High,High,High,Considerable,mwil2,10048,wilson-peak
-50,Wilson Peak,14021,San Juan Mountains,Navajo Lake Approach,false,false,false,OTHER,Class 1,"2,000'",9.5 mi,Low,Low,Low,Low,nava0,10048,wilson-peak
-50,Wilson Peak,14021,San Juan Mountains,Rock of Ages Approach,false,false,false,OTHER,Class 1,"2,800'",8.5 mi,Moderate,Low,Low,Low,silv0,10048,wilson-peak
-50,Wilson Peak,14021,San Juan Mountains,Woods Lake Approach,false,false,false,OTHER,Class 1,"2,115'",9 mi,Low,Low,Low,Low,wood0,10048,wilson-peak
-51,Mount of the Holy Cross,14007,Sawatch Range,Mt. of the Holy Cross - North Ridge,true,false,true,Mt. of the Holy Cross,Class 2,"5,600'",11.25 mi,Moderate,Moderate,Moderate,Considerable,holy1,10051,mt-of-the-holy-cross
-51,Mount of the Holy Cross,14007,Sawatch Range,Mt. of the Holy Cross - Cross Couloir,false,true,true,Mt. of the Holy Cross,Class 3 Steep Snow,"5,600'",12.25 mi,Considerable,Considerable,Considerable,High,holy2,10051,mt-of-the-holy-cross
-51,Mount of the Holy Cross,14007,Sawatch Range,Mt. of the Holy Cross - Halo Ridge,false,false,true,Mt. of the Holy Cross,Difficult Class 2,"5,210'",15 mi,Considerable,Considerable,Considerable,High,holy3,10051,mt-of-the-holy-cross
-52,Huron Peak,14006,Sawatch Range,Huron Peak - Northwest Slopes,true,false,true,Huron Peak,Class 2,"3,500'",7 mi,Moderate,Moderate,Low,Low,huro1,10052,huron-peak
-52,Huron Peak,14006,Sawatch Range,Huron Peak - North Ridge from Lulu Gulch,false,false,true,Huron Peak,Class 2,"3,980'",8.4 mi,Moderate,Moderate,Moderate,Considerable,huro4,10052,huron-peak
-52,Huron Peak,14006,Sawatch Range,Huron Peak - Southwest Slopes,false,false,true,Huron Peak,Class 2,"3,600'",9 mi,Moderate,Moderate,Considerable,Moderate,huro2,10052,huron-peak
-53,Sunshine Peak,14004,San Juan Mountains,Redcloud Peak - Northeast Ridge,true,false,false,Redcloud Peak,Class 2,"3,700'",9 mi,Moderate,Moderate,Low,Low,redc1,10053,sunshine-peak
-53,Sunshine Peak,14004,San Juan Mountains,Sunshine Peak - Via Redcloud Peak,true,false,true,Sunshine Peak,Class 2,"4,800'",12.25 mi,Moderate,Moderate,Low,Considerable,suns2,10053,sunshine-peak
-53,Sunshine Peak,14004,San Juan Mountains,Sunshine Peak - East Ridge,false,false,true,Sunshine Peak,Class 2,"4,600'",7 mi,Moderate,Considerable,Considerable,Moderate,suns4,10053,sunshine-peak
-53,Sunshine Peak,14004,San Juan Mountains,Sunshine Peak - Northwest Face,false,false,true,Sunshine Peak,Difficult Class 2,"3,800'",8.5 mi,Moderate,Considerable,Considerable,Moderate,suns3,10053,sunshine-peak
-,Challenger Point,14086,Sangre de Cristo,Challenger Point - North Slope,true,false,true,Challenger Point,Difficult Class 2,"5,400'",13.5 mi,Considerable,Considerable,Considerable,Moderate,chal1,10034,challenger-point
-,Challenger Point,14086,Sangre de Cristo,Kit Carson Peak - Via Challenger Point,true,false,false,Kit Carson Peak,Easy Class 3,"6,250'",15 mi,Considerable,Considerable,Considerable,Considerable,kitc2,10034,challenger-point
-,Challenger Point,14086,Sangre de Cristo,Challenger Point - Kirk Couloir,false,true,true,Challenger Point,Class 3 Steep Snow,"5,400'",12.75 mi,Considerable,Moderate,Considerable,Considerable,chal5,10034,challenger-point
-,Challenger Point,14086,Sangre de Cristo,Kit Carson Peak - East Ridge,false,false,false,Kit Carson Peak,Class 3,"5,900'",14.5 mi,High,Considerable,High,High,kitc3,10034,challenger-point
-,Challenger Point,14086,Sangre de Cristo,Kit Carson Peak - North Ridge,false,false,false,Kit Carson Peak,Class 4,"5,315'",11.4 mi,High,Considerable,Considerable,High,kitc4,10034,challenger-point
-,Challenger Point,14086,Sangre de Cristo,Kit Carson Peak - Outward Bound Couloir,false,true,false,Kit Carson Peak,Class 3 Steep Snow,"5,500'",13.75 mi,Considerable,Moderate,Considerable,Considerable,kitc6,10034,challenger-point
-,Challenger Point,14086,Sangre de Cristo,Willow Creek Approach,false,false,false,OTHER,Class 1,"2,850'",9.5 mi,Low,Low,Low,Low,will0,10034,challenger-point
-,Conundrum Peak,14037,Elk Mountains,Castle Peak - Northeast Ridge,true,false,false,Castle Peak,Difficult Class 2,"4,600'",13.5 mi,Considerable,Considerable,Considerable,Considerable,cast1,10065,conundrum-peak
-,Conundrum Peak,14037,Elk Mountains,Combo: Castle and Conundrum,true,false,false,COMBO,Difficult Class 2,"4,850'",14.5 mi,Considerable,Considerable,Considerable,Considerable,cast4,10065,conundrum-peak
-,Conundrum Peak,14037,Elk Mountains,Conundrum Peak - South Ridge,true,false,true,Conundrum Peak,Difficult Class 2,"4,400'",13.5 mi,Considerable,Considerable,Moderate,Moderate,conu1,10065,conundrum-peak
-,Conundrum Peak,14037,Elk Mountains,Castle Peak - North Face Couloir,false,true,false,Castle Peak,Difficult Class 2 Moderate Snow,"4,600'",13 mi,Considerable,Considerable,Moderate,Moderate,cast3,10065,conundrum-peak
-,Conundrum Peak,14037,Elk Mountains,Castle Peak - Northwest Ridge,false,true,false,Castle Peak,Difficult Class 2 Moderate Snow,"4,600'",13.5 mi,Considerable,Considerable,Moderate,Moderate,cast2,10065,conundrum-peak
-,Conundrum Peak,14037,Elk Mountains,Conundrum Peak - Conundrum Couloir,false,true,true,Conundrum Peak,Class 3 Steep Snow,"4,400'",12 mi,High,Considerable,Moderate,Considerable,conu5,10065,conundrum-peak
-,El Diente Peak,14175,San Juan Mountains,El Diente Peak - South Slopes,true,false,true,El Diente Peak,Class 3,"4,400'",12 mi,Considerable,Considerable,High,Considerable,eldi4,10064,el-diente-peak
-,El Diente Peak,14175,San Juan Mountains,Mt. Wilson - Southwest Slopes,true,false,false,Mt. Wilson,Class 3,"4,400'",12.5 mi,High,Considerable,Considerable,Considerable,mwil6,10064,el-diente-peak
-,El Diente Peak,14175,San Juan Mountains,Wilson Peak - Southwest Ridge,true,false,false,Wilson Peak,Class 3,"3,900'",10 mi,High,Considerable,Considerable,Considerable,wils1,10064,el-diente-peak
-,El Diente Peak,14175,San Juan Mountains,Combo: Mt. Wilson + El Diente Traverse,false,false,false,COMBO,Class 4,500',1 mi,High,High,High,High,mwil5,10064,el-diente-peak
-,El Diente Peak,14175,San Juan Mountains,El Diente Peak - North Buttress,false,false,true,El Diente Peak,Class 4,"3,200'",5 mi,High,Considerable,High,High,eldi8,10064,el-diente-peak
-,El Diente Peak,14175,San Juan Mountains,El Diente Peak - North Slopes,false,false,true,El Diente Peak,Class 3,"5,000'",15 mi,Considerable,Considerable,High,Considerable,eldi3,10064,el-diente-peak
-,El Diente Peak,14175,San Juan Mountains,Kilpacker Approach,false,false,false,OTHER,Class 1,800',6 mi,Low,Low,Low,Low,kilp0,10064,el-diente-peak
-,El Diente Peak,14175,San Juan Mountains,Mt. Wilson - East Face,false,true,false,Mt. Wilson,Class 3 Moderate Snow,"4,900'",12 mi,High,Considerable,High,High,mwil7,10064,el-diente-peak
-,El Diente Peak,14175,San Juan Mountains,Mt. Wilson - North Slopes,false,false,false,Mt. Wilson,Class 4,"5,100'",16 mi,High,High,High,Considerable,mwil2,10064,el-diente-peak
-,El Diente Peak,14175,San Juan Mountains,Navajo Lake Approach,false,false,false,OTHER,Class 1,"2,000'",9.5 mi,Low,Low,Low,Low,nava0,10064,el-diente-peak
-,El Diente Peak,14175,San Juan Mountains,Rock of Ages Approach,false,false,false,OTHER,Class 1,"2,800'",8.5 mi,Moderate,Low,Low,Low,silv0,10064,el-diente-peak
-,El Diente Peak,14175,San Juan Mountains,Woods Lake Approach,false,false,false,OTHER,Class 1,"2,115'",9 mi,Low,Low,Low,Low,wood0,10064,el-diente-peak
-,Mount Cameron,14248,Mosquito Range,Combo: Decalibron,true,false,false,COMBO,Class 2,"3,500'",7.5 mi,Moderate,Moderate,Low,Moderate,bros6,10063,mount-cameron
-,Mount Cameron,14248,Mosquito Range,Mt. Bross - West Slopes,true,false,false,Mt. Bross,Class 2,"2,250'",3.25 mi,Moderate,Moderate,Low,Low,bros2,10063,mount-cameron
-,Mount Cameron,14248,Mosquito Range,Mt. Cameron - West Ridge,true,false,true,Mt. Cameron,Class 2,"2,250'",4.75 mi,Moderate,Moderate,Low,Low,came1,10063,mount-cameron
-,Mount Cameron,14248,Mosquito Range,Mt. Democrat - East Slope,true,false,false,Mt. Democrat,Class 2,"2,150'",4 mi,Moderate,Moderate,Low,Low,demo1,10063,mount-cameron
-,Mount Cameron,14248,Mosquito Range,Mt. Lincoln - West Ridge,true,false,false,Mt. Lincoln,Class 2,"2,600'",6 mi,Moderate,Moderate,Low,Low,linc1,10063,mount-cameron
-,Mount Cameron,14248,Mosquito Range,"Mt. Bross - ""Dolly Varden Gully""",false,true,false,Mt. Bross,Class 2 Easy Snow,"2,900'",4 mi,Low,Moderate,Moderate,Moderate,bros4,10063,mount-cameron
-,Mount Cameron,14248,Mosquito Range,"Mt. Bross - ""S Gully""",false,true,false,Mt. Bross,Class 2 Easy Snow,"2,600'",9.5 mi,Moderate,Moderate,Moderate,Moderate,bros3,10063,mount-cameron
-,Mount Cameron,14248,Mosquito Range,Mt. Bross - East Slopes,false,false,false,Mt. Bross,Class 1,"2,900'",9 mi,Low,Low,Low,Low,bros1,10063,mount-cameron
-,Mount Cameron,14248,Mosquito Range,Mt. Democrat - South Slope,false,true,false,Mt. Democrat,Difficult Class 2 Moderate Snow,"2,150'",2.5 mi,Considerable,Moderate,Considerable,Moderate,demo2,10063,mount-cameron
-,Mount Cameron,14248,Mosquito Range,Mt. Lincoln - East Slopes,false,false,false,Mt. Lincoln,Class 2,"2,650'",6.5 mi,Low,Moderate,Low,Low,linc3,10063,mount-cameron
-,Mount Cameron,14248,Mosquito Range,Mt. Lincoln - Lincoln Amphitheatre,false,false,false,Mt. Lincoln,Class 2,"3,400'",4.75 mi,Moderate,Considerable,Moderate,Moderate,linc2,10063,mount-cameron
-,North Eolus,14042,San Juan Mountains,Mt. Eolus - Northeast Ridge,true,false,false,Mt. Eolus,Class 3,"3,100'",6 mi,High,Considerable,Considerable,Considerable,eolu3,10066,north-eolus
-,North Eolus,14042,San Juan Mountains,North Eolus - South Ridge,true,false,true,North Eolus,Class 3,250',0.2 mi,Considerable,Moderate,Moderate,Moderate,neol4,10066,north-eolus
-,North Eolus,14042,San Juan Mountains,Sunlight Peak - South Face,true,false,false,Sunlight Peak,Class 4,"3,000'",6 mi,Extreme,Considerable,Considerable,Considerable,sunl2,10066,north-eolus
-,North Eolus,14042,San Juan Mountains,Windom Peak - West Ridge,true,false,false,Windom Peak,Difficult Class 2,"3,000'",6 mi,Considerable,Considerable,Moderate,Moderate,wind1,10066,north-eolus
-,North Eolus,14042,San Juan Mountains,Chicago Basin Approach,false,false,false,OTHER,Class 1,"2,800'",12 mi,Low,Low,Low,Low,chib1,10066,north-eolus
+peak_rank,peak_name,peak_elevation_ft,peak_range,route_name,is_standard,is_snow_climb,is_primary_for_peak,route_summits,difficulty,elevation_gain,distance,exposure,rockfall,route_finding,commitment,route_key,peak_id,peak_slug,road_difficulty
+1,Mount Elbert,14438,Sawatch Range,Mt. Elbert - Northeast Ridge,true,false,true,Mt. Elbert,Class 1,"4,500'",9.75 mi,Low,Low,Low,Low,elbe1,10001,mount-elbert,1
+1,Mount Elbert,14438,Sawatch Range,Mt. Elbert - Box Creek Couloirs,false,true,true,Mt. Elbert,Difficult Class 2 Moderate Snow,"4,150'",10 mi,Considerable,Moderate,Moderate,Considerable,elbe4,10001,mount-elbert,3
+1,Mount Elbert,14438,Sawatch Range,Mt. Elbert - East Ridge,false,false,true,Mt. Elbert,Class 1,"4,200'",11.25 mi,Low,Low,Low,Moderate,elbe2,10001,mount-elbert,3
+1,Mount Elbert,14438,Sawatch Range,Mt. Elbert - Southeast Ridge,false,false,true,Mt. Elbert,Class 2,"5,300'",10.5 mi,Low,Moderate,Moderate,Moderate,elbe3,10001,mount-elbert,1
+2,Mount Massive,14427,Sawatch Range,Mt. Massive - East Slopes,true,false,true,Mt. Massive,Class 2,"4,500'",13.75 mi,Moderate,Moderate,Moderate,Moderate,mass1,10002,mount-massive,1
+2,Mount Massive,14427,Sawatch Range,Mt. Massive - East Ridge,false,false,true,Mt. Massive,Difficult Class 2,"5,000'",14 mi,Moderate,Moderate,Considerable,Considerable,mass3,10002,mount-massive,0
+2,Mount Massive,14427,Sawatch Range,Mt. Massive - Southwest Slopes,false,false,true,Mt. Massive,Class 2,"4,000'",8 mi,Moderate,Moderate,Low,Moderate,mass2,10002,mount-massive,4
+3,Mount Harvard,14424,Sawatch Range,Mt. Columbia - West Slopes,true,false,false,Mt. Columbia,Class 2,"4,250'",12 mi,Moderate,Considerable,Moderate,Moderate,colu2,10003,mount-harvard,2
+3,Mount Harvard,14424,Sawatch Range,Mt. Harvard - South Slopes,true,false,true,Mt. Harvard,Class 2,"4,600'",13.75 mi,Moderate,Moderate,Moderate,Moderate,harv1,10003,mount-harvard,2
+3,Mount Harvard,14424,Sawatch Range,Combo: Harvard and Columbia Traverse,false,false,false,COMBO,Class 2,"6,100'",15 mi,Moderate,Considerable,High,High,harv4,10003,mount-harvard,2
+3,Mount Harvard,14424,Sawatch Range,Mt. Columbia - Southeast Ridge,false,false,false,Mt. Columbia,Class 2,"4,800'",11.25 mi,Moderate,Moderate,Considerable,Moderate,colu5,10003,mount-harvard,2
+3,Mount Harvard,14424,Sawatch Range,Mt. Columbia - Southwest Couloir,false,true,false,Mt. Columbia,Class 2 Moderate Snow,"4,800'",13.5 mi,Moderate,Moderate,Considerable,Moderate,colu6,10003,mount-harvard,2
+3,Mount Harvard,14424,Sawatch Range,Mt. Harvard - South Face,false,true,true,Mt. Harvard,Class 2 Moderate Snow,"4,600'",13.75 mi,Moderate,Moderate,Considerable,Considerable,harv3,10003,mount-harvard,2
+4,Blanca Peak,14350,Sangre de Cristo,Blanca Peak - Northwest Ridge,true,false,true,Blanca Peak,Difficult Class 2,"6,500'",17 mi,Considerable,Considerable,Moderate,Considerable,blan1,10004,blanca-peak,6
+4,Blanca Peak,14350,Sangre de Cristo,Ellingwood Point - South Face,true,false,false,Ellingwood Point,Difficult Class 2,"6,200'",17 mi,Considerable,Considerable,Considerable,Considerable,elli2,10004,blanca-peak,6
+4,Blanca Peak,14350,Sangre de Cristo,Little Bear Peak - West Ridge and Hourglass,true,false,false,Little Bear Peak,Class 4,"6,200'",14 mi,High,High,High,High,litt6,10004,blanca-peak,6
+4,Blanca Peak,14350,Sangre de Cristo,Combo: Blanca and Ellingwood,false,false,false,COMBO,Class 3,"6,800'",18 mi,Considerable,Considerable,Considerable,Considerable,elli3,10004,blanca-peak,6
+4,Blanca Peak,14350,Sangre de Cristo,Combo: Little Bear + Blanca Traverse,false,false,false,COMBO,Class 5,"8,000'",17 mi,Extreme,Considerable,High,Extreme,litt3,10004,blanca-peak,6
+4,Blanca Peak,14350,Sangre de Cristo,Ellingwood Point - North Ridge via South Zapata Creek,false,false,false,Ellingwood Point,Easy Class 3,"5,200'",12.5 mi,Considerable,High,High,High,elli5,10004,blanca-peak,1
+4,Blanca Peak,14350,Sangre de Cristo,Ellingwood Point - Southwest Ridge,false,false,false,Ellingwood Point,Class 3,"2,200'",15 mi,High,High,Considerable,Considerable,elli4,10004,blanca-peak,6
+4,Blanca Peak,14350,Sangre de Cristo,Lake Como Approach,false,false,false,OTHER,Class 1,"3,900'",11 mi,Low,Low,Low,Low,como0,10004,blanca-peak,6
+4,Blanca Peak,14350,Sangre de Cristo,Little Bear Peak - West Ridge Indirect,false,false,false,Little Bear Peak,Class 4,"6,200'",14 mi,Extreme,Considerable,High,High,litt8,10004,blanca-peak,6
+5,La Plata Peak,14344,Sawatch Range,La Plata Peak - Northwest Ridge,true,false,true,La Plata Peak,Class 2,"4,400'",9.25 mi,Moderate,Moderate,Low,Moderate,lapl1,10005,la-plata-peak,0
+5,La Plata Peak,14344,Sawatch Range,La Plata Peak - Ellingwood Ridge,false,false,true,La Plata Peak,Class 3,"5,900'",9.5 mi,High,High,High,High,lapl3,10005,la-plata-peak,0
+5,La Plata Peak,14344,Sawatch Range,La Plata Peak - North Face,false,true,true,La Plata Peak,Difficult Class 2 Moderate Snow,"4,500'",8.75 mi,Considerable,Considerable,High,Considerable,lapl4,10005,la-plata-peak,0
+5,La Plata Peak,14344,Sawatch Range,La Plata Peak - Southwest Ridge,false,false,true,La Plata Peak,Class 2,"3,600'",7.5 mi,Moderate,Considerable,Considerable,Moderate,lapl2,10005,la-plata-peak,3
+6,Uncompahgre Peak,14318,San Juan Mountains,Uncompahgre Peak - South Ridge,true,false,true,Uncompahgre Peak,Class 2,"3,000'",7.5 mi,Moderate,Considerable,Moderate,Moderate,unco1,10006,uncompahgre-peak,3
+7,Crestone Peak,14299,Sangre de Cristo,Crestone Needle - South Face,true,false,false,Crestone Needle,Class 4,"4,400'",12 mi,High,Considerable,High,Considerable,cnee1,10007,crestone-peak,4
+7,Crestone Peak,14299,Sangre de Cristo,Crestone Peak - South Face,true,false,true,Crestone Peak,Class 3,"5,700'",14 mi,High,Considerable,Considerable,Considerable,cpea2,10007,crestone-peak,4
+7,Crestone Peak,14299,Sangre de Cristo,Humboldt Peak - West Ridge,true,false,false,Humboldt Peak,Class 2,"4,200'",11 mi,Moderate,Moderate,Moderate,Low,humb1,10007,crestone-peak,4
+7,Crestone Peak,14299,Sangre de Cristo,Combo: Crestones Traverse,false,false,false,COMBO,Class 5,"5,300'",14 mi,Extreme,Considerable,High,High,cnee3,10007,crestone-peak,4
+7,Crestone Peak,14299,Sangre de Cristo,Crestone Needle - Ellingwood Arete/Ledges,false,false,false,Crestone Needle,Class 5,"4,400'",11.25 mi,Extreme,High,High,Extreme,cnee5,10007,crestone-peak,4
+7,Crestone Peak,14299,Sangre de Cristo,Humboldt Peak - East Ridge,false,false,false,Humboldt Peak,Class 2,"4,300'",8 mi,Moderate,Moderate,Considerable,Moderate,humb2,10007,crestone-peak,3
+7,Crestone Peak,14299,Sangre de Cristo,Humboldt Peak - Southeast Gully,false,true,false,Humboldt Peak,Class 2 Moderate Snow,"5,400'",8 mi,Moderate,Moderate,Considerable,Moderate,humb3,10007,crestone-peak,4
+8,Mount Lincoln,14293,Mosquito Range,Combo: Decalibron,true,false,false,COMBO,Class 2,"3,500'",7.5 mi,Moderate,Moderate,Low,Moderate,bros6,10008,mount-lincoln,2
+8,Mount Lincoln,14293,Mosquito Range,Mt. Bross - West Slopes,true,false,false,Mt. Bross,Class 2,"2,250'",3.25 mi,Moderate,Moderate,Low,Low,bros2,10008,mount-lincoln,2
+8,Mount Lincoln,14293,Mosquito Range,Mt. Cameron - West Ridge,true,false,false,Mt. Cameron,Class 2,"2,250'",4.75 mi,Moderate,Moderate,Low,Low,came1,10008,mount-lincoln,2
+8,Mount Lincoln,14293,Mosquito Range,Mt. Democrat - East Slope,true,false,false,Mt. Democrat,Class 2,"2,150'",4 mi,Moderate,Moderate,Low,Low,demo1,10008,mount-lincoln,2
+8,Mount Lincoln,14293,Mosquito Range,Mt. Lincoln - West Ridge,true,false,true,Mt. Lincoln,Class 2,"2,600'",6 mi,Moderate,Moderate,Low,Low,linc1,10008,mount-lincoln,2
+8,Mount Lincoln,14293,Mosquito Range,"Mt. Bross - ""Dolly Varden Gully""",false,true,false,Mt. Bross,Class 2 Easy Snow,"2,900'",4 mi,Low,Moderate,Moderate,Moderate,bros4,10008,mount-lincoln,2
+8,Mount Lincoln,14293,Mosquito Range,"Mt. Bross - ""S Gully""",false,true,false,Mt. Bross,Class 2 Easy Snow,"2,600'",9.5 mi,Moderate,Moderate,Moderate,Moderate,bros3,10008,mount-lincoln,2
+8,Mount Lincoln,14293,Mosquito Range,Mt. Bross - East Slopes,false,false,false,Mt. Bross,Class 1,"2,900'",9 mi,Low,Low,Low,Low,bros1,10008,mount-lincoln,2
+8,Mount Lincoln,14293,Mosquito Range,Mt. Democrat - South Slope,false,true,false,Mt. Democrat,Difficult Class 2 Moderate Snow,"2,150'",2.5 mi,Considerable,Moderate,Considerable,Moderate,demo2,10008,mount-lincoln,2
+8,Mount Lincoln,14293,Mosquito Range,Mt. Lincoln - East Slopes,false,false,true,Mt. Lincoln,Class 2,"2,650'",6.5 mi,Low,Moderate,Low,Low,linc3,10008,mount-lincoln,4
+8,Mount Lincoln,14293,Mosquito Range,Mt. Lincoln - Lincoln Amphitheatre,false,false,true,Mt. Lincoln,Class 2,"3,400'",4.75 mi,Moderate,Considerable,Moderate,Moderate,linc2,10008,mount-lincoln,1
+9,Grays Peak,14275,Front Range,Combo: Grays and Torreys,true,false,false,COMBO,Class 1,"3,600'",8.25 mi,Low,Low,Low,Moderate,torr5,10009,grays-peak,3
+9,Grays Peak,14275,Front Range,Grays Peak - North Slopes,true,false,true,Grays Peak,Class 1,"3,000'",7.5 mi,Low,Low,Low,Low,gray1,10009,grays-peak,3
+9,Grays Peak,14275,Front Range,Torreys Peak - South Slopes,true,false,false,Torreys Peak,Class 1,"3,000'",7.75 mi,Low,Low,Low,Low,torr2,10009,grays-peak,3
+9,Grays Peak,14275,Front Range,Grays Peak - Lost Rat Couloir,false,true,true,Grays Peak,Class 3 Steep Snow,"3,000'",6.5 mi,Considerable,Considerable,Moderate,Considerable,gray6,10009,grays-peak,3
+9,Grays Peak,14275,Front Range,Grays Peak - South Ridge,false,false,true,Grays Peak,Class 2,"3,250'",6.5 mi,Moderate,Moderate,Moderate,Moderate,gray3,10009,grays-peak,3
+9,Grays Peak,14275,Front Range,Grays Peak - Southwest Ridge,false,false,true,Grays Peak,Class 2,"3,800'",10.25 mi,Moderate,Moderate,Moderate,Moderate,gray8,10009,grays-peak,4
+9,Grays Peak,14275,Front Range,Torreys Peak - Dead Dog Couloir,false,true,false,Torreys Peak,Class 3 Steep Snow,"3,000'",6 mi,Considerable,Considerable,Moderate,Considerable,torr7,10009,grays-peak,3
+9,Grays Peak,14275,Front Range,Torreys Peak - Emperor Couloir,false,true,false,Torreys Peak,Class 3 Steep Snow,"4,500'",9.5 mi,Considerable,Considerable,Considerable,Considerable,torr10,10009,grays-peak,4
+9,Grays Peak,14275,Front Range,Torreys Peak - Kelso Ridge,false,false,false,Torreys Peak,Class 3,"3,100'",6.75 mi,High,Considerable,Considerable,Considerable,torr4,10009,grays-peak,3
+9,Grays Peak,14275,Front Range,Torreys Peak - NW Face/Tuning Fork,false,true,false,Torreys Peak,Difficult Class 2 Moderate Snow,"4,500'",10.5 mi,Moderate,Considerable,Considerable,Considerable,torr9,10009,grays-peak,4
+9,Grays Peak,14275,Front Range,Torreys Peak - West Ridge,false,false,false,Torreys Peak,Class 2,"5,500'",10 mi,Moderate,Moderate,Moderate,Considerable,torr11,10009,grays-peak,0
+10,Castle Peak,14274,Elk Mountains,Castle Peak - Northeast Ridge,true,false,true,Castle Peak,Difficult Class 2,"4,600'",13.5 mi,Considerable,Considerable,Considerable,Considerable,cast1,10012,castle-peak,4
+10,Castle Peak,14274,Elk Mountains,Combo: Castle and Conundrum,true,false,false,COMBO,Difficult Class 2,"4,850'",14.5 mi,Considerable,Considerable,Considerable,Considerable,cast4,10012,castle-peak,4
+10,Castle Peak,14274,Elk Mountains,Conundrum Peak - South Ridge,true,false,false,Conundrum Peak,Difficult Class 2,"4,400'",13.5 mi,Considerable,Considerable,Moderate,Moderate,conu1,10012,castle-peak,4
+10,Castle Peak,14274,Elk Mountains,Castle Peak - North Face Couloir,false,true,true,Castle Peak,Difficult Class 2 Moderate Snow,"4,600'",13 mi,Considerable,Considerable,Moderate,Moderate,cast3,10012,castle-peak,4
+10,Castle Peak,14274,Elk Mountains,Castle Peak - Northwest Ridge,false,true,true,Castle Peak,Difficult Class 2 Moderate Snow,"4,600'",13.5 mi,Considerable,Considerable,Moderate,Moderate,cast2,10012,castle-peak,4
+10,Castle Peak,14274,Elk Mountains,Conundrum Peak - Conundrum Couloir,false,true,false,Conundrum Peak,Class 3 Steep Snow,"4,400'",12 mi,High,Considerable,Moderate,Considerable,conu5,10012,castle-peak,4
+11,Quandary Peak,14272,Tenmile Range,Quandary Peak - East Ridge,true,false,true,Quandary Peak,Class 1,"3,450'",6.75 mi,Low,Low,Low,Low,quan1,10013,quandary-peak,1
+11,Quandary Peak,14272,Tenmile Range,Quandary Peak - North Gully aka Quandary Couloir,false,true,true,Quandary Peak,Class 3 Steep Snow,"3,250'",5.25 mi,Considerable,Considerable,Moderate,Considerable,quan4,10013,quandary-peak,2
+11,Quandary Peak,14272,Tenmile Range,Quandary Peak - South Gully aka Cristo Couloir,false,true,true,Quandary Peak,Difficult Class 2 Moderate Snow,"2,900'",3.5 mi,Moderate,Considerable,Moderate,Low,quan2,10013,quandary-peak,2
+11,Quandary Peak,14272,Tenmile Range,Quandary Peak - West Ridge,false,false,true,Quandary Peak,Class 3,"2,650'",4 mi,High,Considerable,Considerable,High,quan3,10013,quandary-peak,2
+12,Torreys Peak,14272,Front Range,Combo: Grays and Torreys,true,false,false,COMBO,Class 1,"3,600'",8.25 mi,Low,Low,Low,Moderate,torr5,10011,torreys-peak,3
+12,Torreys Peak,14272,Front Range,Grays Peak - North Slopes,true,false,false,Grays Peak,Class 1,"3,000'",7.5 mi,Low,Low,Low,Low,gray1,10011,torreys-peak,3
+12,Torreys Peak,14272,Front Range,Torreys Peak - South Slopes,true,false,true,Torreys Peak,Class 1,"3,000'",7.75 mi,Low,Low,Low,Low,torr2,10011,torreys-peak,3
+12,Torreys Peak,14272,Front Range,Grays Peak - Lost Rat Couloir,false,true,false,Grays Peak,Class 3 Steep Snow,"3,000'",6.5 mi,Considerable,Considerable,Moderate,Considerable,gray6,10011,torreys-peak,3
+12,Torreys Peak,14272,Front Range,Grays Peak - South Ridge,false,false,false,Grays Peak,Class 2,"3,250'",6.5 mi,Moderate,Moderate,Moderate,Moderate,gray3,10011,torreys-peak,3
+12,Torreys Peak,14272,Front Range,Grays Peak - Southwest Ridge,false,false,false,Grays Peak,Class 2,"3,800'",10.25 mi,Moderate,Moderate,Moderate,Moderate,gray8,10011,torreys-peak,4
+12,Torreys Peak,14272,Front Range,Torreys Peak - Dead Dog Couloir,false,true,true,Torreys Peak,Class 3 Steep Snow,"3,000'",6 mi,Considerable,Considerable,Moderate,Considerable,torr7,10011,torreys-peak,3
+12,Torreys Peak,14272,Front Range,Torreys Peak - Emperor Couloir,false,true,true,Torreys Peak,Class 3 Steep Snow,"4,500'",9.5 mi,Considerable,Considerable,Considerable,Considerable,torr10,10011,torreys-peak,4
+12,Torreys Peak,14272,Front Range,Torreys Peak - Kelso Ridge,false,false,true,Torreys Peak,Class 3,"3,100'",6.75 mi,High,Considerable,Considerable,Considerable,torr4,10011,torreys-peak,3
+12,Torreys Peak,14272,Front Range,Torreys Peak - NW Face/Tuning Fork,false,true,true,Torreys Peak,Difficult Class 2 Moderate Snow,"4,500'",10.5 mi,Moderate,Considerable,Considerable,Considerable,torr9,10011,torreys-peak,4
+12,Torreys Peak,14272,Front Range,Torreys Peak - West Ridge,false,false,true,Torreys Peak,Class 2,"5,500'",10 mi,Moderate,Moderate,Moderate,Considerable,torr11,10011,torreys-peak,0
+13,Mount Antero,14271,Sawatch Range,Mt. Antero - West Slopes,true,false,true,Mt. Antero,Class 2,"5,200'",15.5 mi,Moderate,Moderate,Low,Moderate,ante1,10010,mount-antero,4
+13,Mount Antero,14271,Sawatch Range,Mt. Antero - Via Little Browns Creek,false,false,true,Mt. Antero,Class 2,"5,550'",16.25 mi,Moderate,Moderate,Moderate,Moderate,ante2,10010,mount-antero,1
+14,Mount Blue Sky,14268,Front Range,"Combo: Bierstadt, Sawtooth, Blue Sky",true,false,false,COMBO,Class 3,"3,900'",10.5 mi,Considerable,Considerable,Considerable,High,bier4,10014,mount-blue-sky,0
+14,Mount Blue Sky,14268,Front Range,Mt. Bierstadt - West Slopes,true,false,false,Mt. Bierstadt,Class 2,"2,850'",7.25 mi,Low,Moderate,Low,Low,bier1,10014,mount-blue-sky,0
+14,Mount Blue Sky,14268,Front Range,Mt. Blue Sky - West Ridge from Summit Lake,true,false,true,Mt. Blue Sky,Class 2,"2,000'",5.5 mi,Moderate,Moderate,Moderate,Moderate,evan2,10014,mount-blue-sky,0
+14,Mount Blue Sky,14268,Front Range,Combo: Tour de Abyss Loop,false,false,false,COMBO,Class 3,"3,000'",5.75 mi,Considerable,Considerable,Considerable,High,bier5,10014,mount-blue-sky,0
+14,Mount Blue Sky,14268,Front Range,Mt. Bierstadt - East Ridge,false,false,false,Mt. Bierstadt,Class 3,"3,000'",5 mi,Considerable,Considerable,Considerable,Considerable,bier3,10014,mount-blue-sky,0
+14,Mount Blue Sky,14268,Front Range,Mt. Bierstadt - South Ridge,false,false,false,Mt. Bierstadt,Class 2,"4,500'",14.25 mi,Moderate,Moderate,Considerable,Moderate,bier6,10014,mount-blue-sky,0
+14,Mount Blue Sky,14268,Front Range,Mt. Blue Sky - North Face Moderate,false,true,true,Mt. Blue Sky,Class 3 Moderate Snow,"1,500'",2 mi,Considerable,Considerable,Low,Moderate,evan7,10014,mount-blue-sky,0
+14,Mount Blue Sky,14268,Front Range,Mt. Blue Sky - North Face Steep,false,true,true,Mt. Blue Sky,Class 3 Steep Snow,"1,500'",2 mi,High,Considerable,Moderate,Moderate,evan8,10014,mount-blue-sky,0
+14,Mount Blue Sky,14268,Front Range,Mt. Blue Sky - West Gully,false,true,true,Mt. Blue Sky,Class 3 Steep Snow,"1,650'",5.25 mi,High,Considerable,Moderate,Moderate,evan4,10014,mount-blue-sky,0
+14,Mount Blue Sky,14268,Front Range,Mt. Blue Sky - West Ridge from Echo Lake,false,false,true,Mt. Blue Sky,Class 2,"5,600'",17 mi,Moderate,Moderate,Moderate,Considerable,evan1,10014,mount-blue-sky,0
+14,Mount Blue Sky,14268,Front Range,Mt. Blue Sky - West Ridge from Guanella Pass,false,false,true,Mt. Blue Sky,Class 2,"3,100'",9.25 mi,Moderate,Considerable,Considerable,Considerable,evan3,10014,mount-blue-sky,0
+15,Longs Peak,14259,Front Range,Longs Peak - Keyhole Route,true,false,true,Longs Peak,Class 3,"5,100'",14.5 mi,High,Considerable,Considerable,High,long1,10015,longs-peak,0
+15,Longs Peak,14259,Front Range,Longs Peak - Keplinger Couloir,false,false,true,Longs Peak,Class 3,"5,900'",16 mi,High,Considerable,Considerable,Considerable,long5,10015,longs-peak,0
+15,Longs Peak,14259,Front Range,Longs Peak - Loft Route,false,false,true,Longs Peak,Class 3,"5,300'",13 mi,High,Considerable,High,High,long2,10015,longs-peak,0
+16,Mount Wilson,14256,San Juan Mountains,El Diente Peak - South Slopes,true,false,false,El Diente Peak,Class 3,"4,400'",12 mi,Considerable,Considerable,High,Considerable,eldi4,10016,mount-wilson,1
+16,Mount Wilson,14256,San Juan Mountains,Mt. Wilson - Southwest Slopes,true,false,true,Mt. Wilson,Class 3,"4,400'",12.5 mi,High,Considerable,Considerable,Considerable,mwil6,10016,mount-wilson,1
+16,Mount Wilson,14256,San Juan Mountains,Wilson Peak - Southwest Ridge,true,false,false,Wilson Peak,Class 3,"3,900'",10 mi,High,Considerable,Considerable,Considerable,wils1,10016,mount-wilson,3
+16,Mount Wilson,14256,San Juan Mountains,Combo: Mt. Wilson + El Diente Traverse,false,false,false,COMBO,Class 4,500',1 mi,High,High,High,High,mwil5,10016,mount-wilson,1
+16,Mount Wilson,14256,San Juan Mountains,El Diente Peak - North Buttress,false,false,false,El Diente Peak,Class 4,"3,200'",5 mi,High,Considerable,High,High,eldi8,10016,mount-wilson,1
+16,Mount Wilson,14256,San Juan Mountains,El Diente Peak - North Slopes,false,false,false,El Diente Peak,Class 3,"5,000'",15 mi,Considerable,Considerable,High,Considerable,eldi3,10016,mount-wilson,1
+16,Mount Wilson,14256,San Juan Mountains,Kilpacker Approach,false,false,false,OTHER,Class 1,800',6 mi,Low,Low,Low,Low,kilp0,10016,mount-wilson,1
+16,Mount Wilson,14256,San Juan Mountains,Mt. Wilson - East Face,false,true,true,Mt. Wilson,Class 3 Moderate Snow,"4,900'",12 mi,High,Considerable,High,High,mwil7,10016,mount-wilson,0
+16,Mount Wilson,14256,San Juan Mountains,Mt. Wilson - North Slopes,false,false,true,Mt. Wilson,Class 4,"5,100'",16 mi,High,High,High,Considerable,mwil2,10016,mount-wilson,1
+16,Mount Wilson,14256,San Juan Mountains,Navajo Lake Approach,false,false,false,OTHER,Class 1,"2,000'",9.5 mi,Low,Low,Low,Low,nava0,10016,mount-wilson,1
+16,Mount Wilson,14256,San Juan Mountains,Rock of Ages Approach,false,false,false,OTHER,Class 1,"2,800'",8.5 mi,Moderate,Low,Low,Low,silv0,10016,mount-wilson,3
+16,Mount Wilson,14256,San Juan Mountains,Woods Lake Approach,false,false,false,OTHER,Class 1,"2,115'",9 mi,Low,Low,Low,Low,wood0,10016,mount-wilson,1
+17,Mount Shavano,14230,Sawatch Range,Mt. Shavano - East Slopes,true,false,true,Mt. Shavano,Class 2,"4,500'",9.5 mi,Moderate,Moderate,Low,Moderate,shav1,10017,mount-shavano,2
+17,Mount Shavano,14230,Sawatch Range,Tabeguache Peak - Via Mt. Shavano,true,false,false,Tabeguache Peak,Class 2,"5,600'",11.5 mi,Moderate,Moderate,Moderate,Considerable,tabe2,10017,mount-shavano,2
+17,Mount Shavano,14230,Sawatch Range,Mt. Shavano - Angel of Shavano,false,true,true,Mt. Shavano,Class 2 Easy Snow,"4,600'",8 mi,Moderate,Moderate,Considerable,Moderate,shav4,10017,mount-shavano,2
+17,Mount Shavano,14230,Sawatch Range,Tabeguache Peak - West Ridge,false,false,false,Tabeguache Peak,Class 2,"4,000'",8 mi,Moderate,Considerable,Considerable,Considerable,tabe3w,10017,mount-shavano,3
+18,Mount Belford,14202,Sawatch Range,Missouri Mountain - Northwest Ridge,true,false,false,Missouri Mountain,Class 2,"4,500'",10.5 mi,Considerable,Considerable,Low,Moderate,miss1,10018,mount-belford,1
+18,Mount Belford,14202,Sawatch Range,Mt. Belford - Northwest Ridge,true,false,true,Mt. Belford,Class 2,"4,500'",8 mi,Low,Moderate,Low,Moderate,belf1,10018,mount-belford,1
+18,Mount Belford,14202,Sawatch Range,Mt. Oxford - Via Mt. Belford,true,false,false,Mt. Oxford,Class 2,"5,900'",11 mi,Moderate,Moderate,Low,Considerable,oxfo2,10018,mount-belford,1
+18,Mount Belford,14202,Sawatch Range,Missouri Mountain - North Face Couloirs,false,true,false,Missouri Mountain,Difficult Class 2 Moderate Snow,"4,500'",9 mi,Considerable,Moderate,Considerable,Considerable,miss3,10018,mount-belford,1
+18,Mount Belford,14202,Sawatch Range,Missouri Mountain - West Ridge,false,false,false,Missouri Mountain,Class 2,"4,250'",11.75 mi,Considerable,Considerable,Moderate,Moderate,miss2,10018,mount-belford,4
+18,Mount Belford,14202,Sawatch Range,Mt. Belford - Northwest Gully,false,true,true,Mt. Belford,Class 2 Easy Snow,"4,500'",7 mi,Moderate,Considerable,Moderate,Moderate,belf8,10018,mount-belford,1
+18,Mount Belford,14202,Sawatch Range,Mt. Belford - Southwest Slopes,false,false,true,Mt. Belford,Class 2,"4,500'",11 mi,Low,Low,Low,Moderate,belf9,10018,mount-belford,1
+19,Mount Princeton,14200,Sawatch Range,Mt. Princeton - East Slopes,true,false,true,Mt. Princeton,Class 2,"3,200'",6.5 mi,Moderate,Moderate,Moderate,Moderate,prin1,10020,mount-princeton,3
+20,Mount Yale,14200,Sawatch Range,Mt. Yale - Southwest Slopes,true,false,true,Mt. Yale,Class 2,"4,300'",9.5 mi,Moderate,Moderate,Low,Moderate,yale1,10021,mount-yale,0
+20,Mount Yale,14200,Sawatch Range,Mt. Yale - East Ridge,false,false,true,Mt. Yale,Class 2,"5,000'",10.5 mi,Moderate,Considerable,Considerable,Considerable,yale2,10021,mount-yale,0
+21,Crestone Needle,14196,Sangre de Cristo,Crestone Needle - South Face,true,false,true,Crestone Needle,Class 4,"4,400'",12 mi,High,Considerable,High,Considerable,cnee1,10019,crestone-needle,4
+21,Crestone Needle,14196,Sangre de Cristo,Crestone Peak - South Face,true,false,false,Crestone Peak,Class 3,"5,700'",14 mi,High,Considerable,Considerable,Considerable,cpea2,10019,crestone-needle,4
+21,Crestone Needle,14196,Sangre de Cristo,Humboldt Peak - West Ridge,true,false,false,Humboldt Peak,Class 2,"4,200'",11 mi,Moderate,Moderate,Moderate,Low,humb1,10019,crestone-needle,4
+21,Crestone Needle,14196,Sangre de Cristo,Combo: Crestones Traverse,false,false,false,COMBO,Class 5,"5,300'",14 mi,Extreme,Considerable,High,High,cnee3,10019,crestone-needle,4
+21,Crestone Needle,14196,Sangre de Cristo,Crestone Needle - Ellingwood Arete/Ledges,false,false,true,Crestone Needle,Class 5,"4,400'",11.25 mi,Extreme,High,High,Extreme,cnee5,10019,crestone-needle,4
+21,Crestone Needle,14196,Sangre de Cristo,Humboldt Peak - East Ridge,false,false,false,Humboldt Peak,Class 2,"4,300'",8 mi,Moderate,Moderate,Considerable,Moderate,humb2,10019,crestone-needle,3
+21,Crestone Needle,14196,Sangre de Cristo,Humboldt Peak - Southeast Gully,false,true,false,Humboldt Peak,Class 2 Moderate Snow,"5,400'",8 mi,Moderate,Moderate,Considerable,Moderate,humb3,10019,crestone-needle,4
+22,Mount Bross,14178,Mosquito Range,Combo: Decalibron,true,false,false,COMBO,Class 2,"3,500'",7.5 mi,Moderate,Moderate,Low,Moderate,bros6,10022,mount-bross,2
+22,Mount Bross,14178,Mosquito Range,Mt. Bross - West Slopes,true,false,true,Mt. Bross,Class 2,"2,250'",3.25 mi,Moderate,Moderate,Low,Low,bros2,10022,mount-bross,2
+22,Mount Bross,14178,Mosquito Range,Mt. Cameron - West Ridge,true,false,false,Mt. Cameron,Class 2,"2,250'",4.75 mi,Moderate,Moderate,Low,Low,came1,10022,mount-bross,2
+22,Mount Bross,14178,Mosquito Range,Mt. Democrat - East Slope,true,false,false,Mt. Democrat,Class 2,"2,150'",4 mi,Moderate,Moderate,Low,Low,demo1,10022,mount-bross,2
+22,Mount Bross,14178,Mosquito Range,Mt. Lincoln - West Ridge,true,false,false,Mt. Lincoln,Class 2,"2,600'",6 mi,Moderate,Moderate,Low,Low,linc1,10022,mount-bross,2
+22,Mount Bross,14178,Mosquito Range,"Mt. Bross - ""Dolly Varden Gully""",false,true,true,Mt. Bross,Class 2 Easy Snow,"2,900'",4 mi,Low,Moderate,Moderate,Moderate,bros4,10022,mount-bross,2
+22,Mount Bross,14178,Mosquito Range,"Mt. Bross - ""S Gully""",false,true,true,Mt. Bross,Class 2 Easy Snow,"2,600'",9.5 mi,Moderate,Moderate,Moderate,Moderate,bros3,10022,mount-bross,2
+22,Mount Bross,14178,Mosquito Range,Mt. Bross - East Slopes,false,false,true,Mt. Bross,Class 1,"2,900'",9 mi,Low,Low,Low,Low,bros1,10022,mount-bross,2
+22,Mount Bross,14178,Mosquito Range,Mt. Democrat - South Slope,false,true,false,Mt. Democrat,Difficult Class 2 Moderate Snow,"2,150'",2.5 mi,Considerable,Moderate,Considerable,Moderate,demo2,10022,mount-bross,2
+22,Mount Bross,14178,Mosquito Range,Mt. Lincoln - East Slopes,false,false,false,Mt. Lincoln,Class 2,"2,650'",6.5 mi,Low,Moderate,Low,Low,linc3,10022,mount-bross,4
+22,Mount Bross,14178,Mosquito Range,Mt. Lincoln - Lincoln Amphitheatre,false,false,false,Mt. Lincoln,Class 2,"3,400'",4.75 mi,Moderate,Considerable,Moderate,Moderate,linc2,10022,mount-bross,1
+23,Kit Carson Peak,14167,Sangre de Cristo,Challenger Point - North Slope,true,false,false,Challenger Point,Difficult Class 2,"5,400'",13.5 mi,Considerable,Considerable,Considerable,Moderate,chal1,10023,kit-carson-peak,2
+23,Kit Carson Peak,14167,Sangre de Cristo,Kit Carson Peak - Via Challenger Point,true,false,true,Kit Carson Peak,Easy Class 3,"6,250'",15 mi,Considerable,Considerable,Considerable,Considerable,kitc2,10023,kit-carson-peak,2
+23,Kit Carson Peak,14167,Sangre de Cristo,Challenger Point - Kirk Couloir,false,true,false,Challenger Point,Class 3 Steep Snow,"5,400'",12.75 mi,Considerable,Moderate,Considerable,Considerable,chal5,10023,kit-carson-peak,2
+23,Kit Carson Peak,14167,Sangre de Cristo,Kit Carson Peak - East Ridge,false,false,true,Kit Carson Peak,Class 3,"5,900'",14.5 mi,High,Considerable,High,High,kitc3,10023,kit-carson-peak,4
+23,Kit Carson Peak,14167,Sangre de Cristo,Kit Carson Peak - North Ridge,false,false,true,Kit Carson Peak,Class 4,"5,315'",11.4 mi,High,Considerable,Considerable,High,kitc4,10023,kit-carson-peak,2
+23,Kit Carson Peak,14167,Sangre de Cristo,Kit Carson Peak - Outward Bound Couloir,false,true,true,Kit Carson Peak,Class 3 Steep Snow,"5,500'",13.75 mi,Considerable,Moderate,Considerable,Considerable,kitc6,10023,kit-carson-peak,2
+23,Kit Carson Peak,14167,Sangre de Cristo,Willow Creek Approach,false,false,false,OTHER,Class 1,"2,850'",9.5 mi,Low,Low,Low,Low,will0,10023,kit-carson-peak,2
+24,Maroon Peak,14163,Elk Mountains,Maroon Peak - South Ridge,true,false,true,Maroon Peak,Class 3,"4,800'",12 mi,High,High,Extreme,Extreme,maro1,10024,maroon-peak,0
+24,Maroon Peak,14163,Elk Mountains,North Maroon Peak - Northeast Ridge,true,false,false,North Maroon Peak,Class 4,"4,600'",9.25 mi,High,High,High,High,nmar2,10024,maroon-peak,0
+24,Maroon Peak,14163,Elk Mountains,Pyramid Peak - Northeast Ridge,true,false,false,Pyramid Peak,Class 4,"4,500'",8.25 mi,High,High,High,High,pyra1,10024,maroon-peak,0
+24,Maroon Peak,14163,Elk Mountains,Combo: Bells Traverse,false,false,false,COMBO,Class 5,"4,850'",9.5 mi,Extreme,High,Extreme,Extreme,nmar4,10024,maroon-peak,0
+24,Maroon Peak,14163,Elk Mountains,Maroon Peak - Bell Cord Couloir,false,true,true,Maroon Peak,Class 4 Steep Snow,"4,556'",8 mi,High,High,High,High,maro3,10024,maroon-peak,0
+25,Mount Oxford,14158,Sawatch Range,Missouri Mountain - Northwest Ridge,true,false,false,Missouri Mountain,Class 2,"4,500'",10.5 mi,Considerable,Considerable,Low,Moderate,miss1,10026,mount-oxford,1
+25,Mount Oxford,14158,Sawatch Range,Mt. Belford - Northwest Ridge,true,false,false,Mt. Belford,Class 2,"4,500'",8 mi,Low,Moderate,Low,Moderate,belf1,10026,mount-oxford,1
+25,Mount Oxford,14158,Sawatch Range,Mt. Oxford - Via Mt. Belford,true,false,true,Mt. Oxford,Class 2,"5,900'",11 mi,Moderate,Moderate,Low,Considerable,oxfo2,10026,mount-oxford,1
+25,Mount Oxford,14158,Sawatch Range,Missouri Mountain - North Face Couloirs,false,true,false,Missouri Mountain,Difficult Class 2 Moderate Snow,"4,500'",9 mi,Considerable,Moderate,Considerable,Considerable,miss3,10026,mount-oxford,1
+25,Mount Oxford,14158,Sawatch Range,Missouri Mountain - West Ridge,false,false,false,Missouri Mountain,Class 2,"4,250'",11.75 mi,Considerable,Considerable,Moderate,Moderate,miss2,10026,mount-oxford,4
+25,Mount Oxford,14158,Sawatch Range,Mt. Belford - Northwest Gully,false,true,false,Mt. Belford,Class 2 Easy Snow,"4,500'",7 mi,Moderate,Considerable,Moderate,Moderate,belf8,10026,mount-oxford,1
+25,Mount Oxford,14158,Sawatch Range,Mt. Belford - Southwest Slopes,false,false,false,Mt. Belford,Class 2,"4,500'",11 mi,Low,Low,Low,Moderate,belf9,10026,mount-oxford,1
+26,Tabeguache Peak,14158,Sawatch Range,Mt. Shavano - East Slopes,true,false,false,Mt. Shavano,Class 2,"4,500'",9.5 mi,Moderate,Moderate,Low,Moderate,shav1,10025,tabeguache-peak,2
+26,Tabeguache Peak,14158,Sawatch Range,Tabeguache Peak - Via Mt. Shavano,true,false,true,Tabeguache Peak,Class 2,"5,600'",11.5 mi,Moderate,Moderate,Moderate,Considerable,tabe2,10025,tabeguache-peak,2
+26,Tabeguache Peak,14158,Sawatch Range,Mt. Shavano - Angel of Shavano,false,true,false,Mt. Shavano,Class 2 Easy Snow,"4,600'",8 mi,Moderate,Moderate,Considerable,Moderate,shav4,10025,tabeguache-peak,2
+26,Tabeguache Peak,14158,Sawatch Range,Tabeguache Peak - West Ridge,false,false,true,Tabeguache Peak,Class 2,"4,000'",8 mi,Moderate,Considerable,Considerable,Considerable,tabe3w,10025,tabeguache-peak,3
+27,Mount Sneffels,14155,San Juan Mountains,Mt. Sneffels - South Slopes,true,false,true,Mt. Sneffels,Easy Class 3,"2,900'",6 mi,Considerable,Considerable,Moderate,Moderate,snef1,10027,mount-sneffels,3
+27,Mount Sneffels,14155,San Juan Mountains,Mt. Sneffels - Southwest Ridge,false,false,true,Mt. Sneffels,Class 3,"2,950'",6.5 mi,Considerable,Considerable,Considerable,Considerable,snef2,10027,mount-sneffels,3
+28,Mount Democrat,14154,Mosquito Range,Combo: Decalibron,true,false,false,COMBO,Class 2,"3,500'",7.5 mi,Moderate,Moderate,Low,Moderate,bros6,10028,mount-democrat,2
+28,Mount Democrat,14154,Mosquito Range,Mt. Bross - West Slopes,true,false,false,Mt. Bross,Class 2,"2,250'",3.25 mi,Moderate,Moderate,Low,Low,bros2,10028,mount-democrat,2
+28,Mount Democrat,14154,Mosquito Range,Mt. Cameron - West Ridge,true,false,false,Mt. Cameron,Class 2,"2,250'",4.75 mi,Moderate,Moderate,Low,Low,came1,10028,mount-democrat,2
+28,Mount Democrat,14154,Mosquito Range,Mt. Democrat - East Slope,true,false,true,Mt. Democrat,Class 2,"2,150'",4 mi,Moderate,Moderate,Low,Low,demo1,10028,mount-democrat,2
+28,Mount Democrat,14154,Mosquito Range,Mt. Lincoln - West Ridge,true,false,false,Mt. Lincoln,Class 2,"2,600'",6 mi,Moderate,Moderate,Low,Low,linc1,10028,mount-democrat,2
+28,Mount Democrat,14154,Mosquito Range,"Mt. Bross - ""Dolly Varden Gully""",false,true,false,Mt. Bross,Class 2 Easy Snow,"2,900'",4 mi,Low,Moderate,Moderate,Moderate,bros4,10028,mount-democrat,2
+28,Mount Democrat,14154,Mosquito Range,"Mt. Bross - ""S Gully""",false,true,false,Mt. Bross,Class 2 Easy Snow,"2,600'",9.5 mi,Moderate,Moderate,Moderate,Moderate,bros3,10028,mount-democrat,2
+28,Mount Democrat,14154,Mosquito Range,Mt. Bross - East Slopes,false,false,false,Mt. Bross,Class 1,"2,900'",9 mi,Low,Low,Low,Low,bros1,10028,mount-democrat,2
+28,Mount Democrat,14154,Mosquito Range,Mt. Democrat - South Slope,false,true,true,Mt. Democrat,Difficult Class 2 Moderate Snow,"2,150'",2.5 mi,Considerable,Moderate,Considerable,Moderate,demo2,10028,mount-democrat,2
+28,Mount Democrat,14154,Mosquito Range,Mt. Lincoln - East Slopes,false,false,false,Mt. Lincoln,Class 2,"2,650'",6.5 mi,Low,Moderate,Low,Low,linc3,10028,mount-democrat,4
+28,Mount Democrat,14154,Mosquito Range,Mt. Lincoln - Lincoln Amphitheatre,false,false,false,Mt. Lincoln,Class 2,"3,400'",4.75 mi,Moderate,Considerable,Moderate,Moderate,linc2,10028,mount-democrat,1
+29,Capitol Peak,14138,Elk Mountains,Capitol Peak - Northeast Ridge,true,false,true,Capitol Peak,Class 4,"5,300'",17 mi,High,High,High,Extreme,capi1,10029,capitol-peak,2
+30,Pikes Peak,14109,Front Range,Pikes Peak - East Slopes,true,false,true,Pikes Peak,Class 1,"7,600'",24 mi,Low,Low,Low,Moderate,pikeeast,10030,pikes-peak,0
+30,Pikes Peak,14109,Front Range,Pikes Peak - Northwest Slopes,false,false,true,Pikes Peak,Class 2,"4,300'",14 mi,Low,Moderate,Low,Moderate,pike1,10030,pikes-peak,1
+31,Snowmass Mountain,14105,Elk Mountains,Snowmass Mountain - East Slopes,true,false,true,Snowmass Mountain,Class 3,"5,800'",22 mi,High,Considerable,Considerable,High,snow1,10031,snowmass-mountain,1
+31,Snowmass Mountain,14105,Elk Mountains,Snowmass Mountain - West Slope,false,false,true,Snowmass Mountain,Class 3,"4,500'",9 mi,High,High,High,High,snow2,10031,snowmass-mountain,5
+32,Windom Peak,14089,San Juan Mountains,Mt. Eolus - Northeast Ridge,true,false,false,Mt. Eolus,Class 3,"3,100'",6 mi,High,Considerable,Considerable,Considerable,eolu3,10033,windom-peak,0
+32,Windom Peak,14089,San Juan Mountains,North Eolus - South Ridge,true,false,false,North Eolus,Class 3,250',0.2 mi,Considerable,Moderate,Moderate,Moderate,neol4,10033,windom-peak,0
+32,Windom Peak,14089,San Juan Mountains,Sunlight Peak - South Face,true,false,false,Sunlight Peak,Class 4,"3,000'",6 mi,Extreme,Considerable,Considerable,Considerable,sunl2,10033,windom-peak,0
+32,Windom Peak,14089,San Juan Mountains,Windom Peak - West Ridge,true,false,true,Windom Peak,Difficult Class 2,"3,000'",6 mi,Considerable,Considerable,Moderate,Moderate,wind1,10033,windom-peak,0
+32,Windom Peak,14089,San Juan Mountains,Chicago Basin Approach,false,false,false,OTHER,Class 1,"2,800'",12 mi,Low,Low,Low,Low,chib1,10033,windom-peak,0
+33,Mount Eolus,14087,San Juan Mountains,Mt. Eolus - Northeast Ridge,true,false,true,Mt. Eolus,Class 3,"3,100'",6 mi,High,Considerable,Considerable,Considerable,eolu3,10032,mount-eolus,0
+33,Mount Eolus,14087,San Juan Mountains,North Eolus - South Ridge,true,false,false,North Eolus,Class 3,250',0.2 mi,Considerable,Moderate,Moderate,Moderate,neol4,10032,mount-eolus,0
+33,Mount Eolus,14087,San Juan Mountains,Sunlight Peak - South Face,true,false,false,Sunlight Peak,Class 4,"3,000'",6 mi,Extreme,Considerable,Considerable,Considerable,sunl2,10032,mount-eolus,0
+33,Mount Eolus,14087,San Juan Mountains,Windom Peak - West Ridge,true,false,false,Windom Peak,Difficult Class 2,"3,000'",6 mi,Considerable,Considerable,Moderate,Moderate,wind1,10032,mount-eolus,0
+33,Mount Eolus,14087,San Juan Mountains,Chicago Basin Approach,false,false,false,OTHER,Class 1,"2,800'",12 mi,Low,Low,Low,Low,chib1,10032,mount-eolus,0
+34,Mount Columbia,14075,Sawatch Range,Mt. Columbia - West Slopes,true,false,true,Mt. Columbia,Class 2,"4,250'",12 mi,Moderate,Considerable,Moderate,Moderate,colu2,10035,mount-columbia,2
+34,Mount Columbia,14075,Sawatch Range,Mt. Harvard - South Slopes,true,false,false,Mt. Harvard,Class 2,"4,600'",13.75 mi,Moderate,Moderate,Moderate,Moderate,harv1,10035,mount-columbia,2
+34,Mount Columbia,14075,Sawatch Range,Combo: Harvard and Columbia Traverse,false,false,false,COMBO,Class 2,"6,100'",15 mi,Moderate,Considerable,High,High,harv4,10035,mount-columbia,2
+34,Mount Columbia,14075,Sawatch Range,Mt. Columbia - Southeast Ridge,false,false,true,Mt. Columbia,Class 2,"4,800'",11.25 mi,Moderate,Moderate,Considerable,Moderate,colu5,10035,mount-columbia,2
+34,Mount Columbia,14075,Sawatch Range,Mt. Columbia - Southwest Couloir,false,true,true,Mt. Columbia,Class 2 Moderate Snow,"4,800'",13.5 mi,Moderate,Moderate,Considerable,Moderate,colu6,10035,mount-columbia,2
+34,Mount Columbia,14075,Sawatch Range,Mt. Harvard - South Face,false,true,false,Mt. Harvard,Class 2 Moderate Snow,"4,600'",13.75 mi,Moderate,Moderate,Considerable,Considerable,harv3,10035,mount-columbia,2
+35,Missouri Mountain,14071,Sawatch Range,Missouri Mountain - Northwest Ridge,true,false,true,Missouri Mountain,Class 2,"4,500'",10.5 mi,Considerable,Considerable,Low,Moderate,miss1,10036,missouri-mountain,1
+35,Missouri Mountain,14071,Sawatch Range,Mt. Belford - Northwest Ridge,true,false,false,Mt. Belford,Class 2,"4,500'",8 mi,Low,Moderate,Low,Moderate,belf1,10036,missouri-mountain,1
+35,Missouri Mountain,14071,Sawatch Range,Mt. Oxford - Via Mt. Belford,true,false,false,Mt. Oxford,Class 2,"5,900'",11 mi,Moderate,Moderate,Low,Considerable,oxfo2,10036,missouri-mountain,1
+35,Missouri Mountain,14071,Sawatch Range,Missouri Mountain - North Face Couloirs,false,true,true,Missouri Mountain,Difficult Class 2 Moderate Snow,"4,500'",9 mi,Considerable,Moderate,Considerable,Considerable,miss3,10036,missouri-mountain,1
+35,Missouri Mountain,14071,Sawatch Range,Missouri Mountain - West Ridge,false,false,true,Missouri Mountain,Class 2,"4,250'",11.75 mi,Considerable,Considerable,Moderate,Moderate,miss2,10036,missouri-mountain,4
+35,Missouri Mountain,14071,Sawatch Range,Mt. Belford - Northwest Gully,false,true,false,Mt. Belford,Class 2 Easy Snow,"4,500'",7 mi,Moderate,Considerable,Moderate,Moderate,belf8,10036,missouri-mountain,1
+35,Missouri Mountain,14071,Sawatch Range,Mt. Belford - Southwest Slopes,false,false,false,Mt. Belford,Class 2,"4,500'",11 mi,Low,Low,Low,Moderate,belf9,10036,missouri-mountain,1
+36,Humboldt Peak,14068,Sangre de Cristo,Crestone Needle - South Face,true,false,false,Crestone Needle,Class 4,"4,400'",12 mi,High,Considerable,High,Considerable,cnee1,10037,humboldt-peak,4
+36,Humboldt Peak,14068,Sangre de Cristo,Crestone Peak - South Face,true,false,false,Crestone Peak,Class 3,"5,700'",14 mi,High,Considerable,Considerable,Considerable,cpea2,10037,humboldt-peak,4
+36,Humboldt Peak,14068,Sangre de Cristo,Humboldt Peak - West Ridge,true,false,true,Humboldt Peak,Class 2,"4,200'",11 mi,Moderate,Moderate,Moderate,Low,humb1,10037,humboldt-peak,4
+36,Humboldt Peak,14068,Sangre de Cristo,Combo: Crestones Traverse,false,false,false,COMBO,Class 5,"5,300'",14 mi,Extreme,Considerable,High,High,cnee3,10037,humboldt-peak,4
+36,Humboldt Peak,14068,Sangre de Cristo,Crestone Needle - Ellingwood Arete/Ledges,false,false,false,Crestone Needle,Class 5,"4,400'",11.25 mi,Extreme,High,High,Extreme,cnee5,10037,humboldt-peak,4
+36,Humboldt Peak,14068,Sangre de Cristo,Humboldt Peak - East Ridge,false,false,true,Humboldt Peak,Class 2,"4,300'",8 mi,Moderate,Moderate,Considerable,Moderate,humb2,10037,humboldt-peak,3
+36,Humboldt Peak,14068,Sangre de Cristo,Humboldt Peak - Southeast Gully,false,true,true,Humboldt Peak,Class 2 Moderate Snow,"5,400'",8 mi,Moderate,Moderate,Considerable,Moderate,humb3,10037,humboldt-peak,4
+37,Mount Bierstadt,14066,Front Range,"Combo: Bierstadt, Sawtooth, Blue Sky",true,false,false,COMBO,Class 3,"3,900'",10.5 mi,Considerable,Considerable,Considerable,High,bier4,10038,mount-bierstadt,0
+37,Mount Bierstadt,14066,Front Range,Mt. Bierstadt - West Slopes,true,false,true,Mt. Bierstadt,Class 2,"2,850'",7.25 mi,Low,Moderate,Low,Low,bier1,10038,mount-bierstadt,0
+37,Mount Bierstadt,14066,Front Range,Mt. Blue Sky - West Ridge from Summit Lake,true,false,false,Mt. Blue Sky,Class 2,"2,000'",5.5 mi,Moderate,Moderate,Moderate,Moderate,evan2,10038,mount-bierstadt,0
+37,Mount Bierstadt,14066,Front Range,Combo: Tour de Abyss Loop,false,false,false,COMBO,Class 3,"3,000'",5.75 mi,Considerable,Considerable,Considerable,High,bier5,10038,mount-bierstadt,0
+37,Mount Bierstadt,14066,Front Range,Mt. Bierstadt - East Ridge,false,false,true,Mt. Bierstadt,Class 3,"3,000'",5 mi,Considerable,Considerable,Considerable,Considerable,bier3,10038,mount-bierstadt,0
+37,Mount Bierstadt,14066,Front Range,Mt. Bierstadt - South Ridge,false,false,true,Mt. Bierstadt,Class 2,"4,500'",14.25 mi,Moderate,Moderate,Considerable,Moderate,bier6,10038,mount-bierstadt,0
+37,Mount Bierstadt,14066,Front Range,Mt. Blue Sky - North Face Moderate,false,true,false,Mt. Blue Sky,Class 3 Moderate Snow,"1,500'",2 mi,Considerable,Considerable,Low,Moderate,evan7,10038,mount-bierstadt,0
+37,Mount Bierstadt,14066,Front Range,Mt. Blue Sky - North Face Steep,false,true,false,Mt. Blue Sky,Class 3 Steep Snow,"1,500'",2 mi,High,Considerable,Moderate,Moderate,evan8,10038,mount-bierstadt,0
+37,Mount Bierstadt,14066,Front Range,Mt. Blue Sky - West Gully,false,true,false,Mt. Blue Sky,Class 3 Steep Snow,"1,650'",5.25 mi,High,Considerable,Moderate,Moderate,evan4,10038,mount-bierstadt,0
+37,Mount Bierstadt,14066,Front Range,Mt. Blue Sky - West Ridge from Echo Lake,false,false,false,Mt. Blue Sky,Class 2,"5,600'",17 mi,Moderate,Moderate,Moderate,Considerable,evan1,10038,mount-bierstadt,0
+37,Mount Bierstadt,14066,Front Range,Mt. Blue Sky - West Ridge from Guanella Pass,false,false,false,Mt. Blue Sky,Class 2,"3,100'",9.25 mi,Moderate,Considerable,Considerable,Considerable,evan3,10038,mount-bierstadt,0
+38,Sunlight Peak,14061,San Juan Mountains,Mt. Eolus - Northeast Ridge,true,false,false,Mt. Eolus,Class 3,"3,100'",6 mi,High,Considerable,Considerable,Considerable,eolu3,10039,sunlight-peak,0
+38,Sunlight Peak,14061,San Juan Mountains,North Eolus - South Ridge,true,false,false,North Eolus,Class 3,250',0.2 mi,Considerable,Moderate,Moderate,Moderate,neol4,10039,sunlight-peak,0
+38,Sunlight Peak,14061,San Juan Mountains,Sunlight Peak - South Face,true,false,true,Sunlight Peak,Class 4,"3,000'",6 mi,Extreme,Considerable,Considerable,Considerable,sunl2,10039,sunlight-peak,0
+38,Sunlight Peak,14061,San Juan Mountains,Windom Peak - West Ridge,true,false,false,Windom Peak,Difficult Class 2,"3,000'",6 mi,Considerable,Considerable,Moderate,Moderate,wind1,10039,sunlight-peak,0
+38,Sunlight Peak,14061,San Juan Mountains,Chicago Basin Approach,false,false,false,OTHER,Class 1,"2,800'",12 mi,Low,Low,Low,Low,chib1,10039,sunlight-peak,0
+39,Handies Peak,14058,San Juan Mountains,Handies Peak - Southwest Slopes,true,false,true,Handies Peak,Class 1,"2,500'",5.75 mi,Moderate,Low,Low,Low,hand1,10040,handies-peak,3
+39,Handies Peak,14058,San Juan Mountains,Handies Peak - East Slopes,false,false,true,Handies Peak,Class 2,"3,650'",8 mi,Moderate,Moderate,Low,Moderate,hand2,10040,handies-peak,3
+39,Handies Peak,14058,San Juan Mountains,Handies Peak - West Slopes,false,true,true,Handies Peak,Class 2 Moderate Snow,"2,800'",5 mi,Moderate,Moderate,Considerable,Moderate,hand3,10040,handies-peak,3
+40,Ellingwood Point,14057,Sangre de Cristo,Blanca Peak - Northwest Ridge,true,false,false,Blanca Peak,Difficult Class 2,"6,500'",17 mi,Considerable,Considerable,Moderate,Considerable,blan1,10042,ellingwood-point,6
+40,Ellingwood Point,14057,Sangre de Cristo,Ellingwood Point - South Face,true,false,true,Ellingwood Point,Difficult Class 2,"6,200'",17 mi,Considerable,Considerable,Considerable,Considerable,elli2,10042,ellingwood-point,6
+40,Ellingwood Point,14057,Sangre de Cristo,Little Bear Peak - West Ridge and Hourglass,true,false,false,Little Bear Peak,Class 4,"6,200'",14 mi,High,High,High,High,litt6,10042,ellingwood-point,6
+40,Ellingwood Point,14057,Sangre de Cristo,Combo: Blanca and Ellingwood,false,false,false,COMBO,Class 3,"6,800'",18 mi,Considerable,Considerable,Considerable,Considerable,elli3,10042,ellingwood-point,6
+40,Ellingwood Point,14057,Sangre de Cristo,Combo: Little Bear + Blanca Traverse,false,false,false,COMBO,Class 5,"8,000'",17 mi,Extreme,Considerable,High,Extreme,litt3,10042,ellingwood-point,6
+40,Ellingwood Point,14057,Sangre de Cristo,Ellingwood Point - North Ridge via South Zapata Creek,false,false,true,Ellingwood Point,Easy Class 3,"5,200'",12.5 mi,Considerable,High,High,High,elli5,10042,ellingwood-point,1
+40,Ellingwood Point,14057,Sangre de Cristo,Ellingwood Point - Southwest Ridge,false,false,true,Ellingwood Point,Class 3,"2,200'",15 mi,High,High,Considerable,Considerable,elli4,10042,ellingwood-point,6
+40,Ellingwood Point,14057,Sangre de Cristo,Lake Como Approach,false,false,false,OTHER,Class 1,"3,900'",11 mi,Low,Low,Low,Low,como0,10042,ellingwood-point,6
+40,Ellingwood Point,14057,Sangre de Cristo,Little Bear Peak - West Ridge Indirect,false,false,false,Little Bear Peak,Class 4,"6,200'",14 mi,Extreme,Considerable,High,High,litt8,10042,ellingwood-point,6
+41,Mount Lindsey,14055,Sangre de Cristo,Mt. Lindsey - Northwest Gully,true,false,true,Mt. Lindsey,Easy Class 3,"3,500'",8.25 mi,Considerable,Considerable,Considerable,Moderate,lind1,10043,mount-lindsey,3
+41,Mount Lindsey,14055,Sangre de Cristo,Mt. Lindsey - North Couloir,false,true,true,Mt. Lindsey,Class 2 Moderate Snow,"3,900'",8.75 mi,Moderate,Moderate,Considerable,Considerable,lind3,10043,mount-lindsey,3
+41,Mount Lindsey,14055,Sangre de Cristo,Mt. Lindsey - Northwest Ridge,false,false,true,Mt. Lindsey,Class 3,"3,500'",8.25 mi,High,Moderate,Considerable,Considerable,lind2,10043,mount-lindsey,3
+42,Culebra Peak,14053,Sangre de Cristo,Culebra Peak - Northwest Ridge,true,false,true,Culebra Peak,Class 2,"2,700'",5 mi,Moderate,Moderate,Moderate,Moderate,cule1,10041,culebra-peak,3
+43,Mount Sherman,14043,Mosquito Range,Mt. Sherman - Southwest Ridge,true,false,true,Mt. Sherman,Class 1,"2,100'",5.25 mi,Moderate,Moderate,Low,Low,sher1,10045,mount-sherman,2
+43,Mount Sherman,14043,Mosquito Range,Mt. Sherman - South Slope,false,true,true,Mt. Sherman,Class 2 Easy Snow,"3,100'",8.5 mi,Low,Moderate,Moderate,Moderate,sher3,10045,mount-sherman,2
+43,Mount Sherman,14043,Mosquito Range,Mt. Sherman - West Slopes,false,false,true,Mt. Sherman,Class 1,"2,150'",4.5 mi,Moderate,Moderate,Low,Low,sher2,10045,mount-sherman,2
+44,Little Bear Peak,14041,Sangre de Cristo,Blanca Peak - Northwest Ridge,true,false,false,Blanca Peak,Difficult Class 2,"6,500'",17 mi,Considerable,Considerable,Moderate,Considerable,blan1,10044,little-bear-peak,6
+44,Little Bear Peak,14041,Sangre de Cristo,Ellingwood Point - South Face,true,false,false,Ellingwood Point,Difficult Class 2,"6,200'",17 mi,Considerable,Considerable,Considerable,Considerable,elli2,10044,little-bear-peak,6
+44,Little Bear Peak,14041,Sangre de Cristo,Little Bear Peak - West Ridge and Hourglass,true,false,true,Little Bear Peak,Class 4,"6,200'",14 mi,High,High,High,High,litt6,10044,little-bear-peak,6
+44,Little Bear Peak,14041,Sangre de Cristo,Combo: Blanca and Ellingwood,false,false,false,COMBO,Class 3,"6,800'",18 mi,Considerable,Considerable,Considerable,Considerable,elli3,10044,little-bear-peak,6
+44,Little Bear Peak,14041,Sangre de Cristo,Combo: Little Bear + Blanca Traverse,false,false,false,COMBO,Class 5,"8,000'",17 mi,Extreme,Considerable,High,Extreme,litt3,10044,little-bear-peak,6
+44,Little Bear Peak,14041,Sangre de Cristo,Ellingwood Point - North Ridge via South Zapata Creek,false,false,false,Ellingwood Point,Easy Class 3,"5,200'",12.5 mi,Considerable,High,High,High,elli5,10044,little-bear-peak,1
+44,Little Bear Peak,14041,Sangre de Cristo,Ellingwood Point - Southwest Ridge,false,false,false,Ellingwood Point,Class 3,"2,200'",15 mi,High,High,Considerable,Considerable,elli4,10044,little-bear-peak,6
+44,Little Bear Peak,14041,Sangre de Cristo,Lake Como Approach,false,false,false,OTHER,Class 1,"3,900'",11 mi,Low,Low,Low,Low,como0,10044,little-bear-peak,6
+44,Little Bear Peak,14041,Sangre de Cristo,Little Bear Peak - West Ridge Indirect,false,false,true,Little Bear Peak,Class 4,"6,200'",14 mi,Extreme,Considerable,High,High,litt8,10044,little-bear-peak,6
+45,Redcloud Peak,14037,San Juan Mountains,Redcloud Peak - Northeast Ridge,true,false,true,Redcloud Peak,Class 2,"3,700'",9 mi,Moderate,Moderate,Low,Low,redc1,10046,redcloud-peak,3
+45,Redcloud Peak,14037,San Juan Mountains,Sunshine Peak - Via Redcloud Peak,true,false,false,Sunshine Peak,Class 2,"4,800'",12.25 mi,Moderate,Moderate,Low,Considerable,suns2,10046,redcloud-peak,3
+45,Redcloud Peak,14037,San Juan Mountains,Sunshine Peak - East Ridge,false,false,false,Sunshine Peak,Class 2,"4,600'",7 mi,Moderate,Considerable,Considerable,Moderate,suns4,10046,redcloud-peak,1
+45,Redcloud Peak,14037,San Juan Mountains,Sunshine Peak - Northwest Face,false,false,false,Sunshine Peak,Difficult Class 2,"3,800'",8.5 mi,Moderate,Considerable,Considerable,Moderate,suns3,10046,redcloud-peak,3
+46,Pyramid Peak,14029,Elk Mountains,Maroon Peak - South Ridge,true,false,false,Maroon Peak,Class 3,"4,800'",12 mi,High,High,Extreme,Extreme,maro1,10047,pyramid-peak,0
+46,Pyramid Peak,14029,Elk Mountains,North Maroon Peak - Northeast Ridge,true,false,false,North Maroon Peak,Class 4,"4,600'",9.25 mi,High,High,High,High,nmar2,10047,pyramid-peak,0
+46,Pyramid Peak,14029,Elk Mountains,Pyramid Peak - Northeast Ridge,true,false,true,Pyramid Peak,Class 4,"4,500'",8.25 mi,High,High,High,High,pyra1,10047,pyramid-peak,0
+46,Pyramid Peak,14029,Elk Mountains,Combo: Bells Traverse,false,false,false,COMBO,Class 5,"4,850'",9.5 mi,Extreme,High,Extreme,Extreme,nmar4,10047,pyramid-peak,0
+46,Pyramid Peak,14029,Elk Mountains,Maroon Peak - Bell Cord Couloir,false,true,false,Maroon Peak,Class 4 Steep Snow,"4,556'",8 mi,High,High,High,High,maro3,10047,pyramid-peak,0
+47,San Luis Peak,14023,San Juan Mountains,San Luis Peak - Northeast Ridge,true,false,true,San Luis Peak,Class 1,"3,600'",13.5 mi,Low,Low,Low,Low,sanl1,10050,san-luis-peak,2
+47,San Luis Peak,14023,San Juan Mountains,San Luis Peak - South Ridge,false,false,true,San Luis Peak,Class 1,"3,400'",11.25 mi,Low,Moderate,Moderate,Low,sanl2,10050,san-luis-peak,3
+48,North Maroon Peak,14022,Elk Mountains,Maroon Peak - South Ridge,true,false,false,Maroon Peak,Class 3,"4,800'",12 mi,High,High,Extreme,Extreme,maro1,10067,north-maroon-peak,0
+48,North Maroon Peak,14022,Elk Mountains,North Maroon Peak - Northeast Ridge,true,false,true,North Maroon Peak,Class 4,"4,600'",9.25 mi,High,High,High,High,nmar2,10067,north-maroon-peak,0
+48,North Maroon Peak,14022,Elk Mountains,Pyramid Peak - Northeast Ridge,true,false,false,Pyramid Peak,Class 4,"4,500'",8.25 mi,High,High,High,High,pyra1,10067,north-maroon-peak,0
+48,North Maroon Peak,14022,Elk Mountains,Combo: Bells Traverse,false,false,false,COMBO,Class 5,"4,850'",9.5 mi,Extreme,High,Extreme,Extreme,nmar4,10067,north-maroon-peak,0
+48,North Maroon Peak,14022,Elk Mountains,Maroon Peak - Bell Cord Couloir,false,true,false,Maroon Peak,Class 4 Steep Snow,"4,556'",8 mi,High,High,High,High,maro3,10067,north-maroon-peak,0
+49,Wetterhorn Peak,14021,San Juan Mountains,Wetterhorn Peak - Southeast Ridge,true,false,true,Wetterhorn Peak,Class 3,"3,300'",7 mi,High,Considerable,Considerable,Considerable,wett1,10049,wetterhorn-peak,3
+49,Wetterhorn Peak,14021,San Juan Mountains,Wetterhorn Peak - East Face,false,true,true,Wetterhorn Peak,Class 3 Steep Snow,"3,300'",6.5 mi,High,Considerable,Considerable,Considerable,wett2,10049,wetterhorn-peak,3
+50,Wilson Peak,14021,San Juan Mountains,El Diente Peak - South Slopes,true,false,false,El Diente Peak,Class 3,"4,400'",12 mi,Considerable,Considerable,High,Considerable,eldi4,10048,wilson-peak,1
+50,Wilson Peak,14021,San Juan Mountains,Mt. Wilson - Southwest Slopes,true,false,false,Mt. Wilson,Class 3,"4,400'",12.5 mi,High,Considerable,Considerable,Considerable,mwil6,10048,wilson-peak,1
+50,Wilson Peak,14021,San Juan Mountains,Wilson Peak - Southwest Ridge,true,false,true,Wilson Peak,Class 3,"3,900'",10 mi,High,Considerable,Considerable,Considerable,wils1,10048,wilson-peak,3
+50,Wilson Peak,14021,San Juan Mountains,Combo: Mt. Wilson + El Diente Traverse,false,false,false,COMBO,Class 4,500',1 mi,High,High,High,High,mwil5,10048,wilson-peak,1
+50,Wilson Peak,14021,San Juan Mountains,El Diente Peak - North Buttress,false,false,false,El Diente Peak,Class 4,"3,200'",5 mi,High,Considerable,High,High,eldi8,10048,wilson-peak,1
+50,Wilson Peak,14021,San Juan Mountains,El Diente Peak - North Slopes,false,false,false,El Diente Peak,Class 3,"5,000'",15 mi,Considerable,Considerable,High,Considerable,eldi3,10048,wilson-peak,1
+50,Wilson Peak,14021,San Juan Mountains,Kilpacker Approach,false,false,false,OTHER,Class 1,800',6 mi,Low,Low,Low,Low,kilp0,10048,wilson-peak,1
+50,Wilson Peak,14021,San Juan Mountains,Mt. Wilson - East Face,false,true,false,Mt. Wilson,Class 3 Moderate Snow,"4,900'",12 mi,High,Considerable,High,High,mwil7,10048,wilson-peak,0
+50,Wilson Peak,14021,San Juan Mountains,Mt. Wilson - North Slopes,false,false,false,Mt. Wilson,Class 4,"5,100'",16 mi,High,High,High,Considerable,mwil2,10048,wilson-peak,1
+50,Wilson Peak,14021,San Juan Mountains,Navajo Lake Approach,false,false,false,OTHER,Class 1,"2,000'",9.5 mi,Low,Low,Low,Low,nava0,10048,wilson-peak,1
+50,Wilson Peak,14021,San Juan Mountains,Rock of Ages Approach,false,false,false,OTHER,Class 1,"2,800'",8.5 mi,Moderate,Low,Low,Low,silv0,10048,wilson-peak,3
+50,Wilson Peak,14021,San Juan Mountains,Woods Lake Approach,false,false,false,OTHER,Class 1,"2,115'",9 mi,Low,Low,Low,Low,wood0,10048,wilson-peak,1
+51,Mount of the Holy Cross,14007,Sawatch Range,Mt. of the Holy Cross - North Ridge,true,false,true,Mt. of the Holy Cross,Class 2,"5,600'",11.25 mi,Moderate,Moderate,Moderate,Considerable,holy1,10051,mt-of-the-holy-cross,1
+51,Mount of the Holy Cross,14007,Sawatch Range,Mt. of the Holy Cross - Cross Couloir,false,true,true,Mt. of the Holy Cross,Class 3 Steep Snow,"5,600'",12.25 mi,Considerable,Considerable,Considerable,High,holy2,10051,mt-of-the-holy-cross,1
+51,Mount of the Holy Cross,14007,Sawatch Range,Mt. of the Holy Cross - Halo Ridge,false,false,true,Mt. of the Holy Cross,Difficult Class 2,"5,210'",15 mi,Considerable,Considerable,Considerable,High,holy3,10051,mt-of-the-holy-cross,1
+52,Huron Peak,14006,Sawatch Range,Huron Peak - Northwest Slopes,true,false,true,Huron Peak,Class 2,"3,500'",7 mi,Moderate,Moderate,Low,Low,huro1,10052,huron-peak,4
+52,Huron Peak,14006,Sawatch Range,Huron Peak - North Ridge from Lulu Gulch,false,false,true,Huron Peak,Class 2,"3,980'",8.4 mi,Moderate,Moderate,Moderate,Considerable,huro4,10052,huron-peak,4
+52,Huron Peak,14006,Sawatch Range,Huron Peak - Southwest Slopes,false,false,true,Huron Peak,Class 2,"3,600'",9 mi,Moderate,Moderate,Considerable,Moderate,huro2,10052,huron-peak,4
+53,Sunshine Peak,14004,San Juan Mountains,Redcloud Peak - Northeast Ridge,true,false,false,Redcloud Peak,Class 2,"3,700'",9 mi,Moderate,Moderate,Low,Low,redc1,10053,sunshine-peak,3
+53,Sunshine Peak,14004,San Juan Mountains,Sunshine Peak - Via Redcloud Peak,true,false,true,Sunshine Peak,Class 2,"4,800'",12.25 mi,Moderate,Moderate,Low,Considerable,suns2,10053,sunshine-peak,3
+53,Sunshine Peak,14004,San Juan Mountains,Sunshine Peak - East Ridge,false,false,true,Sunshine Peak,Class 2,"4,600'",7 mi,Moderate,Considerable,Considerable,Moderate,suns4,10053,sunshine-peak,1
+53,Sunshine Peak,14004,San Juan Mountains,Sunshine Peak - Northwest Face,false,false,true,Sunshine Peak,Difficult Class 2,"3,800'",8.5 mi,Moderate,Considerable,Considerable,Moderate,suns3,10053,sunshine-peak,3
+,Challenger Point,14086,Sangre de Cristo,Challenger Point - North Slope,true,false,true,Challenger Point,Difficult Class 2,"5,400'",13.5 mi,Considerable,Considerable,Considerable,Moderate,chal1,10034,challenger-point,2
+,Challenger Point,14086,Sangre de Cristo,Kit Carson Peak - Via Challenger Point,true,false,false,Kit Carson Peak,Easy Class 3,"6,250'",15 mi,Considerable,Considerable,Considerable,Considerable,kitc2,10034,challenger-point,2
+,Challenger Point,14086,Sangre de Cristo,Challenger Point - Kirk Couloir,false,true,true,Challenger Point,Class 3 Steep Snow,"5,400'",12.75 mi,Considerable,Moderate,Considerable,Considerable,chal5,10034,challenger-point,2
+,Challenger Point,14086,Sangre de Cristo,Kit Carson Peak - East Ridge,false,false,false,Kit Carson Peak,Class 3,"5,900'",14.5 mi,High,Considerable,High,High,kitc3,10034,challenger-point,4
+,Challenger Point,14086,Sangre de Cristo,Kit Carson Peak - North Ridge,false,false,false,Kit Carson Peak,Class 4,"5,315'",11.4 mi,High,Considerable,Considerable,High,kitc4,10034,challenger-point,2
+,Challenger Point,14086,Sangre de Cristo,Kit Carson Peak - Outward Bound Couloir,false,true,false,Kit Carson Peak,Class 3 Steep Snow,"5,500'",13.75 mi,Considerable,Moderate,Considerable,Considerable,kitc6,10034,challenger-point,2
+,Challenger Point,14086,Sangre de Cristo,Willow Creek Approach,false,false,false,OTHER,Class 1,"2,850'",9.5 mi,Low,Low,Low,Low,will0,10034,challenger-point,2
+,Conundrum Peak,14037,Elk Mountains,Castle Peak - Northeast Ridge,true,false,false,Castle Peak,Difficult Class 2,"4,600'",13.5 mi,Considerable,Considerable,Considerable,Considerable,cast1,10065,conundrum-peak,4
+,Conundrum Peak,14037,Elk Mountains,Combo: Castle and Conundrum,true,false,false,COMBO,Difficult Class 2,"4,850'",14.5 mi,Considerable,Considerable,Considerable,Considerable,cast4,10065,conundrum-peak,4
+,Conundrum Peak,14037,Elk Mountains,Conundrum Peak - South Ridge,true,false,true,Conundrum Peak,Difficult Class 2,"4,400'",13.5 mi,Considerable,Considerable,Moderate,Moderate,conu1,10065,conundrum-peak,4
+,Conundrum Peak,14037,Elk Mountains,Castle Peak - North Face Couloir,false,true,false,Castle Peak,Difficult Class 2 Moderate Snow,"4,600'",13 mi,Considerable,Considerable,Moderate,Moderate,cast3,10065,conundrum-peak,4
+,Conundrum Peak,14037,Elk Mountains,Castle Peak - Northwest Ridge,false,true,false,Castle Peak,Difficult Class 2 Moderate Snow,"4,600'",13.5 mi,Considerable,Considerable,Moderate,Moderate,cast2,10065,conundrum-peak,4
+,Conundrum Peak,14037,Elk Mountains,Conundrum Peak - Conundrum Couloir,false,true,true,Conundrum Peak,Class 3 Steep Snow,"4,400'",12 mi,High,Considerable,Moderate,Considerable,conu5,10065,conundrum-peak,4
+,El Diente Peak,14175,San Juan Mountains,El Diente Peak - South Slopes,true,false,true,El Diente Peak,Class 3,"4,400'",12 mi,Considerable,Considerable,High,Considerable,eldi4,10064,el-diente-peak,1
+,El Diente Peak,14175,San Juan Mountains,Mt. Wilson - Southwest Slopes,true,false,false,Mt. Wilson,Class 3,"4,400'",12.5 mi,High,Considerable,Considerable,Considerable,mwil6,10064,el-diente-peak,1
+,El Diente Peak,14175,San Juan Mountains,Wilson Peak - Southwest Ridge,true,false,false,Wilson Peak,Class 3,"3,900'",10 mi,High,Considerable,Considerable,Considerable,wils1,10064,el-diente-peak,3
+,El Diente Peak,14175,San Juan Mountains,Combo: Mt. Wilson + El Diente Traverse,false,false,false,COMBO,Class 4,500',1 mi,High,High,High,High,mwil5,10064,el-diente-peak,1
+,El Diente Peak,14175,San Juan Mountains,El Diente Peak - North Buttress,false,false,true,El Diente Peak,Class 4,"3,200'",5 mi,High,Considerable,High,High,eldi8,10064,el-diente-peak,1
+,El Diente Peak,14175,San Juan Mountains,El Diente Peak - North Slopes,false,false,true,El Diente Peak,Class 3,"5,000'",15 mi,Considerable,Considerable,High,Considerable,eldi3,10064,el-diente-peak,1
+,El Diente Peak,14175,San Juan Mountains,Kilpacker Approach,false,false,false,OTHER,Class 1,800',6 mi,Low,Low,Low,Low,kilp0,10064,el-diente-peak,1
+,El Diente Peak,14175,San Juan Mountains,Mt. Wilson - East Face,false,true,false,Mt. Wilson,Class 3 Moderate Snow,"4,900'",12 mi,High,Considerable,High,High,mwil7,10064,el-diente-peak,0
+,El Diente Peak,14175,San Juan Mountains,Mt. Wilson - North Slopes,false,false,false,Mt. Wilson,Class 4,"5,100'",16 mi,High,High,High,Considerable,mwil2,10064,el-diente-peak,1
+,El Diente Peak,14175,San Juan Mountains,Navajo Lake Approach,false,false,false,OTHER,Class 1,"2,000'",9.5 mi,Low,Low,Low,Low,nava0,10064,el-diente-peak,1
+,El Diente Peak,14175,San Juan Mountains,Rock of Ages Approach,false,false,false,OTHER,Class 1,"2,800'",8.5 mi,Moderate,Low,Low,Low,silv0,10064,el-diente-peak,3
+,El Diente Peak,14175,San Juan Mountains,Woods Lake Approach,false,false,false,OTHER,Class 1,"2,115'",9 mi,Low,Low,Low,Low,wood0,10064,el-diente-peak,1
+,Mount Cameron,14248,Mosquito Range,Combo: Decalibron,true,false,false,COMBO,Class 2,"3,500'",7.5 mi,Moderate,Moderate,Low,Moderate,bros6,10063,mount-cameron,2
+,Mount Cameron,14248,Mosquito Range,Mt. Bross - West Slopes,true,false,false,Mt. Bross,Class 2,"2,250'",3.25 mi,Moderate,Moderate,Low,Low,bros2,10063,mount-cameron,2
+,Mount Cameron,14248,Mosquito Range,Mt. Cameron - West Ridge,true,false,true,Mt. Cameron,Class 2,"2,250'",4.75 mi,Moderate,Moderate,Low,Low,came1,10063,mount-cameron,2
+,Mount Cameron,14248,Mosquito Range,Mt. Democrat - East Slope,true,false,false,Mt. Democrat,Class 2,"2,150'",4 mi,Moderate,Moderate,Low,Low,demo1,10063,mount-cameron,2
+,Mount Cameron,14248,Mosquito Range,Mt. Lincoln - West Ridge,true,false,false,Mt. Lincoln,Class 2,"2,600'",6 mi,Moderate,Moderate,Low,Low,linc1,10063,mount-cameron,2
+,Mount Cameron,14248,Mosquito Range,"Mt. Bross - ""Dolly Varden Gully""",false,true,false,Mt. Bross,Class 2 Easy Snow,"2,900'",4 mi,Low,Moderate,Moderate,Moderate,bros4,10063,mount-cameron,2
+,Mount Cameron,14248,Mosquito Range,"Mt. Bross - ""S Gully""",false,true,false,Mt. Bross,Class 2 Easy Snow,"2,600'",9.5 mi,Moderate,Moderate,Moderate,Moderate,bros3,10063,mount-cameron,2
+,Mount Cameron,14248,Mosquito Range,Mt. Bross - East Slopes,false,false,false,Mt. Bross,Class 1,"2,900'",9 mi,Low,Low,Low,Low,bros1,10063,mount-cameron,2
+,Mount Cameron,14248,Mosquito Range,Mt. Democrat - South Slope,false,true,false,Mt. Democrat,Difficult Class 2 Moderate Snow,"2,150'",2.5 mi,Considerable,Moderate,Considerable,Moderate,demo2,10063,mount-cameron,2
+,Mount Cameron,14248,Mosquito Range,Mt. Lincoln - East Slopes,false,false,false,Mt. Lincoln,Class 2,"2,650'",6.5 mi,Low,Moderate,Low,Low,linc3,10063,mount-cameron,4
+,Mount Cameron,14248,Mosquito Range,Mt. Lincoln - Lincoln Amphitheatre,false,false,false,Mt. Lincoln,Class 2,"3,400'",4.75 mi,Moderate,Considerable,Moderate,Moderate,linc2,10063,mount-cameron,1
+,North Eolus,14042,San Juan Mountains,Mt. Eolus - Northeast Ridge,true,false,false,Mt. Eolus,Class 3,"3,100'",6 mi,High,Considerable,Considerable,Considerable,eolu3,10066,north-eolus,0
+,North Eolus,14042,San Juan Mountains,North Eolus - South Ridge,true,false,true,North Eolus,Class 3,250',0.2 mi,Considerable,Moderate,Moderate,Moderate,neol4,10066,north-eolus,0
+,North Eolus,14042,San Juan Mountains,Sunlight Peak - South Face,true,false,false,Sunlight Peak,Class 4,"3,000'",6 mi,Extreme,Considerable,Considerable,Considerable,sunl2,10066,north-eolus,0
+,North Eolus,14042,San Juan Mountains,Windom Peak - West Ridge,true,false,false,Windom Peak,Difficult Class 2,"3,000'",6 mi,Considerable,Considerable,Moderate,Moderate,wind1,10066,north-eolus,0
+,North Eolus,14042,San Juan Mountains,Chicago Basin Approach,false,false,false,OTHER,Class 1,"2,800'",12 mi,Low,Low,Low,Low,chib1,10066,north-eolus,0

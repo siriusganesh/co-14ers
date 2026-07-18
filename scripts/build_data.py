@@ -55,6 +55,7 @@ def build(peaks_csv: str, routes_csv: str, out_json: str) -> None:
                 "commitment": row["commitment"],
                 "route_key": row["route_key"],
                 "summits": row["route_summits"],
+                "road": int(row["road_difficulty"]) if row.get("road_difficulty") else None,
             })
 
     for p in peaks:
