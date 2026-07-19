@@ -1311,7 +1311,7 @@ function applyFilters() {
     if (state.range && p.range !== state.range) return false;
     if (state.maxClass) {
       const mc = parseInt(state.maxClass, 10);
-      if (p.min_class > mc) return false;
+      if (p.standard_class > mc) return false;
     }
     if (state.maxRoad) {
       const mr = parseInt(state.maxRoad, 10);
