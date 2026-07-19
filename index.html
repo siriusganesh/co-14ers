@@ -886,7 +886,6 @@ PEAKS.forEach(p => {
   p.standard_class = std ? classNumber(std.difficulty) : 99;
   p.standard_road = std && std.road != null ? std.road : 99;
   p.has_snow = p.routes.some(r => r.is_snow_climb);
-  p.min_class = Math.min(99, ...p.routes.map(r => classNumber(r.difficulty)));
 });
 
 const ranges = [...new Set(PEAKS.map(p => p.range))].sort();
