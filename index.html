@@ -307,6 +307,16 @@ section.block > header .meta {
 .controls .chip.on[data-state="hide"]:hover:not(.suppress-hover-preview) {
   background: var(--rust-soft); color: var(--rust); border-color: var(--rust);
 }
+/* Square reset button — clears every filter control back to defaults.
+   Sized to match the select/input row height; icon-only to save space. */
+.controls .reset-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 2.1rem; height: 2.1rem; padding: 0; flex: none;
+  border: 1px solid var(--border-strong); border-radius: 0;
+  background: var(--bg); color: var(--text-dim); cursor: pointer;
+}
+.controls .reset-btn:hover { border-color: var(--navy); color: var(--navy); background: var(--navy-soft); }
+.controls .reset-btn:focus-visible { outline: none; border-color: var(--navy); box-shadow: inset 0 -2px 0 0 var(--navy); }
 /* Hover on the active "summited only" chip previews the inactive
    "off" state — the gray look of the base .chip rule — since the
    next click cycles back to all. Same suppress-hover-preview gate
@@ -597,6 +607,12 @@ footer.page-footer {
       </select>
       <span class="chip" id="summitedToggle" data-state="all">hide summited</span>
       <span class="chip" id="plannedToggle" data-on="false">planned only</span>
+      <button type="button" class="reset-btn" id="resetFilters" aria-label="reset all filters" title="reset all filters">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+        </svg>
+      </button>
       <span class="progress" id="progress">0 / 53 summited</span>
     </div>
 
@@ -1292,6 +1308,22 @@ planChip.addEventListener("pointerenter", () => {
 planChip.addEventListener("pointerleave", () => {
   planChip.classList.remove("suppress-hover-preview");
   planChip.textContent = "planned only";
+});
+
+document.getElementById("resetFilters").addEventListener("click", () => {
+  state.q = ""; state.range = ""; state.maxClass = ""; state.maxRoad = "";
+  state.summitedFilter = "all"; state.plannedOnly = false;
+  document.getElementById("search").value = "";
+  rangeSel.value = "";
+  document.getElementById("classFilter").value = "";
+  document.getElementById("roadFilter").value = "";
+  sumChip.dataset.state = "all";
+  sumChip.classList.remove("on", "suppress-hover-preview");
+  sumChip.textContent = sumChipLabel("all", false);
+  planChip.dataset.on = "false";
+  planChip.classList.remove("on", "suppress-hover-preview");
+  planChip.textContent = "planned only";
+  render();
 });
 
 document.querySelectorAll("th[data-sort]").forEach(th => {
