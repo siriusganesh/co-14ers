@@ -383,7 +383,10 @@ tbody tr.planned td.peak-name::after {
   color: var(--amber); margin-left: .4rem; text-decoration: none;
 }
 td.peak-name { color: var(--text-heading); font-weight: 700; }
-td.elev, td.routes-col { font-variant-numeric: tabular-nums; font-family: var(--font-mono); font-size: .85rem; }
+td.elev { font-variant-numeric: tabular-nums; font-family: var(--font-mono); font-size: .85rem; }
+td.road-col .road-bars { display: inline-flex; gap: 2px; }
+td.road-col .road-bars i { width: 5px; height: 12px; background: var(--border); }
+td.road-col .road-bars i.fill { background: var(--navy); }
 td.range { color: var(--text-dim); font-size: .85rem; }
 
 .check {
@@ -623,8 +626,8 @@ footer.page-footer {
           <th data-sort="name">Peak</th>
           <th data-sort="elevation_ft">Elev (ft)</th>
           <th data-sort="range" class="hide-sm">Range</th>
-          <th data-sort="standard_class" class="hide-sm">Standard</th>
-          <th data-sort="route_count" class="hide-sm">Routes</th>
+          <th data-sort="standard_class_sort" class="hide-sm">Standard</th>
+          <th data-sort="standard_road" class="hide-sm">Road</th>
           <th></th>
         </tr>
       </thead>
@@ -884,6 +887,19 @@ function classNumber(diff) {
   const m = diff && diff.match(/Class\s*(\d)/i);
   return m ? parseInt(m[1], 10) : 99;
 }
+// Sort value for the Standard column: Easy Class N < Class N <
+// Difficult Class N (e.g. Class 2 < Difficult Class 2 < Easy Class 3
+// < Class 3). Only a leading modifier counts -- "Class 2 Easy Snow"
+// has an Easy SNOW suffix, not an easy class. Sort-only: the class
+// filter keeps using the integer so Difficult Class 2 still passes
+// "Class 2 or easier".
+function classSortValue(diff) {
+  const n = classNumber(diff);
+  if (n === 99) return 99;
+  const m = diff.match(/^\s*(Easy|Difficult)\s+Class/i);
+  if (!m) return n;
+  return m[1].toLowerCase() === "easy" ? n - 0.25 : n + 0.25;
+}
 function ratingClass(v) {
   if (!v) return "";
   v = v.toLowerCase();
@@ -900,11 +916,24 @@ PEAKS.forEach(p => {
   const std = p.routes.find(r => r.is_standard) || p.routes[0];
   p.standard = std || null;
   p.standard_class = std ? classNumber(std.difficulty) : 99;
+  p.standard_class_sort = std ? classSortValue(std.difficulty) : 99;
   p.standard_road = std && std.road != null ? std.road : 99;
   p.has_snow = p.routes.some(r => r.is_snow_climb);
 });
 
 const ranges = [...new Set(PEAKS.map(p => p.range))].sort();
+// 14ers.com-style road difficulty bars: n of 6 shaded, one bar per
+// step on the 0-6 scale (0 paved ... 6 difficult 4WD). Uses the
+// standard route's rating -- the same value the road filter uses.
+// Reuses the ROAD_LABELS list declared with the road filter below.
+function roadBars(road) {
+  if (road == null || road === 99) return '<span class="badge outline">&mdash;</span>';
+  const label = `road: ${ROAD_LABELS[road]} (${road} of 6)`;
+  let bars = "";
+  for (let i = 1; i <= 6; i++) bars += `<i class="${i <= road ? "fill" : ""}"></i>`;
+  return `<span class="road-bars" role="img" aria-label="${label}" title="${label}">${bars}</span>`;
+}
+
 const rangeSel = document.getElementById("rangeFilter");
 ranges.forEach(r => {
   const o = document.createElement("option");
@@ -1330,7 +1359,7 @@ document.querySelectorAll("th[data-sort]").forEach(th => {
   th.addEventListener("click", () => {
     const key = th.dataset.sort;
     if (state.sort === key) state.dir = state.dir === "asc" ? "desc" : "asc";
-    else { state.sort = key; state.dir = key === "elevation_ft" || key === "route_count" ? "desc" : "asc"; }
+    else { state.sort = key; state.dir = key === "elevation_ft" ? "desc" : "asc"; }
     render();
   });
 });
@@ -1390,7 +1419,7 @@ function render() {
       <td class="elev">${p.elevation_ft.toLocaleString()}</td>
       <td class="range hide-sm">${p.range}</td>
       <td class="hide-sm">${p.standard ? classBadge(p.standard.difficulty) : '<span class="badge outline">—</span>'}</td>
-      <td class="hide-sm routes-col">${p.route_count}</td>
+      <td class="hide-sm road-col">${roadBars(p.standard_road)}</td>
       <td><span class="check ${state.summits.has(p.peak_id) ? "on" : ""}" data-id="${p.peak_id}" title="mark summited"></span></td>
     `;
     tr.addEventListener("click", e => {
