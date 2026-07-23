@@ -542,12 +542,19 @@ footer.page-footer {
      road. Elevation is the least informative column on a 14ers list
      (every row is 14,0xx), so it yields its space to the peak name. */
   th.hide-xs, td.hide-xs { display: none; }
-  #peakTable th:nth-child(1), #peakTable td:nth-child(1) { width: 2.1rem; }
-  #peakTable th:nth-child(5), #peakTable td:nth-child(5) { width: 7rem; }
+  /* Column budget: the .68rem badge is ~109px wide -- wider than a
+     7rem cell's content box -- so it overflowed into the road column
+     and sat flush against the bars while the rank gutter idled. A
+     slightly smaller portrait badge fits a 6.5rem column with real
+     margin; the reclaimed width goes to the peak name. */
+  #peakTable th:nth-child(1), #peakTable td:nth-child(1) { width: 1.8rem; }
+  #peakTable th:nth-child(5), #peakTable td:nth-child(5) { width: 6.5rem; }
   #peakTable th:nth-child(6), #peakTable td:nth-child(6) { width: 3.4rem; }
   #peakTable th:nth-child(7), #peakTable td:nth-child(7) { width: 1.9rem; }
   th, td { padding: .45rem .4rem; }
+  td:first-child, th:first-child { padding-right: .15rem; }
   table { font-size: 13px; }
+  .badge { font-size: .6rem; letter-spacing: .06em; padding: .15rem .35rem; }
 
   /* Controls: search gets its own full row, dropdowns pair up two per
      row instead of one ragged column. */
