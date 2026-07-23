@@ -1682,8 +1682,14 @@ async function init() {
 
   renderAuthStrip();
   render();
-  // Share-link (#slug) loads open the peak's panel but no longer
-  // auto-scroll to it; the page stays at the top.
+  // Share-link (#slug) loads jump straight to the opened peak --
+  // standard anchor behavior, and without it the link looks broken
+  // (panel opens invisibly far down the page). Click-to-open
+  // deliberately does NOT scroll; this is the only auto-scroll.
+  if (state.openPeak) {
+    const tr = document.querySelector("tbody tr.is-open");
+    if (tr) tr.scrollIntoView({ behavior: "auto", block: "start" });
+  }
 
   try {
     setupSupabase();
