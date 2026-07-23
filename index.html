@@ -488,6 +488,31 @@ a.route-name:hover { color: var(--navy); border-bottom-color: var(--navy); }
 .ratings .v.rating-cons     { background: var(--rust-soft);  color: var(--rust); border-color: var(--rust); }
 .ratings .v.rating-high     { background: var(--rust);       color: #fff;        border-color: var(--rust); }
 .ratings .v.rating-extreme  { background: var(--navy);       color: #fff;        border-color: var(--navy); }
+/* Route metadata as two columns: risk factors | trip stats. Labels
+   and values align per column via display:contents rows. */
+.route-cols {
+  margin-top: .6rem; display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem 1.5rem;
+}
+.route-cols > div {
+  display: grid; grid-template-columns: max-content 1fr;
+  align-content: start; align-items: center; gap: .4rem .6rem;
+  margin-top: 0;
+}
+.route-cols .pair { display: contents; }
+.route-cols .k { margin-right: 0; }
+.route-cols .v { color: var(--text-heading); }
+.route-cols .v.rating { justify-self: start; }
+.route-cols .route-actions { grid-column: 1 / -1; margin-top: .25rem; }
+@media (max-width: 560px) {
+  /* Half-width columns can't fit "route-finding" + a chip on one
+     line; let each pair wrap its value under the label. */
+  .route-cols > div { display: flex; flex-direction: column; align-items: flex-start; gap: .45rem; }
+  .route-cols .pair { display: flex; flex-wrap: wrap; align-items: center; gap: .2rem .5rem; }
+  /* Risk labels + chips can't share a line at half width; stacking
+     every pair the same way beats letting each one wrap ad hoc. */
+  .route-cols .ratings .pair { flex-direction: column; align-items: flex-start; gap: .2rem; }
+}
 .route-actions {
   display: flex; gap: 1rem; align-items: center; margin-top: .65rem;
   flex-wrap: wrap; font-family: var(--font-mono); font-size: .75rem; color: var(--text-dim);
@@ -519,6 +544,12 @@ footer.page-footer {
 .toast.show { opacity: 0.96; }
 
 @media (max-width: 720px) {
+  /* Below 720px some peak-table columns are display:none while the
+     detail row's colspan="7" still spans all seven tracks. Fixed
+     layout realizes the hidden tracks when a row opens and
+     redistributes widths onto the wrong columns, collapsing the peak
+     name. Auto layout sizes from content and handles both cleanly. */
+  #peakTable { table-layout: auto; }
   nav.topnav ul { gap: 1rem; overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; }
   nav.topnav ul::-webkit-scrollbar { display: none; }
   nav.topnav a { white-space: nowrap; }
@@ -1553,28 +1584,30 @@ function detailHTML(p) {
                 ${r.is_standard ? '<span class="badge outline">standard</span>' : ""}
                 ${r.is_snow_climb ? '<span class="badge outline">snow</span>' : ""}
               </div>
-              <div class="route-stats">
-                <span><span class="k">gain</span>${r.gain || "—"}</span>
-                <span><span class="k">distance</span>${r.distance || "—"}</span>
-                <span><span class="k">summits</span>${r.summits || "—"}</span>
-              </div>
-              <div class="ratings">
-                ${fmtRating("exposure", r.exposure)}
-                ${fmtRating("rockfall", r.rockfall)}
-                ${fmtRating("route-finding", r.route_finding)}
-                ${fmtRating("commitment", r.commitment)}
-                ${fmtRating("road", roadLabel(r.road))}
-              </div>
-              <div class="route-actions">
-                <label>
-                  <span class="check sm ${onR ? "on" : ""}" data-route="${r.route_key}" data-peak="${p.peak_id}"></span>
-                  <span>${onR ? "climbed this line" : "mark climbed"}</span>
-                </label>
-                ${onR ? `
-                  <label>
-                    <span>date</span>
-                    <input type="date" data-route-date="${r.route_key}" value="${climbed.climbed_date || ""}">
-                  </label>` : ""}
+              <div class="route-cols">
+                <div class="ratings">
+                  ${fmtRating("exposure", r.exposure)}
+                  ${fmtRating("rockfall", r.rockfall)}
+                  ${fmtRating("route-finding", r.route_finding)}
+                  ${fmtRating("commitment", r.commitment)}
+                </div>
+                <div class="route-stats">
+                  <span class="pair"><span class="k">gain</span><span class="v">${r.gain || "—"}</span></span>
+                  <span class="pair"><span class="k">distance</span><span class="v">${r.distance || "—"}</span></span>
+                  <span class="pair"><span class="k">summits</span><span class="v">${r.summits || "—"}</span></span>
+                  <span class="pair"><span class="k">road</span><span class="v">${roadLabel(r.road) || "—"}</span></span>
+                  <div class="route-actions">
+                    <label>
+                      <span class="check sm ${onR ? "on" : ""}" data-route="${r.route_key}" data-peak="${p.peak_id}"></span>
+                      <span>${onR ? "climbed this line" : "mark climbed"}</span>
+                    </label>
+                    ${onR ? `
+                      <label>
+                        <span>date</span>
+                        <input type="date" data-route-date="${r.route_key}" value="${climbed.climbed_date || ""}">
+                      </label>` : ""}
+                  </div>
+                </div>
               </div>
             </div>`;
           }).join("")
