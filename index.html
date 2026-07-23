@@ -503,6 +503,7 @@ a.route-name:hover { color: var(--navy); border-bottom-color: var(--navy); }
 .route-cols .k { margin-right: 0; }
 .route-cols .v { color: var(--text-heading); }
 .route-cols .v.rating { justify-self: start; }
+.route-cols .route-actions { grid-column: 1 / -1; margin-top: .25rem; }
 @media (max-width: 560px) {
   /* Half-width columns can't fit "route-finding" + a chip on one
      line; let each pair wrap its value under the label. */
@@ -1589,18 +1590,18 @@ function detailHTML(p) {
                   <span class="pair"><span class="k">distance</span><span class="v">${r.distance || "—"}</span></span>
                   <span class="pair"><span class="k">summits</span><span class="v">${r.summits || "—"}</span></span>
                   <span class="pair"><span class="k">road</span><span class="v">${roadLabel(r.road) || "—"}</span></span>
+                  <div class="route-actions">
+                    <label>
+                      <span class="check sm ${onR ? "on" : ""}" data-route="${r.route_key}" data-peak="${p.peak_id}"></span>
+                      <span>${onR ? "climbed this line" : "mark climbed"}</span>
+                    </label>
+                    ${onR ? `
+                      <label>
+                        <span>date</span>
+                        <input type="date" data-route-date="${r.route_key}" value="${climbed.climbed_date || ""}">
+                      </label>` : ""}
+                  </div>
                 </div>
-              </div>
-              <div class="route-actions">
-                <label>
-                  <span class="check sm ${onR ? "on" : ""}" data-route="${r.route_key}" data-peak="${p.peak_id}"></span>
-                  <span>${onR ? "climbed this line" : "mark climbed"}</span>
-                </label>
-                ${onR ? `
-                  <label>
-                    <span>date</span>
-                    <input type="date" data-route-date="${r.route_key}" value="${climbed.climbed_date || ""}">
-                  </label>` : ""}
               </div>
             </div>`;
           }).join("")
