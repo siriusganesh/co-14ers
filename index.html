@@ -1517,10 +1517,8 @@ function togglePeak(p) {
     if (location.hash) history.replaceState(null, "", location.pathname + location.search);
   }
   render();
-  if (opening) {
-    const row = document.querySelector("tbody tr.is-open");
-    if (row) row.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
+  // No auto-scroll on open -- the panel expands in place below the
+  // clicked row and the viewport stays put.
 }
 
 const ROAD_LABELS = ["paved", "easy dirt 2WD", "rough dirt 2WD", "easy 4WD", "moderate 4WD", "rough 4WD", "difficult 4WD"];
@@ -1684,10 +1682,8 @@ async function init() {
 
   renderAuthStrip();
   render();
-  if (state.openPeak) {
-    const tr = document.querySelector("tbody tr.is-open");
-    if (tr) tr.scrollIntoView({ behavior: "auto", block: "start" });
-  }
+  // Share-link (#slug) loads open the peak's panel but no longer
+  // auto-scroll to it; the page stays at the top.
 
   try {
     setupSupabase();
