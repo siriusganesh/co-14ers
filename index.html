@@ -537,6 +537,22 @@ footer.page-footer {
   nav.topnav a { font-size: .72rem; }
   .page { padding: 2rem 1rem 3rem; }
   .controls input[type=search] { min-width: 0; flex: 1; }
+
+  /* Portrait: the table leads with what the site is for -- class and
+     road. Elevation is the least informative column on a 14ers list
+     (every row is 14,0xx), so it yields its space to the peak name. */
+  th.hide-xs, td.hide-xs { display: none; }
+  #peakTable th:nth-child(1), #peakTable td:nth-child(1) { width: 2.1rem; }
+  #peakTable th:nth-child(5), #peakTable td:nth-child(5) { width: 7rem; }
+  #peakTable th:nth-child(6), #peakTable td:nth-child(6) { width: 3.4rem; }
+  #peakTable th:nth-child(7), #peakTable td:nth-child(7) { width: 1.9rem; }
+  th, td { padding: .45rem .4rem; }
+  table { font-size: 13px; }
+
+  /* Controls: search gets its own full row, dropdowns pair up two per
+     row instead of one ragged column. */
+  .controls input[type=search] { flex-basis: 100%; }
+  .controls select { flex: 1 1 42%; min-width: 0; }
 }
 </style>
 </head>
@@ -624,10 +640,10 @@ footer.page-footer {
         <tr>
           <th data-sort="rank" class="sort-asc">#</th>
           <th data-sort="name">Peak</th>
-          <th data-sort="elevation_ft">Elev (ft)</th>
+          <th data-sort="elevation_ft" class="hide-xs">Elev</th>
           <th data-sort="range" class="hide-sm">Range</th>
-          <th data-sort="standard_class_sort" class="hide-sm">Standard</th>
-          <th data-sort="standard_road" class="hide-sm">Road</th>
+          <th data-sort="standard_class_sort">Standard</th>
+          <th data-sort="standard_road">Road</th>
           <th></th>
         </tr>
       </thead>
@@ -879,7 +895,10 @@ function classBadge(diff) {
   const n = m ? m[1] : "?";
   const isSnow = /snow/i.test(diff);
   const cls = "badge c" + n;
-  let out = `<span class="${cls}">${diff.replace(/\s*Moderate Snow|\s*Easy Snow|\s*Steep Snow/i, "")}</span>`;
+  // "Difficult" -> "Hard" is display-only shortening; the source data
+  // and sort/filter logic keep 14ers.com's "Difficult Class N" wording.
+  const shown = diff.replace(/\s*Moderate Snow|\s*Easy Snow|\s*Steep Snow/i, "").replace(/^Difficult\s+/i, "Hard ");
+  let out = `<span class="${cls}">${shown}</span>`;
   if (isSnow) out += ` <span class="badge snow">${diff.match(/(Easy|Moderate|Steep) Snow/i)?.[0] || "snow"}</span>`;
   return out;
 }
@@ -1416,10 +1435,10 @@ function render() {
     tr.innerHTML = `
       <td>${p.rank ?? ""}</td>
       <td class="peak-name">${p.name}</td>
-      <td class="elev">${p.elevation_ft.toLocaleString()}</td>
+      <td class="elev hide-xs">${p.elevation_ft.toLocaleString()}</td>
       <td class="range hide-sm">${p.range}</td>
-      <td class="hide-sm">${p.standard ? classBadge(p.standard.difficulty) : '<span class="badge outline">—</span>'}</td>
-      <td class="hide-sm road-col">${roadBars(p.standard_road)}</td>
+      <td>${p.standard ? classBadge(p.standard.difficulty) : '<span class="badge outline">—</span>'}</td>
+      <td class="road-col">${roadBars(p.standard_road)}</td>
       <td><span class="check ${state.summits.has(p.peak_id) ? "on" : ""}" data-id="${p.peak_id}" title="mark summited"></span></td>
     `;
     tr.addEventListener("click", e => {
