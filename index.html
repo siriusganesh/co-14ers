@@ -359,7 +359,7 @@ table { width: 100%; border-collapse: collapse; font-size: 14px; }
 #peakTable th:nth-child(3), #peakTable td:nth-child(3) { width: 7rem; }
 #peakTable th:nth-child(4), #peakTable td:nth-child(4) { width: 11rem; }
 #peakTable th:nth-child(5), #peakTable td:nth-child(5) { width: 11rem; }
-#peakTable th:nth-child(6), #peakTable td:nth-child(6) { width: 5rem; }
+#peakTable th:nth-child(6), #peakTable td:nth-child(6) { width: 4.5rem; }
 #peakTable th:nth-child(7), #peakTable td:nth-child(7) { width: 2.25rem; }
 th, td { text-align: left; padding: .6rem .7rem; border-bottom: 1px solid var(--border); vertical-align: top; }
 th {
@@ -542,12 +542,19 @@ footer.page-footer {
      road. Elevation is the least informative column on a 14ers list
      (every row is 14,0xx), so it yields its space to the peak name. */
   th.hide-xs, td.hide-xs { display: none; }
-  #peakTable th:nth-child(1), #peakTable td:nth-child(1) { width: 2.1rem; }
-  #peakTable th:nth-child(5), #peakTable td:nth-child(5) { width: 7rem; }
-  #peakTable th:nth-child(6), #peakTable td:nth-child(6) { width: 3.4rem; }
+  /* Column budget: the .68rem badge is ~109px wide -- wider than a
+     7rem cell's content box -- so it overflowed into the road column
+     and sat flush against the bars while the rank gutter idled. A
+     slightly smaller portrait badge fits a 6.5rem column with real
+     margin; the reclaimed width goes to the peak name. */
+  #peakTable th:nth-child(1), #peakTable td:nth-child(1) { width: 1.8rem; }
+  #peakTable th:nth-child(5), #peakTable td:nth-child(5) { width: 6.5rem; }
+  #peakTable th:nth-child(6), #peakTable td:nth-child(6) { width: 3rem; }
   #peakTable th:nth-child(7), #peakTable td:nth-child(7) { width: 1.9rem; }
   th, td { padding: .45rem .4rem; }
+  td:first-child, th:first-child { padding-right: .15rem; }
   table { font-size: 13px; }
+  .badge { font-size: .6rem; letter-spacing: .06em; padding: .15rem .35rem; }
 
   /* Controls: search gets its own full row, dropdowns pair up two per
      row instead of one ragged column. */
@@ -941,15 +948,21 @@ PEAKS.forEach(p => {
 });
 
 const ranges = [...new Set(PEAKS.map(p => p.range))].sort();
-// 14ers.com-style road difficulty bars: n of 6 shaded, one bar per
-// step on the 0-6 scale (0 paved ... 6 difficult 4WD). Uses the
-// standard route's rating -- the same value the road filter uses.
-// Reuses the ROAD_LABELS list declared with the road filter below.
+// 14ers.com-style road difficulty bars for the 0-6 scale (0 paved
+// ... 6 difficult 4WD), drawn as 5 bars with ratings 5 and 6 both
+// fully shaded. Lossless in practice: no standard route rates 5
+// (statewide, only Lead King Basin -> Snowmass West Slope does, and
+// non-standard routes never render here), so the sixth bar only ever
+// spent width restating the fifth. Tooltip keeps the exact label.
+// Uses the standard route's rating -- same value the road filter
+// uses. Reuses the ROAD_LABELS list declared with the road filter
+// below.
 function roadBars(road) {
   if (road == null || road === 99) return '<span class="badge outline">&mdash;</span>';
-  const label = `road: ${ROAD_LABELS[road]} (${road} of 6)`;
+  const label = `road: ${ROAD_LABELS[road]}`;
+  const filled = Math.min(road, 5);
   let bars = "";
-  for (let i = 1; i <= 6; i++) bars += `<i class="${i <= road ? "fill" : ""}"></i>`;
+  for (let i = 1; i <= 5; i++) bars += `<i class="${i <= filled ? "fill" : ""}"></i>`;
   return `<span class="road-bars" role="img" aria-label="${label}" title="${label}">${bars}</span>`;
 }
 
