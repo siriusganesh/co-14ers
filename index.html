@@ -944,19 +944,6 @@ function classNumber(diff) {
   const m = diff && diff.match(/Class\s*(\d)/i);
   return m ? parseInt(m[1], 10) : 99;
 }
-// Sort value for the Standard column: Easy Class N < Class N <
-// Difficult Class N (e.g. Class 2 < Difficult Class 2 < Easy Class 3
-// < Class 3). Only a leading modifier counts -- "Class 2 Easy Snow"
-// has an Easy SNOW suffix, not an easy class. Sort-only: the class
-// filter keeps using the integer so Difficult Class 2 still passes
-// "Class 2 or easier".
-function classSortValue(diff) {
-  const n = classNumber(diff);
-  if (n === 99) return 99;
-  const m = diff.match(/^\s*(Easy|Difficult)\s+Class/i);
-  if (!m) return n;
-  return m[1].toLowerCase() === "easy" ? n - 0.25 : n + 0.25;
-}
 // Explains the Standard column's order: the cell shows only the coarse
 // class, so the tooltip surfaces the composite score and the ratings
 // that produced it. Without this two adjacent "Class 2" rows give no
@@ -986,7 +973,6 @@ PEAKS.forEach(p => {
   const std = p.routes.find(r => r.is_standard) || p.routes[0];
   p.standard = std || null;
   p.standard_class = std ? classNumber(std.difficulty) : 99;
-  p.standard_class_sort = std ? classSortValue(std.difficulty) : 99;
   // Composite score from build_data.py: class stays dominant, the four
   // risk ratings only order peaks within a class bucket. See the
   // difficulty_score() comment in scripts/build_data.py for the formula.
