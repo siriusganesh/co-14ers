@@ -16,8 +16,71 @@ import argparse
 import csv
 import json
 import os
+import re
 import sys
 from collections import defaultdict
+
+# Composite difficulty score for a route, used to sort the Standard column.
+#
+# 14ers.com only publishes a coarse class (Class 1-4 with optional
+# Easy/Difficult modifier), so 25 peaks share a bare "Class 2" standard
+# route and tie when that column is sorted. This score keeps class
+# dominant and uses the four risk ratings only to order peaks *within*
+# a class bucket:
+#
+#   score = class + modifier_offset + 0.2 * mean(normalized ratings)
+#   modifier_offset: Easy -0.3, none 0.0, Difficult +0.3
+#
+# Buckets therefore never overlap (plain Class 2 spans 2.00-2.20,
+# Difficult Class 2 spans 2.30-2.50, Easy Class 3 2.70-2.90, and so
+# on), so no Class 3 peak can ever sort below a Class 2 one. The four
+# factors are weighted equally and each is normalized against its own
+# observed maximum, because the scales differ in practice: exposure,
+# route-finding and commitment reach Extreme in this dataset while
+# rockfall tops out at High.
+#
+# This is a derived, opinionated number -- not a 14ers.com rating.
+# Gain and distance are deliberately excluded: they measure fatigue
+# rather than technical difficulty, they already have their own
+# columns, and traverse routes carry combined stats for several peaks
+# which would inflate any single peak's score.
+RATING_VALUES = {"low": 0, "moderate": 1, "considerable": 2, "high": 3, "extreme": 4}
+RISK_FACTORS = ["exposure", "rockfall", "route_finding", "commitment"]
+REFINE_SPAN = 0.2
+
+
+def class_number(difficulty: str):
+    m = re.search(r"Class\s*(\d)", difficulty or "")
+    return int(m.group(1)) if m else None
+
+
+def modifier_offset(difficulty: str) -> float:
+    """Leading Easy/Difficult only. "Class 2 Easy Snow" is a snow
+    suffix, not an easy class, so it must not match here."""
+    m = re.match(r"\s*(Easy|Difficult)\s+Class", difficulty or "")
+    if not m:
+        return 0.0
+    return -0.3 if m.group(1).lower() == "easy" else 0.3
+
+
+def rating_maxima(rows) -> dict:
+    out = {}
+    for f in RISK_FACTORS:
+        vals = [RATING_VALUES[r[f].lower()] for r in rows
+                if r.get(f) and r[f].lower() in RATING_VALUES]
+        out[f] = max(vals) if vals else 1
+    return out
+
+
+def difficulty_score(row, maxima: dict):
+    n = class_number(row["difficulty"])
+    if n is None:
+        return None
+    vals = [RATING_VALUES[row[f].lower()] / maxima[f] for f in RISK_FACTORS
+            if row.get(f) and row[f].lower() in RATING_VALUES]
+    refine = sum(vals) / len(vals) if vals else 0.0
+    return round(n + modifier_offset(row["difficulty"]) + REFINE_SPAN * refine, 4)
+
 
 
 def build(peaks_csv: str, routes_csv: str, out_json: str) -> None:
@@ -38,9 +101,10 @@ def build(peaks_csv: str, routes_csv: str, out_json: str) -> None:
 
     routes_by_peak = defaultdict(list)
     with open(routes_csv) as f:
-        for row in csv.DictReader(f):
-            if row["difficulty"] in ("false", "true", ""):
-                continue
+        route_rows = [row for row in csv.DictReader(f)
+                      if row["difficulty"] not in ("false", "true", "")]
+    maxima = rating_maxima(route_rows)
+    for row in route_rows:
             routes_by_peak[row["peak_id"]].append({
                 "name": row["route_name"],
                 "is_standard": row["is_standard"] == "true",
@@ -59,6 +123,7 @@ def build(peaks_csv: str, routes_csv: str, out_json: str) -> None:
                 "trailhead": row.get("trailhead_name") or None,
                 "th_lat": float(row["trailhead_lat"]) if row.get("trailhead_lat") else None,
                 "th_lon": float(row["trailhead_lon"]) if row.get("trailhead_lon") else None,
+                "score": difficulty_score(row, maxima),
             })
 
     for p in peaks:
