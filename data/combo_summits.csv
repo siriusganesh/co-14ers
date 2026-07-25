@@ -1,0 +1,12 @@
+route_key,route_name,summit_slugs
+bier4,"Combo: Bierstadt, Sawtooth, Blue Sky",mount-bierstadt mount-blue-sky
+bier5,Combo: Tour de Abyss Loop,mount-blue-sky mount-bierstadt
+bros6,Combo: Decalibron,mount-lincoln mount-democrat mount-cameron mount-bross
+cast4,Combo: Castle and Conundrum,castle-peak conundrum-peak
+cnee3,Combo: Crestones Traverse,crestone-peak crestone-needle
+elli3,Combo: Blanca and Ellingwood,blanca-peak ellingwood-point
+harv4,Combo: Harvard and Columbia Traverse,mount-harvard mount-columbia
+litt3,Combo: Little Bear + Blanca Traverse,blanca-peak little-bear-peak
+mwil5,Combo: Mt. Wilson + El Diente Traverse,mount-wilson el-diente-peak
+nmar4,Combo: Bells Traverse,maroon-peak north-maroon-peak
+torr5,Combo: Grays and Torreys,grays-peak torreys-peak
