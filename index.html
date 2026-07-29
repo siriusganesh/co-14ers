@@ -439,11 +439,13 @@ tbody tr.empty-row:hover { background: transparent; }
    the field set is small and static, and a custom combobox would need
    aria-expanded/activedescendant plumbing to hold the accessibility
    score that the rest of the page already has. */
-.query-help { margin: -.4rem 0 1.25rem; font-family: var(--font-mono); font-size: .72rem; }
+.query-help { margin: -.4rem 0 1.25rem; font-family: var(--font-mono); font-size: .8rem; }
 .query-help > summary {
   display: inline-block; list-style: none; cursor: pointer;
   padding: .35rem .7rem; border: 1px solid var(--border); background: var(--bg-tint);
-  color: var(--text-dim); text-transform: uppercase; letter-spacing: .1em; font-size: .68rem;
+  color: var(--text-dim); text-transform: uppercase; letter-spacing: .1em;
+  /* matches .controls .chip, since it sits in the same visual family */
+  font-size: .72rem;
 }
 .query-help > summary::-webkit-details-marker { display: none; }
 .query-help > summary:hover { border-color: var(--navy); color: var(--navy); }
@@ -461,7 +463,7 @@ tbody tr.empty-row:hover { background: transparent; }
 .query-help-scope strong { color: var(--navy); }
 .query-examples { display: flex; flex-wrap: wrap; gap: .4rem; }
 .query-examples button {
-  font: inherit; font-size: .68rem; cursor: pointer;
+  font: inherit; cursor: pointer;
   padding: .3rem .5rem; border: 1px solid var(--border-strong);
   background: var(--bg); color: var(--navy);
 }
