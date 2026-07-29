@@ -389,6 +389,35 @@ td.road-col .road-bars i { width: 5px; height: 12px; background: var(--border); 
 td.road-col .road-bars i.fill { background: var(--navy); }
 td.range { color: var(--text-dim); font-size: .85rem; }
 
+/* Search-result affordances. A peak can match through a route name,
+   combo, approach or trailhead, in which case none of the visible
+   columns contain the query and the row looks arbitrary -- .match-hint
+   names what actually matched. text-decoration: none keeps the hint out
+   of the line-through that tr.summited applies to td.peak-name. */
+td.peak-name .match-hint {
+  display: block; margin-top: .2rem; font-family: var(--font-mono);
+  font-weight: 400; font-size: .68rem; letter-spacing: .04em;
+  color: var(--text-faint); text-decoration: none;
+  /* Peak is the one auto-width column, so a long combo name would wrap
+     and change row heights mid-query. Clip to one line; the title
+     attribute carries the full string. */
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+/* Divider ahead of unranked summits, and the no-results row. Both are
+   non-interactive, so they opt out of the tbody row cursor and hover. */
+tbody tr.group-divider td {
+  font-family: var(--font-mono); font-size: .68rem; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--text-faint); background: var(--bg-tint);
+}
+tbody tr.empty-row td { color: var(--text-dim); font-size: .9rem; }
+tbody tr.group-divider, tbody tr.empty-row { cursor: default; }
+tbody tr.group-divider:hover { background: var(--bg-tint); }
+tbody tr.empty-row:hover { background: transparent; }
+.link-btn {
+  background: none; border: 0; padding: 0; font: inherit; color: var(--navy);
+  border-bottom: 1px solid var(--navy-soft); cursor: pointer;
+}
+
 .check {
   display: inline-block; width: 16px; height: 16px;
   border: 1px solid var(--border-strong); border-radius: 0;
@@ -638,11 +667,13 @@ footer.page-footer {
   <section class="block">
     <header>
       <h2>peaks</h2>
-      <span class="meta" id="peakCount">53 ranked</span>
+      <span class="meta" id="peakCount" aria-live="polite">53 ranked</span>
     </header>
 
     <div class="controls">
-      <input type="search" id="search" placeholder="search by name" autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore>
+      <input type="search" id="search" placeholder="search peaks, routes"
+             aria-label="search peak names, routes, combos and trailheads"
+             title="search peak names, routes, combos and trailheads" autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore>
       <select id="rangeFilter" aria-label="filter by range" autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore>
         <option value="">all ranges</option>
       </select>
@@ -917,6 +948,40 @@ const PEAKS = [{"rank":1,"name":"Mount Elbert","elevation_ft":14438,"range":"Saw
 
 const LEGACY_KEY = "co14ers.summited.v1";
 
+// Search normalization, applied to both the query and every haystack so
+// punctuation and the Mt./Mount split stop mattering. Peak names carry
+// "Mount Elbert" while 14ers.com route names carry "Mt. Elbert", so the
+// old raw substring test found nothing for the query "mt elbert".
+function normalizeSearch(s) {
+  return (s || "").toLowerCase()
+    .replace(/[.,'\u2019+\/()\-&:]/g, " ")
+    .replace(/\bmt\b/g, "mount")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// Hand-curated aliases, expanded per token after normalization. Kept
+// deliberately small: renames the data cannot know about, plus the
+// misspellings that actually get typed. Values may be multi-word; keys
+// must be single tokens.
+const SEARCH_ALIASES = {
+  evans: "blue sky",      // renamed Mount Evans -> Mount Blue Sky, 2023
+  bells: "maroon",        // "the Bells" -> Maroon Peak / North Maroon
+  sneffles: "sneffels",
+  quandry: "quandary",
+  bierstat: "bierstadt",
+  wetterhorne: "wetterhorn"
+};
+
+function queryTokens(q) {
+  const norm = normalizeSearch(q);
+  if (!norm) return [];
+  return norm.split(" ").flatMap(t => {
+    const alias = SEARCH_ALIASES[t];
+    return alias ? normalizeSearch(alias).split(" ") : [t];
+  });
+}
+
 const state = {
   user: null, ready: false,
   summits: new Map(), routes: new Map(), planned: new Map(),
@@ -989,6 +1054,21 @@ PEAKS.forEach(p => {
   p.standard_score = std && std.score != null ? std.score : 99;
   p.standard_road = std && std.road != null ? std.road : 99;
   p.has_snow = p.routes.some(r => r.is_snow_climb);
+  // Precomputed search haystacks. Search used to test p.name and p.range
+  // only, which left everything else in the data unreachable: 138 route
+  // names, 12 combos, 7 approaches and 70 trailheads. Queries like
+  // "traverse", "decalibron", "couloir" and "lake como" all returned
+  // nothing despite being present. Built once here because applyFilters
+  // runs on every keystroke.
+  p.routes.forEach(r => {
+    r.search_name = normalizeSearch(r.name);
+    r.search_th = normalizeSearch(r.trailhead || "");
+    r.search_text = normalizeSearch([r.name, r.summits, r.trailhead, r.difficulty, r.kind].join(" "));
+  });
+  // Name, slug and range alone, so render() can tell a route-only match
+  // from a direct hit and label the row accordingly.
+  p.search_primary = normalizeSearch([p.name, p.slug, p.range].join(" "));
+  p.search_text = [p.search_primary].concat(p.routes.map(r => r.search_text)).join(" ");
 });
 
 const ranges = [...new Set(PEAKS.map(p => p.range))].sort();
@@ -1440,10 +1520,18 @@ document.querySelectorAll("th[data-sort]").forEach(th => {
   });
 });
 
-function applyFilters() {
+function applyFilters(tokens = queryTokens(state.q)) {
   return PEAKS.filter(p => {
-    if (p.unranked) return false;
-    if (state.q && !(p.name.toLowerCase().includes(state.q) || p.range.toLowerCase().includes(state.q))) return false;
+    // Unranked summits (El Diente, Challenger Point, Conundrum, Cameron
+    // and 16 others) stay out of the default list, but they are real
+    // peaks in the data and were unreachable by any query because this
+    // test ran before the search test. With a query they come back,
+    // grouped separately by render() so the ranked count stays honest.
+    if (p.unranked && !tokens.length) return false;
+    // Every token must appear somewhere in the haystack (AND, not one
+    // substring test against the whole string), so word order and extra
+    // words in between do not matter: "elbert northeast" hits.
+    if (tokens.length && !tokens.every(t => p.search_text.includes(t))) return false;
     if (state.range && p.range !== state.range) return false;
     if (state.maxClass) {
       const mc = parseInt(state.maxClass, 10);
@@ -1460,8 +1548,23 @@ function applyFilters() {
   });
 }
 
+// Names what matched when the peak's own name and range did not, so a
+// row whose visible columns contain nothing from the query is still
+// explainable. Returns "" for direct name/range hits and for no query.
+function matchHint(p, tokens) {
+  if (!tokens.length) return "";
+  if (tokens.every(t => p.search_primary.includes(t))) return "";
+  const hit = p.routes.find(r => tokens.every(t => r.search_text.includes(t)));
+  if (!hit) return "";
+  const viaTrailhead = hit.search_th && tokens.every(t => hit.search_th.includes(t));
+  const text = viaTrailhead && !tokens.every(t => hit.search_name.includes(t))
+    ? `via ${hit.trailhead}` : hit.name;
+  return `<span class="match-hint" title="${text}">${text}</span>`;
+}
+
 function render() {
-  const rows = applyFilters();
+  const tokens = queryTokens(state.q);
+  const rows = applyFilters(tokens);
   rows.sort((a,b) => {
     let av = a[state.sort], bv = b[state.sort];
     if (typeof av === "string") { av = av.toLowerCase(); bv = bv.toLowerCase(); }
@@ -1476,7 +1579,10 @@ function render() {
     if (th.dataset.sort === state.sort) th.classList.add(state.dir === "asc" ? "sort-asc" : "sort-desc");
   });
 
-  document.getElementById("peakCount").textContent = `${rows.length} shown`;
+  const rankedRows = rows.filter(p => !p.unranked);
+  const unrankedRows = rows.filter(p => p.unranked);
+  document.getElementById("peakCount").textContent =
+    `${rankedRows.length} shown` + (unrankedRows.length ? ` \u00b7 ${unrankedRows.length} unranked` : "");
   const ranked = PEAKS.filter(p => !p.unranked);
   const done = ranked.filter(p => state.summits.has(p.peak_id)).length;
   const planCount = ranked.filter(p => state.planned.has(p.peak_id)).length;
@@ -1484,14 +1590,37 @@ function render() {
 
   const tb = document.getElementById("peakBody");
   tb.innerHTML = "";
-  rows.forEach(p => {
+  // Unranked matches always sort to the bottom, behind a divider,
+  // whatever the active column sort is.
+  const ordered = unrankedRows.length ? rankedRows.concat(unrankedRows) : rows;
+  if (!ordered.length) {
+    const emptyTr = document.createElement("tr");
+    emptyTr.className = "empty-row";
+    emptyTr.innerHTML = `<td colspan="7">no peaks match. <button type="button" class="link-btn" id="emptyReset">clear filters</button></td>`;
+    emptyTr.querySelector("#emptyReset").addEventListener("click", e => {
+      e.stopPropagation();
+      // Defer to the existing reset control rather than duplicating the
+      // list of things a reset has to clear.
+      document.getElementById("resetFilters").click();
+    });
+    tb.appendChild(emptyTr);
+  }
+  let dividerDrawn = false;
+  ordered.forEach(p => {
+    if (p.unranked && !dividerDrawn) {
+      dividerDrawn = true;
+      const divTr = document.createElement("tr");
+      divTr.className = "group-divider";
+      divTr.innerHTML = `<td colspan="7">unranked summits</td>`;
+      tb.appendChild(divTr);
+    }
     const tr = document.createElement("tr");
     if (state.summits.has(p.peak_id)) tr.classList.add("summited");
     if (state.planned.has(p.peak_id)) tr.classList.add("planned");
     if (state.openPeak === p.peak_id) tr.classList.add("is-open");
     tr.innerHTML = `
       <td>${p.rank ?? ""}</td>
-      <td class="peak-name">${p.name}</td>
+      <td class="peak-name">${p.name}${matchHint(p, tokens)}</td>
       <td class="elev hide-xs">${p.elevation_ft.toLocaleString()}</td>
       <td class="range hide-sm">${p.range}</td>
       <td title="${stdTooltip(p)}">${p.standard ? classBadge(p.standard.difficulty) : '<span class="badge outline">—</span>'}</td>
