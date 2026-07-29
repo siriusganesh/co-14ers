@@ -275,7 +275,10 @@ section.block > header .meta {
   padding: .5rem .7rem; background: var(--bg); color: var(--text-heading);
   border: 1px solid var(--border-strong); border-radius: 0;
 }
-.controls input[type=search] { min-width: 180px; }
+/* Flex basis wide enough that the three toggle chips wrap together onto
+   the second row rather than one of them riding up beside the selects.
+   Wrapping is decided by basis, not by grow, so this is the lever. */
+.controls input[type=search] { min-width: 180px; flex: 1 1 19rem; }
 .controls input:focus, .controls select:focus { outline: none; border-color: var(--navy); box-shadow: inset 0 -2px 0 0 var(--navy); }
 .controls .chip {
   font-family: var(--font-mono); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
@@ -397,7 +400,9 @@ td.range { color: var(--text-dim); font-size: .85rem; }
 td.peak-name .match-hint {
   display: block; margin-top: .2rem; font-family: var(--font-mono);
   font-weight: 400; font-size: .68rem; letter-spacing: .04em;
-  color: var(--text-faint); text-decoration: none;
+  /* text-dim, not text-faint: faint measures 3.76:1 against the navy-soft
+     row-hover background, under AA for small text. */
+  color: var(--text-dim); text-decoration: none;
   /* Peak is the one auto-width column, so a long combo name would wrap
      and change row heights mid-query. Clip to one line; the title
      attribute carries the full string. */
@@ -407,12 +412,74 @@ td.peak-name .match-hint {
    non-interactive, so they opt out of the tbody row cursor and hover. */
 tbody tr.group-divider td {
   font-family: var(--font-mono); font-size: .68rem; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--text-faint); background: var(--bg-tint);
+  text-transform: uppercase; color: var(--text-dim); background: var(--bg-tint);
 }
 tbody tr.empty-row td { color: var(--text-dim); font-size: .9rem; }
 tbody tr.group-divider, tbody tr.empty-row { cursor: default; }
 tbody tr.group-divider:hover { background: var(--bg-tint); }
 tbody tr.empty-row:hover { background: transparent; }
+/* Active constraint chips, one per parsed field term. Removable, because
+   editing a term back out of a text input by hand is fiddly and the chip
+   is the only place the parsed interpretation is visible. */
+.query-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin: -.6rem 0 1rem; }
+/* An author display declaration beats the UA sheet's [hidden] rule whatever
+   the specificity, so display:flex above would keep the empty container's
+   bottom margin in the layout with no chips to show. */
+.query-chips[hidden] { display: none; }
+.query-chips .qchip {
+  display: inline-flex; align-items: center; gap: .15rem;
+  font-family: var(--font-mono); font-size: .7rem; letter-spacing: .06em;
+  padding: .2rem .25rem .2rem .5rem;
+  border: 1px solid var(--navy); background: var(--navy-soft); color: var(--navy);
+}
+/* A term whose value did not parse (class:banana) is kept visible rather
+   than silently dropped, so an empty result set is explainable. */
+.query-chips .qchip.bad { border-color: var(--rust); color: var(--rust); background: var(--bg); }
+.query-chips .qchip button {
+  background: none; border: 0; padding: 0 .2rem; margin: 0;
+  font: inherit; line-height: 1; color: inherit; cursor: pointer;
+}
+.query-chips .qchip button:hover { color: var(--rust); }
+.query-chips .qchip.bad button:hover { color: var(--text); }
+
+/* Syntax panel. A native details/summary rather than a typeahead popup:
+   the field set is small and static, and a custom combobox would need
+   aria-expanded/activedescendant plumbing to hold the accessibility
+   score that the rest of the page already has. */
+.query-help { margin: -.4rem 0 1.25rem; font-family: var(--font-mono); font-size: .8rem; }
+.query-help > summary {
+  display: inline-block; list-style: none; cursor: pointer;
+  padding: .35rem .7rem; border: 1px solid var(--border); background: var(--bg-tint);
+  color: var(--text-dim); text-transform: uppercase; letter-spacing: .1em;
+  /* matches .controls .chip, since it sits in the same visual family */
+  font-size: .72rem;
+}
+.query-help > summary::-webkit-details-marker { display: none; }
+.query-help > summary:hover { border-color: var(--navy); color: var(--navy); }
+.query-help[open] > summary { border-color: var(--navy); color: var(--navy); background: var(--navy-soft); }
+.query-help-body {
+  border: 1px solid var(--border); border-top: 0; padding: .85rem .9rem;
+  background: var(--bg-tint); color: var(--text-dim); max-width: 46rem;
+}
+.query-help-body p { margin: 0 0 .7rem; line-height: 1.65; }
+.query-help-body code { background: var(--bg); border: 1px solid var(--border); padding: 0 .2rem; }
+.query-help-body dl { display: grid; grid-template-columns: auto 1fr; gap: .3rem .9rem; margin: 0 0 .8rem; }
+.query-help-body dt { color: var(--text-heading); }
+.query-help-body dd { margin: 0; }
+.query-help-scope { color: var(--text-dim); }
+.query-help-scope strong { color: var(--navy); }
+.query-examples { display: flex; flex-wrap: wrap; gap: .4rem; }
+.query-examples button {
+  font: inherit; cursor: pointer;
+  padding: .3rem .5rem; border: 1px solid var(--border-strong);
+  background: var(--bg); color: var(--navy);
+}
+.query-examples button:hover { border-color: var(--navy); background: var(--navy-soft); }
+@media (max-width: 640px) {
+  .query-help-body dl { grid-template-columns: 1fr; gap: .15rem; }
+  .query-help-body dd { margin-bottom: .35rem; }
+}
+
 .link-btn {
   background: none; border: 0; padding: 0; font: inherit; color: var(--navy);
   border-bottom: 1px solid var(--navy-soft); cursor: pointer;
@@ -671,12 +738,9 @@ footer.page-footer {
     </header>
 
     <div class="controls">
-      <input type="search" id="search" placeholder="search peaks, routes"
+      <input type="search" id="search" placeholder="search peaks, routes, trailheads"
              aria-label="search peak names, routes, combos and trailheads"
              title="search peak names, routes, combos and trailheads" autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore>
-      <select id="rangeFilter" aria-label="filter by range" autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore>
-        <option value="">all ranges</option>
-      </select>
       <select id="classFilter" aria-label="filter by difficulty class" autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore>
         <option value="">any difficulty</option>
         <option value="1">Class 1 only</option>
@@ -695,6 +759,7 @@ footer.page-footer {
       </select>
       <span class="chip" id="summitedToggle" data-state="all">hide summited</span>
       <span class="chip" id="plannedToggle" data-on="false">planned only</span>
+      <span class="chip" id="anyRouteToggle" data-on="false" title="test difficulty, road, ratings, distance and gain against every route up the peak instead of just the standard route">any route</span>
       <button type="button" class="reset-btn" id="resetFilters" aria-label="reset all filters" title="reset all filters">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true">
           <polyline points="23 4 23 10 17 10"></polyline>
@@ -703,6 +768,36 @@ footer.page-footer {
       </button>
       <span class="progress" id="progress">0 / 53 summited</span>
     </div>
+
+    <div class="query-chips" id="queryChips" hidden></div>
+
+    <details class="query-help" id="queryHelp">
+      <summary>syntax</summary>
+      <div class="query-help-body">
+        <p><code>field:value</code> filters; anything without a colon is plain text.
+        <code>&gt;</code> <code>&gt;=</code> <code>&lt;</code> <code>&lt;=</code> work on class, road,
+        dist, gain and the four risk ratings. Terms combine with AND.</p>
+        <dl>
+          <dt>class</dt><dd>1, 2, 3, 4, 5</dd>
+          <dt>exposure, rockfall, routefinding, commitment</dt><dd>low, moderate, considerable, high, extreme</dd>
+          <dt>road</dt><dd>0 paved &hellip; 6 difficult 4WD</dd>
+          <dt>dist, gain</dt><dd>miles, feet</dd>
+          <dt>range</dt><dd>sawatch, sangre, elk, front, mosquito, san juan, tenmile</dd>
+          <dt>snow, summited, planned</dt><dd>yes, no</dd>
+          <dt>kind</dt><dd>route, combo, approach</dd>
+        </dl>
+        <p class="query-help-scope">Route fields test the standard route. Turn on
+        <strong>any route</strong> to test every way up the peak.</p>
+        <div class="query-examples">
+          <button type="button" data-q="class:&gt;=3 routefinding:&lt;=moderate">class:&gt;=3 routefinding:&lt;=moderate</button>
+          <button type="button" data-q="class:&lt;=2 road:&lt;=1">class:&lt;=2 road:&lt;=1</button>
+          <button type="button" data-q="snow:yes exposure:&lt;=moderate">snow:yes exposure:&lt;=moderate</button>
+          <button type="button" data-q="kind:combo class:&lt;=2">kind:combo class:&lt;=2</button>
+          <button type="button" data-q="dist:&lt;10 gain:&lt;3500">dist:&lt;10 gain:&lt;3500</button>
+          <button type="button" data-q="traverse commitment:high">traverse commitment:high</button>
+        </div>
+      </div>
+    </details>
 
     <table id="peakTable">
       <thead>
@@ -985,9 +1080,12 @@ function queryTokens(q) {
 const state = {
   user: null, ready: false,
   summits: new Map(), routes: new Map(), planned: new Map(),
-  q: "", range: "", maxClass: "", maxRoad: "",
+  q: "", maxClass: "", maxRoad: "",
   summitedFilter: "all",  // "all" | "hide" | "only"
   plannedOnly: false,
+  // Scope for every route-level predicate, typed or dropdown: false tests
+  // the standard route only, true tests every way up the peak.
+  anyRoute: false,
   sort: "rank", dir: "asc", authMode: "signin",
   openPeak: null
 };
@@ -1008,6 +1106,182 @@ function classBadge(diff) {
 function classNumber(diff) {
   const m = diff && diff.match(/Class\s*(\d)/i);
   return m ? parseInt(m[1], 10) : 99;
+}
+// Class as a filterable number. The modifier words do not move it:
+// "Difficult Class 2" is 2 and "Easy Class 3" is 3, because the words
+// qualify a class rather than sitting between two of them -- Easy Class 3
+// cannot be less than 3, so Difficult Class 2 must not be more than 2.
+// Returns null rather than classNumber()'s 99 sentinel, so a route with no
+// parseable class fails every comparison instead of satisfying class:>=N.
+function classValue(diff) {
+  const n = classNumber(diff);
+  return n === 99 ? null : n;
+}
+
+// ---- structured query grammar -------------------------------------------
+// Field terms are parsed out of the same input as the text search, so
+// "traverse commitment:high" is one query. Text and terms are ANDed.
+
+const RATING_ORDER = { low: 1, moderate: 2, considerable: 3, high: 4, extreme: 5 };
+const RATING_HINT = "low, moderate, considerable, high, extreme";
+
+function ratingValue(v) {
+  const n = RATING_ORDER[String(v || "").toLowerCase()];
+  return n == null ? null : n;
+}
+function ratingName(n) {
+  return Object.keys(RATING_ORDER).find(k => RATING_ORDER[k] === n) || String(n);
+}
+// Distances arrive as "9.75 mi" and gains as "4,500'".
+function routeMiles(v) { const m = String(v || "").match(/([\d.]+)/); return m ? parseFloat(m[1]) : null; }
+function routeGain(v) { const m = String(v || "").replace(/,/g, "").match(/(\d+)/); return m ? parseInt(m[1], 10) : null; }
+
+function compareValue(actual, op, want) {
+  if (actual == null) return false;
+  if (op === ">")  return actual >  want;
+  if (op === ">=") return actual >= want;
+  if (op === "<")  return actual <  want;
+  if (op === "<=") return actual <= want;
+  return actual === want;
+}
+
+function parseNumberValue(raw) {
+  const n = parseFloat(raw);
+  return isNaN(n) ? null : n;
+}
+function parseRatingValue(raw) {
+  // Prefix match, so "mod" and "cons" work.
+  const key = Object.keys(RATING_ORDER).find(k => k.startsWith(raw.toLowerCase()));
+  return key ? RATING_ORDER[key] : null;
+}
+function parseBoolValue(raw) {
+  const v = raw.toLowerCase();
+  if (["yes", "y", "true", "1"].includes(v)) return true;
+  if (["no", "n", "false", "0"].includes(v)) return false;
+  return null;
+}
+function parseKindValue(raw) {
+  return ["route", "combo", "approach"].find(k => k.startsWith(raw.toLowerCase())) || null;
+}
+
+function ratingField(key) {
+  return {
+    scope: "route", parse: parseRatingValue, format: ratingName, hint: RATING_HINT,
+    test: (r, t) => compareValue(ratingValue(r[key]), t.op, t.value)
+  };
+}
+
+const QUERY_FIELDS = {
+  class: {
+    scope: "route", parse: parseNumberValue, hint: "1, 2, 3, 4, 5",
+    test: (r, t) => compareValue(classValue(r.difficulty), t.op, t.value)
+  },
+  exposure: ratingField("exposure"),
+  rockfall: ratingField("rockfall"),
+  routefinding: ratingField("route_finding"),
+  commitment: ratingField("commitment"),
+  road: {
+    scope: "route", parse: parseNumberValue, hint: "0 paved to 6 difficult 4WD",
+    test: (r, t) => compareValue(r.road, t.op, t.value)
+  },
+  dist: {
+    scope: "route", parse: parseNumberValue, hint: "miles",
+    test: (r, t) => compareValue(routeMiles(r.distance), t.op, t.value)
+  },
+  gain: {
+    scope: "route", parse: parseNumberValue, hint: "feet",
+    test: (r, t) => compareValue(routeGain(r.gain), t.op, t.value)
+  },
+  range: {
+    scope: "peak", parse: raw => normalizeSearch(raw) || null, hint: "sawatch, sangre, elk, ...",
+    test: (p, t) => p.search_range.includes(t.value)
+  },
+  // Snow and kind are peak-level on purpose: a snow line or a combo is a
+  // property of the peak's route list, not of its standard route.
+  snow: {
+    scope: "peak", parse: parseBoolValue, format: v => (v ? "yes" : "no"), hint: "yes, no",
+    test: (p, t) => p.has_snow === t.value
+  },
+  kind: {
+    scope: "peak", parse: parseKindValue, hint: "route, combo, approach",
+    test: (p, t) => p.routes.some(r => r.kind === t.value)
+  },
+  summited: {
+    scope: "peak", parse: parseBoolValue, format: v => (v ? "yes" : "no"), hint: "yes, no",
+    test: (p, t) => state.summits.has(p.peak_id) === t.value
+  },
+  planned: {
+    scope: "peak", parse: parseBoolValue, format: v => (v ? "yes" : "no"), hint: "yes, no",
+    test: (p, t) => state.planned.has(p.peak_id) === t.value
+  }
+};
+
+// Spellings that reach the same field. Keys are compared with separators
+// stripped, so "route-finding" and "route_finding" already land on
+// "routefinding" before this map is consulted.
+const FIELD_ALIASES = {
+  rf: "routefinding", finding: "routefinding",
+  exp: "exposure", rock: "rockfall", commit: "commitment",
+  distance: "dist", miles: "dist", mi: "dist",
+  vert: "gain", elevationgain: "gain",
+  difficulty: "class", grade: "class",
+  done: "summited", todo: "planned"
+};
+
+const OP_LABEL = { "=": ":", ">=": "≥", "<=": "≤", ">": ">", "<": "<" };
+
+// Splits one word into field, comparator and value. Returns null when the
+// word is not a recognized field term, in which case it stays plain text --
+// an unknown field must not silently match everything.
+function parseTerm(word) {
+  const m = word.match(/^([A-Za-z][A-Za-z_-]*):(.*)$/);
+  if (!m) return null;
+  const key = m[1].toLowerCase().replace(/[-_]/g, "");
+  const name = QUERY_FIELDS[key] ? key : FIELD_ALIASES[key];
+  const spec = name && QUERY_FIELDS[name];
+  if (!spec) return null;
+  const rest = m[2].match(/^(>=|<=|>|<|=)?(.*)$/);
+  const op = rest[1] || "=";
+  const rawValue = rest[2].trim();
+  // "class:" and "class:>" are what a half-typed term looks like. Treating
+  // them as a broken term blanks the table for the three keystrokes before
+  // the value lands, so an empty value means "not a term yet": no chip, no
+  // constraint. Only a non-empty value that fails to parse is an error.
+  if (!rawValue) return { incomplete: true };
+  const value = spec.parse(rawValue);
+  const term = { field: name, spec, op, value, raw: word };
+  if (value == null) {
+    term.bad = true;
+    term.label = `${name} ${OP_LABEL[op]} ${rawValue || "?"}`;
+    term.reason = `expects ${spec.hint}`;
+  } else {
+    const shown = spec.format ? spec.format(value) : String(value);
+    term.label = `${name} ${OP_LABEL[op]} ${shown}`;
+  }
+  return term;
+}
+
+// One pass over the raw input: field terms out, everything else into the
+// text tokens from the name/route/trailhead search.
+function parseQuery(raw) {
+  const terms = [];
+  const text = [];
+  (raw || "").split(/\s+/).filter(Boolean).forEach(word => {
+    const term = parseTerm(word);
+    if (term && term.incomplete) return;      // half-typed, ignore for now
+    if (term) terms.push(term); else text.push(word);
+  });
+  return { terms, tokens: queryTokens(text.join(" ")) };
+}
+
+// Routes a route-scoped predicate may look at. Default is the standard
+// route, which is what the class and road dropdowns have always tested.
+// The "any route" chip widens it to every way up the peak; approaches stay
+// out, since a Class 1 approach hike says nothing about the summit.
+function scopedRoutes(p) {
+  if (!state.anyRoute) return p.standard ? [p.standard] : [];
+  const pool = p.summit_routes.concat(p.combo_routes);
+  return pool.length ? pool : (p.standard ? [p.standard] : []);
 }
 // Explains the Standard column's order: the cell shows only the coarse
 // class, so the tooltip surfaces the composite score and the ratings
@@ -1068,10 +1342,10 @@ PEAKS.forEach(p => {
   // Name, slug and range alone, so render() can tell a route-only match
   // from a direct hit and label the row accordingly.
   p.search_primary = normalizeSearch([p.name, p.slug, p.range].join(" "));
+  p.search_range = normalizeSearch(p.range);
   p.search_text = [p.search_primary].concat(p.routes.map(r => r.search_text)).join(" ");
 });
 
-const ranges = [...new Set(PEAKS.map(p => p.range))].sort();
 // 14ers.com-style road difficulty bars for the 0-6 scale (0 paved
 // ... 6 difficult 4WD), drawn as 5 bars with ratings 5 and 6 both
 // fully shaded. Lossless in practice: no standard route rates 5
@@ -1089,13 +1363,6 @@ function roadBars(road) {
   for (let i = 1; i <= 5; i++) bars += `<i class="${i <= filled ? "fill" : ""}"></i>`;
   return `<span class="road-bars" role="img" aria-label="${label}" title="${label}">${bars}</span>`;
 }
-
-const rangeSel = document.getElementById("rangeFilter");
-ranges.forEach(r => {
-  const o = document.createElement("option");
-  o.value = r; o.textContent = r;
-  rangeSel.appendChild(o);
-});
 
 let toastTimer = null;
 function toast(msg) {
@@ -1427,7 +1694,6 @@ function renderAuthCard(msg) {
 }
 
 document.getElementById("search").addEventListener("input", e => { state.q = e.target.value.trim().toLowerCase(); render(); });
-rangeSel.addEventListener("change", e => { state.range = e.target.value; render(); });
 document.getElementById("classFilter").addEventListener("change", e => { state.maxClass = e.target.value; render(); });
 document.getElementById("roadFilter").addEventListener("change", e => { state.maxRoad = e.target.value; render(); });
 const sumChip = document.getElementById("summitedToggle");
@@ -1468,6 +1734,40 @@ sumChip.addEventListener("pointerleave", () => {
   sumChip.classList.remove("suppress-hover-preview");
   sumChip.textContent = sumChipLabel(state.summitedFilter, false);
 });
+// Scope chip. Same interaction shape as the planned chip: toggle, plus the
+// hover preview held back for one beat after the click.
+const anyRouteChip = document.getElementById("anyRouteToggle");
+anyRouteChip.addEventListener("click", () => {
+  const on = anyRouteChip.dataset.on === "true";
+  anyRouteChip.dataset.on = !on;
+  anyRouteChip.classList.toggle("on", !on);
+  state.anyRoute = !on;
+  render();
+  anyRouteChip.textContent = "any route";
+  anyRouteChip.classList.add("suppress-hover-preview");
+});
+anyRouteChip.addEventListener("pointerenter", () => {
+  if (anyRouteChip.classList.contains("suppress-hover-preview")) return;
+  if (anyRouteChip.classList.contains("on")) anyRouteChip.textContent = "clear";
+});
+anyRouteChip.addEventListener("pointerleave", () => {
+  anyRouteChip.classList.remove("suppress-hover-preview");
+  anyRouteChip.textContent = "any route";
+});
+
+// Example buttons in the syntax panel replace the query rather than
+// appending to it, so repeated clicks cannot build an unsatisfiable pile
+// of terms.
+document.querySelectorAll(".query-examples button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const input = document.getElementById("search");
+    input.value = btn.dataset.q;
+    state.q = input.value.trim().toLowerCase();
+    render();
+    input.focus();
+  });
+});
+
 const planChip = document.getElementById("plannedToggle");
 planChip.addEventListener("click", () => {
   const on = planChip.dataset.on === "true";
@@ -1496,10 +1796,9 @@ planChip.addEventListener("pointerleave", () => {
 });
 
 document.getElementById("resetFilters").addEventListener("click", () => {
-  state.q = ""; state.range = ""; state.maxClass = ""; state.maxRoad = "";
-  state.summitedFilter = "all"; state.plannedOnly = false;
+  state.q = ""; state.maxClass = ""; state.maxRoad = "";
+  state.summitedFilter = "all"; state.plannedOnly = false; state.anyRoute = false;
   document.getElementById("search").value = "";
-  rangeSel.value = "";
   document.getElementById("classFilter").value = "";
   document.getElementById("roadFilter").value = "";
   sumChip.dataset.state = "all";
@@ -1508,6 +1807,9 @@ document.getElementById("resetFilters").addEventListener("click", () => {
   planChip.dataset.on = "false";
   planChip.classList.remove("on", "suppress-hover-preview");
   planChip.textContent = "planned only";
+  anyRouteChip.dataset.on = "false";
+  anyRouteChip.classList.remove("on", "suppress-hover-preview");
+  anyRouteChip.textContent = "any route";
   render();
 });
 
@@ -1520,26 +1822,51 @@ document.querySelectorAll("th[data-sort]").forEach(th => {
   });
 });
 
-function applyFilters(tokens = queryTokens(state.q)) {
+function applyFilters(parsed = parseQuery(state.q)) {
+  const { tokens, terms } = parsed;
   return PEAKS.filter(p => {
+    // Which route satisfied a route-scoped predicate, when it was not the
+    // standard route. Cleared for every peak so a stale hit from a previous
+    // keystroke cannot leak into the row label.
+    p.scope_hit = null;
     // Unranked summits (El Diente, Challenger Point, Conundrum, Cameron
     // and 16 others) stay out of the default list, but they are real
     // peaks in the data and were unreachable by any query because this
     // test ran before the search test. With a query they come back,
     // grouped separately by render() so the ranked count stays honest.
-    if (p.unranked && !tokens.length) return false;
+    if (p.unranked && !tokens.length && !terms.length) return false;
     // Every token must appear somewhere in the haystack (AND, not one
     // substring test against the whole string), so word order and extra
     // words in between do not matter: "elbert northeast" hits.
     if (tokens.length && !tokens.every(t => p.search_text.includes(t))) return false;
-    if (state.range && p.range !== state.range) return false;
+    for (const term of terms) {
+      if (term.bad) return false;
+      if (term.spec.scope === "peak") {
+        if (!term.spec.test(p, term)) return false;
+        continue;
+      }
+      const hit = scopedRoutes(p).find(r => term.spec.test(r, term));
+      if (!hit) return false;
+      if (hit !== p.standard && !p.scope_hit) p.scope_hit = hit;
+    }
+    // The class and road dropdowns run through the same scope rule as the
+    // typed terms, so the "any route" chip widens them too. With the chip
+    // off, scopedRoutes() is just the standard route and this behaves the
+    // way it always has.
     if (state.maxClass) {
       const mc = parseInt(state.maxClass, 10);
-      if (p.standard_class > mc) return false;
+      const hit = scopedRoutes(p).find(r => {
+        const c = classValue(r.difficulty);
+        return c != null && c <= mc;
+      });
+      if (!hit) return false;
+      if (hit !== p.standard && !p.scope_hit) p.scope_hit = hit;
     }
     if (state.maxRoad) {
       const mr = parseInt(state.maxRoad, 10);
-      if (p.standard_road > mr) return false;
+      const hit = scopedRoutes(p).find(r => r.road != null && r.road <= mr);
+      if (!hit) return false;
+      if (hit !== p.standard && !p.scope_hit) p.scope_hit = hit;
     }
     if (state.summitedFilter === "hide" && state.summits.has(p.peak_id)) return false;
     if (state.summitedFilter === "only" && !state.summits.has(p.peak_id)) return false;
@@ -1552,6 +1879,13 @@ function applyFilters(tokens = queryTokens(state.q)) {
 // row whose visible columns contain nothing from the query is still
 // explainable. Returns "" for direct name/range hits and for no query.
 function matchHint(p, tokens) {
+  // A route-scoped term satisfied by a non-standard route is the same
+  // problem as a text match on a route: nothing in the visible columns
+  // supports the row. Name the qualifying route, and prefer it over a text
+  // hit since it is the stronger claim about why the row is here.
+  if (p.scope_hit) {
+    return `<span class="match-hint" title="${p.scope_hit.name}">${p.scope_hit.name}</span>`;
+  }
   if (!tokens.length) return "";
   if (tokens.every(t => p.search_primary.includes(t))) return "";
   const hit = p.routes.find(r => tokens.every(t => r.search_text.includes(t)));
@@ -1562,9 +1896,44 @@ function matchHint(p, tokens) {
   return `<span class="match-hint" title="${text}">${text}</span>`;
 }
 
+// Renders one removable chip per parsed field term. The chips are the only
+// place the parsed interpretation is visible: "exposure:mod" resolving to
+// "exposure : moderate" would otherwise happen silently.
+function renderQueryChips(terms) {
+  const box = document.getElementById("queryChips");
+  box.innerHTML = "";
+  box.hidden = !terms.length;
+  terms.forEach(t => {
+    const chip = document.createElement("span");
+    chip.className = "qchip" + (t.bad ? " bad" : "");
+    if (t.bad) chip.title = `${t.raw} \u2014 ${t.reason}`;
+    chip.innerHTML = `${t.label}<button type="button" aria-label="remove ${t.label} filter">\u00d7</button>`;
+    chip.querySelector("button").addEventListener("click", () => removeQueryTerm(t.raw));
+    box.appendChild(chip);
+  });
+}
+
+// Drops one term's original word from the input, leaving the rest of the
+// query untouched.
+function removeQueryTerm(raw) {
+  const input = document.getElementById("search");
+  const words = input.value.split(/\s+/).filter(Boolean);
+  // Compare case-insensitively: term.raw comes from the lowercased state.q
+  // while the input holds whatever the user typed, so "Class:>=3" would
+  // otherwise never match and the x would silently do nothing.
+  const at = words.findIndex(w => w.toLowerCase() === raw);
+  if (at >= 0) words.splice(at, 1);
+  input.value = words.join(" ");
+  state.q = input.value.trim().toLowerCase();
+  render();
+  input.focus();
+}
+
 function render() {
-  const tokens = queryTokens(state.q);
-  const rows = applyFilters(tokens);
+  const parsed = parseQuery(state.q);
+  const tokens = parsed.tokens;
+  const rows = applyFilters(parsed);
+  renderQueryChips(parsed.terms);
   rows.sort((a,b) => {
     let av = a[state.sort], bv = b[state.sort];
     if (typeof av === "string") { av = av.toLowerCase(); bv = bv.toLowerCase(); }
