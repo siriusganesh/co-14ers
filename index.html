@@ -285,6 +285,16 @@ section.block > header .meta {
   padding: .35rem .7rem; border: 1px solid var(--border); background: var(--bg-tint);
   color: var(--text-dim); cursor: pointer; user-select: none;
 }
+/* Chips are buttons now, for the same reason as the checks. The .chip rule
+   above already sets font-family, size, padding, border and background, so
+   only the leftover UA button bits need resetting. Focus treatment matches
+   .controls .reset-btn. */
+.controls button.chip {
+  margin: 0; line-height: inherit; -webkit-appearance: none; appearance: none;
+}
+.controls .chip:focus-visible {
+  outline: none; border-color: var(--navy); box-shadow: inset 0 -2px 0 0 var(--navy);
+}
 .controls .chip:hover:not(.suppress-hover-preview) { border-color: var(--navy); color: var(--navy); background: var(--navy-soft); }
 .controls .chip.on {
   background: var(--navy); color: #fff; border-color: var(--navy);
@@ -386,6 +396,17 @@ tbody tr.planned td.peak-name::after {
   color: var(--amber); margin-left: .4rem; text-decoration: none;
 }
 td.peak-name { color: var(--text-heading); font-weight: 700; }
+/* The row's expand control. Rows are tr elements with a click handler,
+   which no keyboard could reach; the visible peak name is now a real button
+   carrying aria-expanded, and the row keeps its full-width mouse target
+   because the button's click bubbles to the same handler.
+   text-decoration: inherit keeps the tr.summited line-through. */
+.row-toggle {
+  background: none; border: 0; padding: 0; margin: 0;
+  font: inherit; color: inherit; text-align: left;
+  text-decoration: inherit; cursor: pointer;
+}
+.row-toggle:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
 td.elev { font-variant-numeric: tabular-nums; font-family: var(--font-mono); font-size: .85rem; }
 td.road-col .road-bars { display: inline-flex; gap: 2px; }
 td.road-col .road-bars i { width: 5px; height: 12px; background: var(--border); }
@@ -480,6 +501,13 @@ tbody tr.empty-row:hover { background: transparent; }
   .query-help-body dd { margin-bottom: .35rem; }
 }
 
+/* Off-screen rather than display:none, which would take it out of the
+   accessibility tree along with the announcement. */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
 .link-btn {
   background: none; border: 0; padding: 0; font: inherit; color: var(--navy);
   border-bottom: 1px solid var(--navy-soft); cursor: pointer;
@@ -489,13 +517,28 @@ tbody tr.empty-row:hover { background: transparent; }
   display: inline-block; width: 16px; height: 16px;
   border: 1px solid var(--border-strong); border-radius: 0;
   vertical-align: middle; cursor: pointer; background: var(--bg);
+  /* These four controls were spans with click handlers, so no keyboard
+     could reach them. They are buttons now; this strips the UA button
+     styling back to the box this rule already draws. */
+  padding: 0; margin: 0; font: inherit; color: inherit;
+  -webkit-appearance: none; appearance: none;
 }
+.check:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
 .check.on { background: var(--navy); border-color: var(--navy); position: relative; }
 .check.on::after {
   content: ""; position: absolute; left: 4px; top: 0; width: 4px; height: 9px;
   border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg);
 }
 .check.sm { width: 14px; height: 14px; }
+/* Box plus its text as a single control. The .check inside is presentational
+   from here on, which is why it carries aria-hidden. */
+.check-btn {
+  display: inline-flex; align-items: center; gap: .4rem;
+  background: none; border: 0; padding: 0; margin: 0;
+  font: inherit; color: inherit; text-align: left; cursor: pointer;
+}
+.check-btn:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+.check-btn .check { pointer-events: none; }
 .check.sm.on::after { left: 3px; top: -1px; }
 
 /* difficulty badges — filled, gradient by class */
@@ -734,7 +777,8 @@ footer.page-footer {
   <section class="block">
     <header>
       <h2>peaks</h2>
-      <span class="meta" id="peakCount" aria-live="polite">53 ranked</span>
+      <span class="meta" id="peakCount">53 ranked</span>
+      <span class="sr-only" role="status" aria-live="polite" id="peakCountStatus"></span>
     </header>
 
     <div class="controls">
@@ -757,9 +801,9 @@ footer.page-footer {
         <option value="4">moderate 4WD or easier</option>
         <option value="5">rough 4WD or easier</option>
       </select>
-      <span class="chip" id="summitedToggle" data-state="all">hide summited</span>
-      <span class="chip" id="plannedToggle" data-on="false">planned only</span>
-      <span class="chip" id="anyRouteToggle" data-on="false" title="test difficulty, road, ratings, distance and gain against every route up the peak instead of just the standard route">any route</span>
+      <button type="button" class="chip" id="summitedToggle" data-state="all" aria-pressed="false">hide summited</button>
+      <button type="button" class="chip" id="plannedToggle" data-on="false" aria-pressed="false">planned only</button>
+      <button type="button" class="chip" id="anyRouteToggle" data-on="false" aria-pressed="false" title="test difficulty, road, ratings, distance and gain against every route up the peak instead of just the standard route">any route</button>
       <button type="button" class="reset-btn" id="resetFilters" aria-label="reset all filters" title="reset all filters">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true">
           <polyline points="23 4 23 10 17 10"></polyline>
@@ -782,7 +826,7 @@ footer.page-footer {
           <dt>exposure, rockfall, routefinding, commitment</dt><dd>low, moderate, considerable, high, extreme</dd>
           <dt>road</dt><dd>0 paved &hellip; 6 difficult 4WD</dd>
           <dt>dist, gain</dt><dd>miles, feet</dd>
-          <dt>range</dt><dd>sawatch, sangre, elk, front, mosquito, san juan, tenmile</dd>
+          <dt>range</dt><dd>sawatch, sangre, elk, front, mosquito, juan, tenmile</dd>
           <dt>snow, summited, planned</dt><dd>yes, no</dd>
           <dt>kind</dt><dd>route, combo, approach</dd>
         </dl>
@@ -1321,7 +1365,6 @@ PEAKS.forEach(p => {
   const std = p.summit_routes.find(r => r.is_standard) || p.summit_routes[0]
     || p.routes.find(r => r.is_standard) || p.routes[0];
   p.standard = std || null;
-  p.standard_class = std ? classNumber(std.difficulty) : 99;
   // Composite score from build_data.py: class stays dominant, the four
   // risk ratings only order peaks within a class bucket. See the
   // difficulty_score() comment in scripts/build_data.py for the formula.
@@ -1718,6 +1761,7 @@ sumChip.addEventListener("click", () => {
   state.summitedFilter = next;
   sumChip.dataset.state = next;
   sumChip.classList.toggle("on", next !== "all");
+  sumChip.setAttribute("aria-pressed", String(next !== "all"));
   sumChip.textContent = sumChipLabel(next, false);
   render();
   // Hold off the next-state hover preview until the user has moved
@@ -1742,6 +1786,7 @@ anyRouteChip.addEventListener("click", () => {
   anyRouteChip.dataset.on = !on;
   anyRouteChip.classList.toggle("on", !on);
   state.anyRoute = !on;
+  anyRouteChip.setAttribute("aria-pressed", String(!on));
   render();
   anyRouteChip.textContent = "any route";
   anyRouteChip.classList.add("suppress-hover-preview");
@@ -1772,7 +1817,9 @@ const planChip = document.getElementById("plannedToggle");
 planChip.addEventListener("click", () => {
   const on = planChip.dataset.on === "true";
   planChip.dataset.on = !on; planChip.classList.toggle("on", !on);
-  state.plannedOnly = !on; render();
+  state.plannedOnly = !on;
+  planChip.setAttribute("aria-pressed", String(!on));
+  render();
   // Reset the resting label after the click so a stale preview
   // ("clear") from the moment of clicking doesn't linger if the
   // cursor never leaves the chip.
@@ -1804,12 +1851,15 @@ document.getElementById("resetFilters").addEventListener("click", () => {
   sumChip.dataset.state = "all";
   sumChip.classList.remove("on", "suppress-hover-preview");
   sumChip.textContent = sumChipLabel("all", false);
+  sumChip.setAttribute("aria-pressed", "false");
   planChip.dataset.on = "false";
   planChip.classList.remove("on", "suppress-hover-preview");
   planChip.textContent = "planned only";
+  planChip.setAttribute("aria-pressed", "false");
   anyRouteChip.dataset.on = "false";
   anyRouteChip.classList.remove("on", "suppress-hover-preview");
   anyRouteChip.textContent = "any route";
+  anyRouteChip.setAttribute("aria-pressed", "false");
   render();
 });
 
@@ -1899,6 +1949,17 @@ function matchHint(p, tokens) {
 // Renders one removable chip per parsed field term. The chips are the only
 // place the parsed interpretation is visible: "exposure:mod" resolving to
 // "exposure : moderate" would otherwise happen silently.
+// The visible count updates on every keystroke, which a live region would
+// read out on every keystroke. Announcing on a trailing debounce gives one
+// result per typing pause instead.
+let countAnnounceTimer = null;
+function announceCount(text) {
+  if (countAnnounceTimer) clearTimeout(countAnnounceTimer);
+  countAnnounceTimer = setTimeout(() => {
+    document.getElementById("peakCountStatus").textContent = text;
+  }, 600);
+}
+
 function renderQueryChips(terms) {
   const box = document.getElementById("queryChips");
   box.innerHTML = "";
@@ -1950,8 +2011,9 @@ function render() {
 
   const rankedRows = rows.filter(p => !p.unranked);
   const unrankedRows = rows.filter(p => p.unranked);
-  document.getElementById("peakCount").textContent =
-    `${rankedRows.length} shown` + (unrankedRows.length ? ` \u00b7 ${unrankedRows.length} unranked` : "");
+  const countText = `${rankedRows.length} shown` + (unrankedRows.length ? ` \u00b7 ${unrankedRows.length} unranked` : "");
+  document.getElementById("peakCount").textContent = countText;
+  announceCount(countText);
   const ranked = PEAKS.filter(p => !p.unranked);
   const done = ranked.filter(p => state.summits.has(p.peak_id)).length;
   const planCount = ranked.filter(p => state.planned.has(p.peak_id)).length;
@@ -1989,14 +2051,17 @@ function render() {
     if (state.openPeak === p.peak_id) tr.classList.add("is-open");
     tr.innerHTML = `
       <td>${p.rank ?? ""}</td>
-      <td class="peak-name">${p.name}${matchHint(p, tokens)}</td>
+      <td class="peak-name"><button type="button" class="row-toggle" aria-expanded="${state.openPeak === p.peak_id}">${p.name}</button>${matchHint(p, tokens)}</td>
       <td class="elev hide-xs">${p.elevation_ft.toLocaleString()}</td>
       <td class="range hide-sm">${p.range}</td>
       <td title="${stdTooltip(p)}">${p.standard ? classBadge(p.standard.difficulty) : '<span class="badge outline">—</span>'}</td>
       <td class="road-col">${roadBars(p.standard_road)}</td>
-      <td><span class="check ${state.summits.has(p.peak_id) ? "on" : ""}" data-id="${p.peak_id}" title="mark summited"></span></td>
+      <td><button type="button" class="check ${state.summits.has(p.peak_id) ? "on" : ""}" data-id="${p.peak_id}" aria-pressed="${state.summits.has(p.peak_id)}" aria-label="${state.summits.has(p.peak_id) ? "unmark" : "mark"} ${p.name} summited"></button></td>
     `;
     tr.addEventListener("click", e => {
+      // Buttons inside the row bubble here: .check handles itself, and the
+      // row-toggle deliberately falls through to togglePeak below so the
+      // keyboard path and the click-anywhere-on-the-row path are identical.
       if (e.target.classList.contains("check")) {
         e.stopPropagation();
         const id = e.target.dataset.id;
@@ -2071,10 +2136,10 @@ function routeCard(p, r) {
               <span class="pair"><span class="k">road</span><span class="v">${roadLabel(r.road) || "—"}</span></span>
               <span class="pair"><span class="k">trailhead</span><span class="v">${thLink(r)}</span></span>
               <div class="route-actions">
-                <label>
-                  <span class="check sm ${onR ? "on" : ""}" data-route="${r.route_key}" data-peak="${p.peak_id}"></span>
+                <button type="button" class="check-btn" data-route="${r.route_key}" data-peak="${p.peak_id}" aria-pressed="${onR}">
+                  <span class="check sm ${onR ? "on" : ""}" aria-hidden="true"></span>
                   <span>${onR ? "climbed this line" : "mark climbed"}</span>
-                </label>
+                </button>
                 ${onR ? `
                   <label>
                     <span>date</span>
@@ -2112,19 +2177,19 @@ function detailHTML(p) {
           ${p.note ? `<div class="note">${p.note}</div>` : ""}
         </div>
         <div class="panel-actions">
-          <label>
-            <span class="check ${isSummited ? "on" : ""}" data-act="summit"></span>
+          <button type="button" class="check-btn" data-act="summit" aria-pressed="${isSummited}">
+            <span class="check ${isSummited ? "on" : ""}" aria-hidden="true"></span>
             <span>${isSummited ? "summited" : "mark summited"}</span>
-          </label>
+          </button>
           ${isSummited ? `
             <label>
               <span>date</span>
               <input type="date" data-act="summit-date" value="${summit.summit_date || ""}">
             </label>` : ""}
-          <label>
-            <span class="check ${isPlanned ? "on" : ""}" data-act="plan"></span>
+          <button type="button" class="check-btn" data-act="plan" aria-pressed="${isPlanned}">
+            <span class="check ${isPlanned ? "on" : ""}" aria-hidden="true"></span>
             <span>${isPlanned ? "planned" : "plan it"}</span>
-          </label>
+          </button>
           ${isPlanned ? `
             <label>
               <span>target</span>
