@@ -787,6 +787,7 @@ footer.page-footer {
              title="search peak names, routes, combos and trailheads" autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore>
       <select id="classFilter" aria-label="filter by difficulty class" autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore>
         <option value="">any difficulty</option>
+        <option value="__custom" disabled>from query</option>
         <option value="1">Class 1 only</option>
         <option value="2">Class 2 or easier</option>
         <option value="3">Class 3 or easier</option>
@@ -794,6 +795,7 @@ footer.page-footer {
       </select>
       <select id="roadFilter" aria-label="filter by road difficulty" autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore>
         <option value="">any road</option>
+        <option value="__custom" disabled>from query</option>
         <option value="0">paved only</option>
         <option value="1">easy dirt 2WD or easier</option>
         <option value="2">rough dirt 2WD or easier</option>
@@ -829,9 +831,12 @@ footer.page-footer {
           <dt>range</dt><dd>sawatch, sangre, elk, front, mosquito, juan, tenmile</dd>
           <dt>snow, summited, planned</dt><dd>yes, no</dd>
           <dt>kind</dt><dd>route, combo, approach</dd>
+          <dt>scope</dt><dd>standard, any</dd>
         </dl>
-        <p class="query-help-scope">Route fields test the standard route. Turn on
-        <strong>any route</strong> to test every way up the peak.</p>
+        <p class="query-help-scope">Route fields test the standard route.
+        <code>scope:any</code>, or the <strong>any route</strong> chip, tests every
+        way up the peak. The selects and chips are shortcuts that write terms
+        into this box, so the query is the whole filter.</p>
         <div class="query-examples">
           <button type="button" data-q="class:&gt;=3 routefinding:&lt;=moderate">class:&gt;=3 routefinding:&lt;=moderate</button>
           <button type="button" data-q="class:&lt;=2 road:&lt;=1">class:&lt;=2 road:&lt;=1</button>
@@ -1124,12 +1129,10 @@ function queryTokens(q) {
 const state = {
   user: null, ready: false,
   summits: new Map(), routes: new Map(), planned: new Map(),
-  q: "", maxClass: "", maxRoad: "",
-  summitedFilter: "all",  // "all" | "hide" | "only"
-  plannedOnly: false,
-  // Scope for every route-level predicate, typed or dropdown: false tests
-  // the standard route only, true tests every way up the peak.
-  anyRoute: false,
+  // q is the whole filter state. The selects and the toggle chips read and
+  // write it rather than holding values of their own, so there is nothing
+  // that can disagree with what the search box says.
+  q: "",
   sort: "rank", dir: "asc", authMode: "signin",
   openPeak: null
 };
@@ -1272,6 +1275,14 @@ const FIELD_ALIASES = {
   done: "summited", todo: "planned"
 };
 
+// scope is a modifier rather than a predicate: it selects which routes the
+// route-scoped fields are tested against. It lives in the grammar so the
+// query string is the whole filter state and one string restores a view.
+const SCOPE_FIELD = {
+  scope: "modifier", hint: "any, standard",
+  parse: raw => (["any", "standard"].find(v => v.startsWith(raw.toLowerCase())) || null)
+};
+
 const OP_LABEL = { "=": ":", ">=": "≥", "<=": "≤", ">": ">", "<": "<" };
 
 // Splits one word into field, comparator and value. Returns null when the
@@ -1281,8 +1292,8 @@ function parseTerm(word) {
   const m = word.match(/^([A-Za-z][A-Za-z_-]*):(.*)$/);
   if (!m) return null;
   const key = m[1].toLowerCase().replace(/[-_]/g, "");
-  const name = QUERY_FIELDS[key] ? key : FIELD_ALIASES[key];
-  const spec = name && QUERY_FIELDS[name];
+  const name = QUERY_FIELDS[key] ? key : (key === "scope" ? "scope" : FIELD_ALIASES[key]);
+  const spec = name === "scope" ? SCOPE_FIELD : (name && QUERY_FIELDS[name]);
   if (!spec) return null;
   const rest = m[2].match(/^(>=|<=|>|<|=)?(.*)$/);
   const op = rest[1] || "=";
@@ -1291,7 +1302,9 @@ function parseTerm(word) {
   // them as a broken term blanks the table for the three keystrokes before
   // the value lands, so an empty value means "not a term yet": no chip, no
   // constraint. Only a non-empty value that fails to parse is an error.
-  if (!rawValue) return { incomplete: true };
+  // Carries the field even while incomplete, so a control writing a term
+  // for the same field can replace a half-typed one.
+  if (!rawValue) return { incomplete: true, field: name, raw: word };
   const value = spec.parse(rawValue);
   const term = { field: name, spec, op, value, raw: word };
   if (value == null) {
@@ -1315,15 +1328,48 @@ function parseQuery(raw) {
     if (term && term.incomplete) return;      // half-typed, ignore for now
     if (term) terms.push(term); else text.push(word);
   });
-  return { terms, tokens: queryTokens(text.join(" ")) };
+  const scopeTerm = terms.find(t => t.field === "scope" && !t.bad);
+  return {
+    terms,
+    tokens: queryTokens(text.join(" ")),
+    scope: scopeTerm ? scopeTerm.value : "standard"
+  };
+}
+
+// Every control writes its filter through here: the query string is the only
+// filter state, so a control cannot hold a value the string disagrees with.
+// A null value removes the field. Existing terms for the same field are
+// replaced, including a half-typed one.
+function setQueryTerm(field, value) {
+  const input = document.getElementById("search");
+  const kept = input.value.split(/\s+/).filter(Boolean).filter(w => {
+    const t = parseTerm(w.toLowerCase());
+    return !(t && t.field === field);
+  });
+  if (value != null) kept.push(`${field}:${value}`);
+  input.value = kept.join(" ");
+  state.q = input.value.trim().toLowerCase();
+  render();
+}
+
+// The parse behind the current render, so the chips' labels and the selects'
+// values can be derived without re-parsing on every pointer event.
+let lastParsed = { terms: [], tokens: [], scope: "standard" };
+function activeTerm(field) {
+  return lastParsed.terms.find(t => t.field === field && !t.bad) || null;
+}
+// all -> summited:no -> summited:yes -> all
+function summitedMode() {
+  const t = activeTerm("summited");
+  return !t ? "all" : (t.value ? "only" : "hide");
 }
 
 // Routes a route-scoped predicate may look at. Default is the standard
 // route, which is what the class and road dropdowns have always tested.
 // The "any route" chip widens it to every way up the peak; approaches stay
 // out, since a Class 1 approach hike says nothing about the summit.
-function scopedRoutes(p) {
-  if (!state.anyRoute) return p.standard ? [p.standard] : [];
+function scopedRoutes(p, scope) {
+  if (scope !== "any") return p.standard ? [p.standard] : [];
   const pool = p.summit_routes.concat(p.combo_routes);
   return pool.length ? pool : (p.standard ? [p.standard] : []);
 }
@@ -1737,8 +1783,28 @@ function renderAuthCard(msg) {
 }
 
 document.getElementById("search").addEventListener("input", e => { state.q = e.target.value.trim().toLowerCase(); render(); });
-document.getElementById("classFilter").addEventListener("change", e => { state.maxClass = e.target.value; render(); });
-document.getElementById("roadFilter").addEventListener("change", e => { state.maxRoad = e.target.value; render(); });
+// The selects are shortcut query builders: they write a term and then read
+// their own value back out of the query on the next render.
+document.getElementById("classFilter").addEventListener("change", e => {
+  setQueryTerm("class", e.target.value ? "<=" + e.target.value : null);
+});
+document.getElementById("roadFilter").addEventListener("change", e => {
+  setQueryTerm("road", e.target.value ? "<=" + e.target.value : null);
+});
+
+// Reflects the query back into the selects. A term the option list cannot
+// express -- class:2 exactly, or class:>=3 -- shows the disabled "from query"
+// option, so the control never claims a filter that is not the active one.
+function syncSelectsToQuery() {
+  [["class", "classFilter", ["1", "2", "3", "4"]],
+   ["road", "roadFilter", ["0", "1", "2", "3", "4", "5"]]].forEach(([field, id, presets]) => {
+    const sel = document.getElementById(id);
+    const t = activeTerm(field);
+    if (!t) { sel.value = ""; return; }
+    const preset = t.op === "<=" && presets.includes(String(t.value)) ? String(t.value) : null;
+    sel.value = preset != null ? preset : "__custom";
+  });
+}
 const sumChip = document.getElementById("summitedToggle");
 // The label the chip shows for a given filter state. When `preview`
 // is true, return the next-state hint shown while hovering; otherwise
@@ -1754,40 +1820,33 @@ function sumChipLabel(filter, preview) {
 }
 
 sumChip.addEventListener("click", () => {
-  // cycle: all -> hide -> only -> all
-  const next = state.summitedFilter === "all" ? "hide"
-             : state.summitedFilter === "hide" ? "only"
-             : "all";
-  state.summitedFilter = next;
-  sumChip.dataset.state = next;
-  sumChip.classList.toggle("on", next !== "all");
-  sumChip.setAttribute("aria-pressed", String(next !== "all"));
-  sumChip.textContent = sumChipLabel(next, false);
-  render();
+  // cycle: all -> hide -> only -> all, written into the query as
+  // summited:no / summited:yes / nothing
+  const mode = summitedMode();
+  const next = mode === "all" ? "hide" : mode === "hide" ? "only" : "all";
+  setQueryTerm("summited", next === "hide" ? "no" : next === "only" ? "yes" : null);
   // Hold off the next-state hover preview until the user has moved
   // off the chip and back on. Without this the cursor never leaves
   // after the click, so the styling and label would skip the solid
   // active state and jump straight to the next-state preview.
   sumChip.classList.add("suppress-hover-preview");
 });
+let sumChipHovered = false;
 sumChip.addEventListener("pointerenter", () => {
+  sumChipHovered = true;
   if (sumChip.classList.contains("suppress-hover-preview")) return;
-  sumChip.textContent = sumChipLabel(state.summitedFilter, true);
+  sumChip.textContent = sumChipLabel(summitedMode(), true);
 });
 sumChip.addEventListener("pointerleave", () => {
+  sumChipHovered = false;
   sumChip.classList.remove("suppress-hover-preview");
-  sumChip.textContent = sumChipLabel(state.summitedFilter, false);
+  sumChip.textContent = sumChipLabel(summitedMode(), false);
 });
 // Scope chip. Same interaction shape as the planned chip: toggle, plus the
 // hover preview held back for one beat after the click.
 const anyRouteChip = document.getElementById("anyRouteToggle");
 anyRouteChip.addEventListener("click", () => {
-  const on = anyRouteChip.dataset.on === "true";
-  anyRouteChip.dataset.on = !on;
-  anyRouteChip.classList.toggle("on", !on);
-  state.anyRoute = !on;
-  anyRouteChip.setAttribute("aria-pressed", String(!on));
-  render();
+  setQueryTerm("scope", lastParsed.scope === "any" ? null : "any");
   anyRouteChip.textContent = "any route";
   anyRouteChip.classList.add("suppress-hover-preview");
 });
@@ -1815,11 +1874,8 @@ document.querySelectorAll(".query-examples button").forEach(btn => {
 
 const planChip = document.getElementById("plannedToggle");
 planChip.addEventListener("click", () => {
-  const on = planChip.dataset.on === "true";
-  planChip.dataset.on = !on; planChip.classList.toggle("on", !on);
-  state.plannedOnly = !on;
-  planChip.setAttribute("aria-pressed", String(!on));
-  render();
+  const t = activeTerm("planned");
+  setQueryTerm("planned", t && t.value === true ? null : "yes");
   // Reset the resting label after the click so a stale preview
   // ("clear") from the moment of clicking doesn't linger if the
   // cursor never leaves the chip.
@@ -1842,24 +1898,15 @@ planChip.addEventListener("pointerleave", () => {
   planChip.textContent = "planned only";
 });
 
+// One piece of state to clear. The selects and chips follow from the query,
+// so emptying the box resets everything; only the hover-preview latches and
+// the labels they rewrite need touching.
 document.getElementById("resetFilters").addEventListener("click", () => {
-  state.q = ""; state.maxClass = ""; state.maxRoad = "";
-  state.summitedFilter = "all"; state.plannedOnly = false; state.anyRoute = false;
+  state.q = "";
   document.getElementById("search").value = "";
-  document.getElementById("classFilter").value = "";
-  document.getElementById("roadFilter").value = "";
-  sumChip.dataset.state = "all";
-  sumChip.classList.remove("on", "suppress-hover-preview");
-  sumChip.textContent = sumChipLabel("all", false);
-  sumChip.setAttribute("aria-pressed", "false");
-  planChip.dataset.on = "false";
-  planChip.classList.remove("on", "suppress-hover-preview");
+  [sumChip, planChip, anyRouteChip].forEach(c => c.classList.remove("suppress-hover-preview"));
   planChip.textContent = "planned only";
-  planChip.setAttribute("aria-pressed", "false");
-  anyRouteChip.dataset.on = "false";
-  anyRouteChip.classList.remove("on", "suppress-hover-preview");
   anyRouteChip.textContent = "any route";
-  anyRouteChip.setAttribute("aria-pressed", "false");
   render();
 });
 
@@ -1880,47 +1927,31 @@ function applyFilters(parsed = parseQuery(state.q)) {
     // keystroke cannot leak into the row label.
     p.scope_hit = null;
     // Unranked summits (El Diente, Challenger Point, Conundrum, Cameron
-    // and 16 others) stay out of the default list, but they are real
-    // peaks in the data and were unreachable by any query because this
-    // test ran before the search test. With a query they come back,
-    // grouped separately by render() so the ranked count stays honest.
-    if (p.unranked && !tokens.length && !terms.length) return false;
+    // and 16 others) stay out of the default list, but they are real peaks
+    // in the data and were unreachable by any query because this test ran
+    // before the search test. A text token brings them back, grouped
+    // separately by render() so the ranked count stays honest.
+    //
+    // Text tokens only, not terms: now that the selects and chips write
+    // terms, gating on terms too would mean clicking "hide summited"
+    // surfaced all 20 subpoints. The rule is that you search for a subpoint
+    // by name; filters describe the ranked list.
+    if (p.unranked && !tokens.length) return false;
     // Every token must appear somewhere in the haystack (AND, not one
     // substring test against the whole string), so word order and extra
     // words in between do not matter: "elbert northeast" hits.
     if (tokens.length && !tokens.every(t => p.search_text.includes(t))) return false;
     for (const term of terms) {
       if (term.bad) return false;
+      if (term.spec.scope === "modifier") continue;   // scope, handled below
       if (term.spec.scope === "peak") {
         if (!term.spec.test(p, term)) return false;
         continue;
       }
-      const hit = scopedRoutes(p).find(r => term.spec.test(r, term));
+      const hit = scopedRoutes(p, parsed.scope).find(r => term.spec.test(r, term));
       if (!hit) return false;
       if (hit !== p.standard && !p.scope_hit) p.scope_hit = hit;
     }
-    // The class and road dropdowns run through the same scope rule as the
-    // typed terms, so the "any route" chip widens them too. With the chip
-    // off, scopedRoutes() is just the standard route and this behaves the
-    // way it always has.
-    if (state.maxClass) {
-      const mc = parseInt(state.maxClass, 10);
-      const hit = scopedRoutes(p).find(r => {
-        const c = classValue(r.difficulty);
-        return c != null && c <= mc;
-      });
-      if (!hit) return false;
-      if (hit !== p.standard && !p.scope_hit) p.scope_hit = hit;
-    }
-    if (state.maxRoad) {
-      const mr = parseInt(state.maxRoad, 10);
-      const hit = scopedRoutes(p).find(r => r.road != null && r.road <= mr);
-      if (!hit) return false;
-      if (hit !== p.standard && !p.scope_hit) p.scope_hit = hit;
-    }
-    if (state.summitedFilter === "hide" && state.summits.has(p.peak_id)) return false;
-    if (state.summitedFilter === "only" && !state.summits.has(p.peak_id)) return false;
-    if (state.plannedOnly && !state.planned.has(p.peak_id)) return false;
     return true;
   });
 }
@@ -1960,6 +1991,28 @@ function announceCount(text) {
   }, 600);
 }
 
+// The chips are views of the query too: typing summited:no lights the
+// summited chip, and removing its term unlights it.
+function syncChipsToQuery() {
+  const mode = summitedMode();
+  sumChip.dataset.state = mode;
+  sumChip.classList.toggle("on", mode !== "all");
+  sumChip.setAttribute("aria-pressed", String(mode !== "all"));
+  // Not while the pointer is on the chip, where the label is showing the
+  // next-state preview instead of the resting state.
+  if (!sumChipHovered) sumChip.textContent = sumChipLabel(mode, false);
+
+  const planned = !!(activeTerm("planned") || {}).value;
+  planChip.dataset.on = String(planned);
+  planChip.classList.toggle("on", planned);
+  planChip.setAttribute("aria-pressed", String(planned));
+
+  const any = lastParsed.scope === "any";
+  anyRouteChip.dataset.on = String(any);
+  anyRouteChip.classList.toggle("on", any);
+  anyRouteChip.setAttribute("aria-pressed", String(any));
+}
+
 function renderQueryChips(terms) {
   const box = document.getElementById("queryChips");
   box.innerHTML = "";
@@ -1992,9 +2045,12 @@ function removeQueryTerm(raw) {
 
 function render() {
   const parsed = parseQuery(state.q);
+  lastParsed = parsed;
   const tokens = parsed.tokens;
   const rows = applyFilters(parsed);
   renderQueryChips(parsed.terms);
+  syncSelectsToQuery();
+  syncChipsToQuery();
   rows.sort((a,b) => {
     let av = a[state.sort], bv = b[state.sort];
     if (typeof av === "string") { av = av.toLowerCase(); bv = bv.toLowerCase(); }
