@@ -508,6 +508,21 @@ tbody tr.empty-row:hover { background: transparent; }
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
 
+/* Query matches inside the peak name. Amber tint rather than the browser
+   default yellow, and no color change, so the strike-through on a summited
+   row and the name's own weight both survive. */
+td.peak-name mark {
+  background: var(--amber-soft); color: inherit; padding: 0 .05em;
+}
+/* The range cell filters to its range. Looks like text until hovered, since
+   53 underlined cells would read as a wall of links. */
+.range-filter {
+  background: none; border: 0; padding: 0; margin: 0; font: inherit;
+  color: inherit; text-align: left; cursor: pointer;
+}
+.range-filter:hover { color: var(--navy); text-decoration: underline; }
+.range-filter:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+
 .link-btn {
   background: none; border: 0; padding: 0; font: inherit; color: var(--navy);
   border-bottom: 1px solid var(--navy-soft); cursor: pointer;
@@ -1134,6 +1149,9 @@ const state = {
   // that can disagree with what the search box says.
   q: "",
   sort: "rank", dir: "asc", authMode: "signin",
+  // Set when the user clicks a column header, cleared when the query box is
+  // emptied. While false, a text query sorts by relevance.
+  sortPinned: false,
   openPeak: null
 };
 
@@ -1349,7 +1367,9 @@ function setQueryTerm(field, value) {
   if (value != null) kept.push(`${field}:${value}`);
   input.value = kept.join(" ");
   state.q = input.value.trim().toLowerCase();
+  applySortMode();
   render();
+  syncUrl();
 }
 
 // The parse behind the current render, so the chips' labels and the selects'
@@ -1362,6 +1382,64 @@ function activeTerm(field) {
 function summitedMode() {
   const t = activeTerm("summited");
   return !t ? "all" : (t.value ? "only" : "hide");
+}
+
+// Rank of how directly a peak answers the text query, lowest first. A name
+// hit beats a route hit, which beats a trailhead hit, so "elbert" leads with
+// Mount Elbert rather than whichever peak sorts first by rank.
+function relevanceScore(p, tokens) {
+  if (!tokens.length) return 0;
+  if (p.search_name.startsWith(tokens[0])) return 0;
+  if (tokens.every(t => p.search_name.includes(t))) return 1;
+  if (tokens.every(t => p.search_primary.includes(t))) return 2;
+  if (p.routes.some(r => tokens.every(t => r.search_name.includes(t)))) return 3;
+  return 4;
+}
+
+// Every word in the data, for the did-you-mean fallback. Built once, and only
+// ever read when a query returns nothing.
+let SEARCH_VOCAB = null;
+function searchVocab() {
+  if (SEARCH_VOCAB) return SEARCH_VOCAB;
+  const set = new Set();
+  PEAKS.forEach(p => p.search_text.split(" ").forEach(w => { if (w.length > 2) set.add(w); }));
+  SEARCH_VOCAB = [...set];
+  return SEARCH_VOCAB;
+}
+// True when one insertion, deletion or substitution turns a into b. Cheaper
+// and easier to read than a full edit-distance matrix, and one edit covers
+// the misspellings people actually type.
+function withinOneEdit(a, b) {
+  if (a === b) return true;
+  const d = a.length - b.length;
+  if (d > 1 || d < -1) return false;
+  if (d === 0) {
+    let diff = 0;
+    for (let i = 0; i < a.length; i++) if (a[i] !== b[i] && ++diff > 1) return false;
+    return diff === 1;
+  }
+  const [long, short] = d === 1 ? [a, b] : [b, a];
+  let i = 0, j = 0, skipped = false;
+  while (i < long.length && j < short.length) {
+    if (long[i] === short[j]) { i++; j++; continue; }
+    if (skipped) return false;
+    skipped = true; i++;
+  }
+  return true;
+}
+// The single closest correction for a query that matched nothing, or null.
+// Only the tokens that appear nowhere are candidates for replacement.
+function didYouMean(tokens) {
+  if (!tokens.length) return null;
+  const vocab = searchVocab();
+  const fixed = tokens.map(t => {
+    if (vocab.some(w => w.includes(t))) return t;
+    const hit = vocab.find(w => withinOneEdit(t, w));
+    return hit || t;
+  });
+  if (fixed.join(" ") === tokens.join(" ")) return null;
+  const anyMatch = PEAKS.some(p => fixed.every(t => p.search_text.includes(t)));
+  return anyMatch ? fixed : null;
 }
 
 // Routes a route-scoped predicate may look at. Default is the standard
@@ -1432,6 +1510,7 @@ PEAKS.forEach(p => {
   // from a direct hit and label the row accordingly.
   p.search_primary = normalizeSearch([p.name, p.slug, p.range].join(" "));
   p.search_range = normalizeSearch(p.range);
+  p.search_name = normalizeSearch(p.name);
   p.search_text = [p.search_primary].concat(p.routes.map(r => r.search_text)).join(" ");
 });
 
@@ -1782,7 +1861,35 @@ function renderAuthCard(msg) {
   });
 }
 
-document.getElementById("search").addEventListener("input", e => { state.q = e.target.value.trim().toLowerCase(); render(); });
+document.getElementById("search").addEventListener("input", e => {
+  state.q = e.target.value.trim().toLowerCase();
+  applySortMode();
+  render();
+  syncUrl();
+});
+
+// Relevance ordering turns itself on for a text query and off again when the
+// text goes away, unless the user has pinned a column.
+function applySortMode() {
+  const hasText = parseQuery(state.q).tokens.length > 0;
+  if (!state.q) state.sortPinned = false;
+  if (hasText && !state.sortPinned) { state.sort = "relevance"; state.dir = "asc"; }
+  else if (!hasText && state.sort === "relevance") { state.sort = "rank"; state.dir = "asc"; }
+}
+
+// The query is the whole filter state, so it is also the whole shareable
+// state. replaceState rather than pushState: filtering is not navigation, and
+// Safari rate-limits history writes, hence the debounce.
+let urlTimer = null;
+function syncUrl() {
+  if (urlTimer) clearTimeout(urlTimer);
+  urlTimer = setTimeout(() => {
+    const url = new URL(location.href);
+    if (state.q) url.searchParams.set("q", state.q);
+    else url.searchParams.delete("q");
+    history.replaceState(null, "", url.pathname + url.search + url.hash);
+  }, 300);
+}
 // The selects are shortcut query builders: they write a term and then read
 // their own value back out of the query on the next render.
 document.getElementById("classFilter").addEventListener("change", e => {
@@ -1867,7 +1974,9 @@ document.querySelectorAll(".query-examples button").forEach(btn => {
     const input = document.getElementById("search");
     input.value = btn.dataset.q;
     state.q = input.value.trim().toLowerCase();
+    applySortMode();
     render();
+    syncUrl();
     input.focus();
   });
 });
@@ -1907,11 +2016,16 @@ document.getElementById("resetFilters").addEventListener("click", () => {
   [sumChip, planChip, anyRouteChip].forEach(c => c.classList.remove("suppress-hover-preview"));
   planChip.textContent = "planned only";
   anyRouteChip.textContent = "any route";
+  applySortMode();
   render();
+  syncUrl();
 });
 
 document.querySelectorAll("th[data-sort]").forEach(th => {
   th.addEventListener("click", () => {
+    // An explicit sort pins itself until the query box is emptied, so
+    // relevance ordering does not fight the column the user just picked.
+    state.sortPinned = true;
     const key = th.dataset.sort;
     if (state.sort === key) state.dir = state.dir === "asc" ? "desc" : "asc";
     else { state.sort = key; state.dir = key === "elevation_ft" ? "desc" : "asc"; }
@@ -1922,6 +2036,7 @@ document.querySelectorAll("th[data-sort]").forEach(th => {
 function applyFilters(parsed = parseQuery(state.q)) {
   const { tokens, terms } = parsed;
   return PEAKS.filter(p => {
+    p.relevance = relevanceScore(p, tokens);
     // Which route satisfied a route-scoped predicate, when it was not the
     // standard route. Cleared for every peak so a stale hit from a previous
     // keystroke cannot leak into the row label.
@@ -1959,6 +2074,17 @@ function applyFilters(parsed = parseQuery(state.q)) {
 // Names what matched when the peak's own name and range did not, so a
 // row whose visible columns contain nothing from the query is still
 // explainable. Returns "" for direct name/range hits and for no query.
+// Wraps the query's tokens where they appear in the peak's name. Operates on
+// the original name rather than the normalized haystack so the displayed
+// spelling survives; alias tokens highlight what they resolved to, which is
+// the point ("evans" lights up "Blue Sky").
+function highlightName(name, tokens) {
+  if (!tokens.length) return name;
+  const parts = tokens.filter(t => t.length > 1).map(t => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  if (!parts.length) return name;
+  return name.replace(new RegExp("(" + parts.join("|") + ")", "gi"), "<mark>$1</mark>");
+}
+
 function matchHint(p, tokens) {
   // A route-scoped term satisfied by a non-standard route is the same
   // problem as a text match on a route: nothing in the visible columns
@@ -2039,7 +2165,9 @@ function removeQueryTerm(raw) {
   if (at >= 0) words.splice(at, 1);
   input.value = words.join(" ");
   state.q = input.value.trim().toLowerCase();
+  applySortMode();
   render();
+  syncUrl();
   input.focus();
 }
 
@@ -2052,7 +2180,13 @@ function render() {
   syncSelectsToQuery();
   syncChipsToQuery();
   rows.sort((a,b) => {
-    let av = a[state.sort], bv = b[state.sort];
+    // Relevance is a sort key like any other, with rank as the tie-break so
+    // equally relevant peaks stay in the order the page normally shows.
+    if (state.sort === "relevance" && a.relevance !== b.relevance) {
+      return state.dir === "asc" ? a.relevance - b.relevance : b.relevance - a.relevance;
+    }
+    let av = state.sort === "relevance" ? a.rank : a[state.sort];
+    let bv = state.sort === "relevance" ? b.rank : b[state.sort];
     if (typeof av === "string") { av = av.toLowerCase(); bv = bv.toLowerCase(); }
     if (av == null) av = Infinity; if (bv == null) bv = Infinity;
     if (av < bv) return state.dir === "asc" ? -1 : 1;
@@ -2067,7 +2201,11 @@ function render() {
 
   const rankedRows = rows.filter(p => !p.unranked);
   const unrankedRows = rows.filter(p => p.unranked);
-  const countText = `${rankedRows.length} shown` + (unrankedRows.length ? ` \u00b7 ${unrankedRows.length} unranked` : "");
+  // Relevance ordering leaves no sort arrow on any column, since no column is
+  // the sort key, so the count line has to say how the list is ordered.
+  const countText = `${rankedRows.length} shown`
+    + (unrankedRows.length ? ` \u00b7 ${unrankedRows.length} unranked` : "")
+    + (state.sort === "relevance" ? " \u00b7 by relevance" : "");
   document.getElementById("peakCount").textContent = countText;
   announceCount(countText);
   const ranked = PEAKS.filter(p => !p.unranked);
@@ -2083,7 +2221,26 @@ function render() {
   if (!ordered.length) {
     const emptyTr = document.createElement("tr");
     emptyTr.className = "empty-row";
-    emptyTr.innerHTML = `<td colspan="7">no peaks match. <button type="button" class="link-btn" id="emptyReset">clear filters</button></td>`;
+    const guess = didYouMean(tokens);
+    emptyTr.innerHTML = `<td colspan="7">no peaks match.${guess
+      ? ` did you mean <button type="button" class="link-btn" id="emptyGuess">${guess.join(" ")}</button>?`
+      : ""} <button type="button" class="link-btn" id="emptyReset">clear filters</button></td>`;
+    const guessBtn = emptyTr.querySelector("#emptyGuess");
+    if (guessBtn) guessBtn.addEventListener("click", e => {
+      e.stopPropagation();
+      // Replaces only the text tokens; any field terms in the box stay.
+      const input = document.getElementById("search");
+      const terms = input.value.split(/\s+/).filter(Boolean).filter(w => {
+        const t = parseTerm(w.toLowerCase());
+        return t && !t.bad;
+      });
+      input.value = terms.concat(guess).join(" ");
+      state.q = input.value.trim().toLowerCase();
+      applySortMode();
+      render();
+      syncUrl();
+      input.focus();
+    });
     emptyTr.querySelector("#emptyReset").addEventListener("click", e => {
       e.stopPropagation();
       // Defer to the existing reset control rather than duplicating the
@@ -2107,13 +2264,18 @@ function render() {
     if (state.openPeak === p.peak_id) tr.classList.add("is-open");
     tr.innerHTML = `
       <td>${p.rank ?? ""}</td>
-      <td class="peak-name"><button type="button" class="row-toggle" aria-expanded="${state.openPeak === p.peak_id}">${p.name}</button>${matchHint(p, tokens)}</td>
+      <td class="peak-name"><button type="button" class="row-toggle" aria-expanded="${state.openPeak === p.peak_id}">${highlightName(p.name, tokens)}</button>${matchHint(p, tokens)}</td>
       <td class="elev hide-xs">${p.elevation_ft.toLocaleString()}</td>
-      <td class="range hide-sm">${p.range}</td>
+      <td class="range hide-sm"><button type="button" class="range-filter" data-range="${RANGE_TOKEN[p.range] || ""}" title="filter to ${p.range}">${p.range}</button></td>
       <td title="${stdTooltip(p)}">${p.standard ? classBadge(p.standard.difficulty) : '<span class="badge outline">—</span>'}</td>
       <td class="road-col">${roadBars(p.standard_road)}</td>
       <td><button type="button" class="check ${state.summits.has(p.peak_id) ? "on" : ""}" data-id="${p.peak_id}" aria-pressed="${state.summits.has(p.peak_id)}" aria-label="${state.summits.has(p.peak_id) ? "unmark" : "mark"} ${p.name} summited"></button></td>
     `;
+    const rangeBtn = tr.querySelector(".range-filter");
+    if (rangeBtn) rangeBtn.addEventListener("click", e => {
+      e.stopPropagation();     // filtering, not opening the peak
+      setQueryTerm("range", rangeBtn.dataset.range);
+    });
     tr.addEventListener("click", e => {
       // Buttons inside the row bubble here: .check handles itself, and the
       // row-toggle deliberately falls through to togglePeak below so the
@@ -2143,7 +2305,9 @@ function togglePeak(p) {
   const opening = state.openPeak !== p.peak_id;
   if (opening) {
     state.openPeak = p.peak_id;
-    history.replaceState(null, "", "#" + p.slug);
+    // Keep ?q= -- without pathname and search here, opening a peak threw the
+    // query away and the shared link came back unfiltered.
+    history.replaceState(null, "", location.pathname + location.search + "#" + p.slug);
   } else {
     state.openPeak = null;
     if (location.hash) history.replaceState(null, "", location.pathname + location.search);
@@ -2152,6 +2316,22 @@ function togglePeak(p) {
   // No auto-scroll on open -- the panel expands in place below the
   // clicked row and the viewport stays put.
 }
+
+// The shortest word that identifies each range under the substring match
+// range: uses. "san" would also hit "sangre", so San Juan resolves to "juan".
+// Computed rather than hardcoded so a data change cannot silently break it.
+const RANGE_TOKEN = (() => {
+  const ranges = [...new Set(PEAKS.map(p => p.range))];
+  const normed = ranges.map(r => ({ r, n: normalizeSearch(r) }));
+  const skip = new Set(["range", "mountains", "mountain", "de", "the"]);
+  const out = {};
+  normed.forEach(({ r, n }) => {
+    const word = n.split(" ").filter(w => w.length > 2 && !skip.has(w))
+      .find(w => normed.filter(o => o.n.includes(w)).length === 1);
+    out[r] = word || n.split(" ")[0];
+  });
+  return out;
+})();
 
 const ROAD_LABELS = ["paved", "easy dirt 2WD", "rough dirt 2WD", "easy 4WD", "moderate 4WD", "rough 4WD", "difficult 4WD"];
 function roadLabel(v) { return v == null ? "" : (ROAD_LABELS[v] ?? String(v)); }
@@ -2314,6 +2494,13 @@ function applyHash() {
 async function init() {
   state.ready = true;
   applyHash();
+  // ?q= restores the whole filter, since the query string is all of it.
+  const fromUrl = new URL(location.href).searchParams.get("q");
+  if (fromUrl) {
+    document.getElementById("search").value = fromUrl;
+    state.q = fromUrl.trim().toLowerCase();
+    applySortMode();
+  }
   loadLegacy();                                  // anon path; replaced if cache hits below
 
   // Optimistic auth: trust localStorage to render "signed in as X" instantly.
@@ -2396,6 +2583,43 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     document.querySelectorAll("nav.topnav details[open]").forEach((d) => { d.open = false; });
   }
+
+  const el = document.activeElement;
+  const typing = el && (el.tagName === "INPUT" || el.tagName === "SELECT" || el.tagName === "TEXTAREA");
+  const searchBox = document.getElementById("search");
+
+  // "/" jumps to the search box, the convention on any page that has one.
+  if (event.key === "/" && !typing && !event.metaKey && !event.ctrlKey) {
+    event.preventDefault();
+    searchBox.focus();
+    searchBox.select();
+    return;
+  }
+  // Escape out of the search box clears it, which is what the native clear
+  // affordance does in browsers that draw one.
+  if (event.key === "Escape" && el === searchBox && searchBox.value) {
+    event.preventDefault();
+    searchBox.value = "";
+    state.q = "";
+    applySortMode();
+    render();
+    syncUrl();
+    return;
+  }
+  // Arrow keys walk the result rows from the search box or from a row, so a
+  // query can be typed and then browsed without reaching for the mouse. The
+  // row expander is the focus target since it is the row's control.
+  if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+  const rowButtons = [...document.querySelectorAll("#peakBody .row-toggle")];
+  if (!rowButtons.length) return;
+  const from = rowButtons.indexOf(el);
+  if (el !== searchBox && from === -1) return;
+  event.preventDefault();
+  const next = el === searchBox
+    ? (event.key === "ArrowDown" ? 0 : rowButtons.length - 1)
+    : Math.min(rowButtons.length - 1, Math.max(0, from + (event.key === "ArrowDown" ? 1 : -1)));
+  if (el !== searchBox && event.key === "ArrowUp" && from === 0) { searchBox.focus(); return; }
+  rowButtons[next].focus();
 });
 // Collapse the dropdown after clicking any of its links.
 document.querySelectorAll("nav.topnav details .dropdown-menu a").forEach((a) => {
