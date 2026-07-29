@@ -275,7 +275,10 @@ section.block > header .meta {
   padding: .5rem .7rem; background: var(--bg); color: var(--text-heading);
   border: 1px solid var(--border-strong); border-radius: 0;
 }
-.controls input[type=search] { min-width: 180px; }
+/* Flex basis wide enough that the three toggle chips wrap together onto
+   the second row rather than one of them riding up beside the selects.
+   Wrapping is decided by basis, not by grow, so this is the lever. */
+.controls input[type=search] { min-width: 180px; flex: 1 1 19rem; }
 .controls input:focus, .controls select:focus { outline: none; border-color: var(--navy); box-shadow: inset 0 -2px 0 0 var(--navy); }
 .controls .chip {
   font-family: var(--font-mono); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
@@ -419,6 +422,10 @@ tbody tr.empty-row:hover { background: transparent; }
    editing a term back out of a text input by hand is fiddly and the chip
    is the only place the parsed interpretation is visible. */
 .query-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin: -.6rem 0 1rem; }
+/* An author display declaration beats the UA sheet's [hidden] rule whatever
+   the specificity, so display:flex above would keep the empty container's
+   bottom margin in the layout with no chips to show. */
+.query-chips[hidden] { display: none; }
 .query-chips .qchip {
   display: inline-flex; align-items: center; gap: .15rem;
   font-family: var(--font-mono); font-size: .7rem; letter-spacing: .06em;
@@ -731,17 +738,13 @@ footer.page-footer {
     </header>
 
     <div class="controls">
-      <input type="search" id="search" placeholder="search peaks, routes"
+      <input type="search" id="search" placeholder="search peaks, routes, trailheads"
              aria-label="search peak names, routes, combos and trailheads"
              title="search peak names, routes, combos and trailheads" autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore>
-      <select id="rangeFilter" aria-label="filter by range" autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore>
-        <option value="">all ranges</option>
-      </select>
       <select id="classFilter" aria-label="filter by difficulty class" autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore>
         <option value="">any difficulty</option>
         <option value="1">Class 1 only</option>
         <option value="2">Class 2 or easier</option>
-        <option value="2.5">hard Class 2 or easier</option>
         <option value="3">Class 3 or easier</option>
         <option value="4">Class 4 or easier</option>
       </select>
@@ -775,7 +778,7 @@ footer.page-footer {
         <code>&gt;</code> <code>&gt;=</code> <code>&lt;</code> <code>&lt;=</code> work on class, road,
         dist, gain and the four risk ratings. Terms combine with AND.</p>
         <dl>
-          <dt>class</dt><dd>1, 2, hard2, 3, 4, 5</dd>
+          <dt>class</dt><dd>1, 2, 3, 4, 5</dd>
           <dt>exposure, rockfall, routefinding, commitment</dt><dd>low, moderate, considerable, high, extreme</dd>
           <dt>road</dt><dd>0 paved &hellip; 6 difficult 4WD</dd>
           <dt>dist, gain</dt><dd>miles, feet</dd>
@@ -1077,7 +1080,7 @@ function queryTokens(q) {
 const state = {
   user: null, ready: false,
   summits: new Map(), routes: new Map(), planned: new Map(),
-  q: "", range: "", maxClass: "", maxRoad: "",
+  q: "", maxClass: "", maxRoad: "",
   summitedFilter: "all",  // "all" | "hide" | "only"
   plannedOnly: false,
   // Scope for every route-level predicate, typed or dropdown: false tests
@@ -1104,14 +1107,15 @@ function classNumber(diff) {
   const m = diff && diff.match(/Class\s*(\d)/i);
   return m ? parseInt(m[1], 10) : 99;
 }
-// Ordinal class for filtering. "Difficult Class 2" sits half a step above
-// Class 2 because it climbs harder than one, so class:<=2 excludes it and
-// class:>2 includes it. classNumber() still returns the plain integer for
-// anything that only cares about the bucket.
-function classOrdinal(diff) {
+// Class as a filterable number. The modifier words do not move it:
+// "Difficult Class 2" is 2 and "Easy Class 3" is 3, because the words
+// qualify a class rather than sitting between two of them -- Easy Class 3
+// cannot be less than 3, so Difficult Class 2 must not be more than 2.
+// Returns null rather than classNumber()'s 99 sentinel, so a route with no
+// parseable class fails every comparison instead of satisfying class:>=N.
+function classValue(diff) {
   const n = classNumber(diff);
-  if (n === 99) return null;
-  return /^difficult/i.test(diff || "") ? n + 0.5 : n;
+  return n === 99 ? null : n;
 }
 
 // ---- structured query grammar -------------------------------------------
@@ -1142,9 +1146,6 @@ function compareValue(actual, op, want) {
 }
 
 function parseNumberValue(raw) {
-  // "hard2" / "difficult2" spell the half step the badge shows as HARD CLASS 2.
-  const hard = raw.match(/^(?:hard|difficult)\s*(\d)$/i);
-  if (hard) return parseInt(hard[1], 10) + 0.5;
   const n = parseFloat(raw);
   return isNaN(n) ? null : n;
 }
@@ -1172,9 +1173,8 @@ function ratingField(key) {
 
 const QUERY_FIELDS = {
   class: {
-    scope: "route", parse: parseNumberValue, hint: "1, 2, hard2, 3, 4, 5",
-    format: v => (v % 1 ? `hard ${Math.floor(v)}` : String(v)),
-    test: (r, t) => compareValue(classOrdinal(r.difficulty), t.op, t.value)
+    scope: "route", parse: parseNumberValue, hint: "1, 2, 3, 4, 5",
+    test: (r, t) => compareValue(classValue(r.difficulty), t.op, t.value)
   },
   exposure: ratingField("exposure"),
   rockfall: ratingField("rockfall"),
@@ -1243,7 +1243,12 @@ function parseTerm(word) {
   const rest = m[2].match(/^(>=|<=|>|<|=)?(.*)$/);
   const op = rest[1] || "=";
   const rawValue = rest[2].trim();
-  const value = rawValue ? spec.parse(rawValue) : null;
+  // "class:" and "class:>" are what a half-typed term looks like. Treating
+  // them as a broken term blanks the table for the three keystrokes before
+  // the value lands, so an empty value means "not a term yet": no chip, no
+  // constraint. Only a non-empty value that fails to parse is an error.
+  if (!rawValue) return { incomplete: true };
+  const value = spec.parse(rawValue);
   const term = { field: name, spec, op, value, raw: word };
   if (value == null) {
     term.bad = true;
@@ -1263,6 +1268,7 @@ function parseQuery(raw) {
   const text = [];
   (raw || "").split(/\s+/).filter(Boolean).forEach(word => {
     const term = parseTerm(word);
+    if (term && term.incomplete) return;      // half-typed, ignore for now
     if (term) terms.push(term); else text.push(word);
   });
   return { terms, tokens: queryTokens(text.join(" ")) };
@@ -1340,7 +1346,6 @@ PEAKS.forEach(p => {
   p.search_text = [p.search_primary].concat(p.routes.map(r => r.search_text)).join(" ");
 });
 
-const ranges = [...new Set(PEAKS.map(p => p.range))].sort();
 // 14ers.com-style road difficulty bars for the 0-6 scale (0 paved
 // ... 6 difficult 4WD), drawn as 5 bars with ratings 5 and 6 both
 // fully shaded. Lossless in practice: no standard route rates 5
@@ -1358,13 +1363,6 @@ function roadBars(road) {
   for (let i = 1; i <= 5; i++) bars += `<i class="${i <= filled ? "fill" : ""}"></i>`;
   return `<span class="road-bars" role="img" aria-label="${label}" title="${label}">${bars}</span>`;
 }
-
-const rangeSel = document.getElementById("rangeFilter");
-ranges.forEach(r => {
-  const o = document.createElement("option");
-  o.value = r; o.textContent = r;
-  rangeSel.appendChild(o);
-});
 
 let toastTimer = null;
 function toast(msg) {
@@ -1696,7 +1694,6 @@ function renderAuthCard(msg) {
 }
 
 document.getElementById("search").addEventListener("input", e => { state.q = e.target.value.trim().toLowerCase(); render(); });
-rangeSel.addEventListener("change", e => { state.range = e.target.value; render(); });
 document.getElementById("classFilter").addEventListener("change", e => { state.maxClass = e.target.value; render(); });
 document.getElementById("roadFilter").addEventListener("change", e => { state.maxRoad = e.target.value; render(); });
 const sumChip = document.getElementById("summitedToggle");
@@ -1799,10 +1796,9 @@ planChip.addEventListener("pointerleave", () => {
 });
 
 document.getElementById("resetFilters").addEventListener("click", () => {
-  state.q = ""; state.range = ""; state.maxClass = ""; state.maxRoad = "";
+  state.q = ""; state.maxClass = ""; state.maxRoad = "";
   state.summitedFilter = "all"; state.plannedOnly = false; state.anyRoute = false;
   document.getElementById("search").value = "";
-  rangeSel.value = "";
   document.getElementById("classFilter").value = "";
   document.getElementById("roadFilter").value = "";
   sumChip.dataset.state = "all";
@@ -1853,22 +1849,21 @@ function applyFilters(parsed = parseQuery(state.q)) {
       if (!hit) return false;
       if (hit !== p.standard && !p.scope_hit) p.scope_hit = hit;
     }
-    if (state.range && p.range !== state.range) return false;
     // The class and road dropdowns run through the same scope rule as the
     // typed terms, so the "any route" chip widens them too. With the chip
     // off, scopedRoutes() is just the standard route and this behaves the
     // way it always has.
     if (state.maxClass) {
-      const mc = parseFloat(state.maxClass);
+      const mc = parseInt(state.maxClass, 10);
       const hit = scopedRoutes(p).find(r => {
-        const c = classOrdinal(r.difficulty);
+        const c = classValue(r.difficulty);
         return c != null && c <= mc;
       });
       if (!hit) return false;
       if (hit !== p.standard && !p.scope_hit) p.scope_hit = hit;
     }
     if (state.maxRoad) {
-      const mr = parseFloat(state.maxRoad);
+      const mr = parseInt(state.maxRoad, 10);
       const hit = scopedRoutes(p).find(r => r.road != null && r.road <= mr);
       if (!hit) return false;
       if (hit !== p.standard && !p.scope_hit) p.scope_hit = hit;
@@ -1902,8 +1897,8 @@ function matchHint(p, tokens) {
 }
 
 // Renders one removable chip per parsed field term. The chips are the only
-// place the parsed interpretation is visible: "class:>=hard2" silently
-// becoming "class >= 2.5" would otherwise be invisible.
+// place the parsed interpretation is visible: "exposure:mod" resolving to
+// "exposure : moderate" would otherwise happen silently.
 function renderQueryChips(terms) {
   const box = document.getElementById("queryChips");
   box.innerHTML = "";
@@ -1923,7 +1918,10 @@ function renderQueryChips(terms) {
 function removeQueryTerm(raw) {
   const input = document.getElementById("search");
   const words = input.value.split(/\s+/).filter(Boolean);
-  const at = words.indexOf(raw);
+  // Compare case-insensitively: term.raw comes from the lowercased state.q
+  // while the input holds whatever the user typed, so "Class:>=3" would
+  // otherwise never match and the x would silently do nothing.
+  const at = words.findIndex(w => w.toLowerCase() === raw);
   if (at >= 0) words.splice(at, 1);
   input.value = words.join(" ");
   state.q = input.value.trim().toLowerCase();
