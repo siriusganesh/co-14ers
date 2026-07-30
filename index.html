@@ -86,95 +86,6 @@ strong { color: var(--text-heading); font-weight: 700; }
 
 .rule { height: 2px; background: var(--navy); border: 0; margin: 3.5rem 0; max-width: 72px; }
 
-nav.topnav {
-  position: sticky; top: 0; z-index: 10;
-  background: #ffffffe0;
-  backdrop-filter: saturate(140%) blur(10px);
-  -webkit-backdrop-filter: saturate(140%) blur(10px);
-  border-bottom: 1px solid var(--border);
-}
-nav.topnav .wrap {
-  max-width: var(--page-max); margin: 0 auto;
-  padding: .9rem 1.5rem;
-  display: flex; justify-content: space-between; align-items: baseline; gap: 1.5rem;
-}
-nav.topnav .brand {
-  color: var(--text-heading); font-weight: 500; font-size: .9rem;
-  border: 0; font-family: var(--font-mono); letter-spacing: -.01em;
-}
-nav.topnav .brand:after {
-  content: ""; display: inline-block; width: 2px; height: .95em;
-  background: var(--navy); margin-left: 3px; vertical-align: -.1em;
-  animation: brand-caret-blink 1.06s step-end infinite;
-}
-@keyframes brand-caret-blink {
-  0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  nav.topnav .brand:after { animation: none; opacity: 1; }
-}
-nav.topnav ul { list-style: none; display: flex; gap: 1.25rem; padding: 0; margin: 0; }
-nav.topnav a {
-  border: 0; font-family: var(--font-mono); font-size: .78rem;
-  color: var(--text-dim); letter-spacing: .04em;
-}
-nav.topnav a:hover { color: var(--navy); }
-
-/* ---------- Projects dropdown (mirrors siriusganesh.com toolbar) ---------- */
-nav.topnav .has-dropdown { position: relative; }
-nav.topnav details { display: inline; }
-nav.topnav details > summary {
-  display: inline; list-style: none; cursor: pointer;
-  font-family: var(--font-mono); font-size: .78rem;
-  color: var(--text-dim); letter-spacing: .04em;
-  user-select: none; white-space: nowrap;
-}
-nav.topnav details > summary::-webkit-details-marker { display: none; }
-nav.topnav details > summary::marker { content: ''; }
-nav.topnav details > summary::after {
-  content: '▾'; font-size: .65rem; margin-left: .3rem; opacity: .7;
-  display: inline-block; transition: transform 120ms ease;
-}
-nav.topnav details[open] > summary::after { transform: rotate(180deg); }
-nav.topnav details > summary:hover,
-nav.topnav details[open] > summary { color: var(--navy); }
-
-nav.topnav .dropdown-menu {
-  position: absolute; top: calc(100% + .4rem); right: 0;
-  min-width: 12rem; background: var(--bg);
-  border: 0; padding: 0; margin: 0; list-style: none;
-  display: flex; flex-direction: column;
-  align-items: stretch; gap: 0;
-  box-shadow: 0 6px 18px rgba(0,0,0,.14);
-  z-index: 20;
-}
-nav.topnav .dropdown-menu li { padding: 0; }
-nav.topnav .dropdown-menu a,
-nav.topnav .dropdown-menu .is-current {
-  display: block; padding: .55rem .9rem; font-size: .78rem;
-  border: 1px solid transparent;
-  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
-}
-nav.topnav .dropdown-menu a:hover {
-  background: var(--navy-soft); border-color: var(--navy); color: var(--navy);
-}
-nav.topnav .dropdown-menu .is-current,
-nav.topnav .dropdown-menu .is-current:hover {
-  color: var(--text-faint);
-  background: transparent; border-color: transparent;
-  pointer-events: none; cursor: default;
-  text-decoration: line-through;
-  text-decoration-thickness: 1px;
-}
-/* Keep the ↗ arrow un-struck on the current item. */
-nav.topnav .dropdown-menu .is-current .ext-arrow {
-  text-decoration: none;
-}
-nav.topnav .dropdown-menu .ext-arrow {
-  font-size: .85em; color: var(--text-faint); margin-left: .15rem;
-}
-nav.topnav .dropdown-menu a:hover .ext-arrow { color: var(--navy); }
-
 .hero { padding-top: 3rem; padding-bottom: 1rem; }
 .hero h1 { margin-bottom: 1.25rem; }
 .hero .lede { font-size: 1.05rem; color: var(--text); max-width: var(--measure); }
@@ -704,11 +615,6 @@ footer.page-footer {
      redistributes widths onto the wrong columns, collapsing the peak
      name. Auto layout sizes from content and handles both cleanly. */
   #peakTable { table-layout: auto; }
-  nav.topnav ul { gap: 1rem; overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; }
-  nav.topnav ul::-webkit-scrollbar { display: none; }
-  nav.topnav a { white-space: nowrap; }
-  /* Anchor dropdown to the viewport so the scrolling ul doesn't clip it. */
-  nav.topnav .dropdown-menu { position: fixed; top: 2.6rem; right: 1rem; left: auto; }
   .page { padding: 2.5rem 1.25rem; }
   section.block { margin: 2.5rem 0; }
   .hero { padding-top: 1rem; padding-bottom: .25rem; }
@@ -718,8 +624,6 @@ footer.page-footer {
 @media (max-width: 560px) {
   section.block > header .meta { display: none; }
   footer.page-footer { flex-direction: column; gap: .35rem; }
-  nav.topnav .wrap { padding: .7rem 1rem; gap: .9rem; }
-  nav.topnav a { font-size: .72rem; }
   .page { padding: 2rem 1rem 3rem; }
   .controls input[type=search] { min-width: 0; flex: 1; }
 
@@ -750,32 +654,14 @@ footer.page-footer {
 </head>
 <body>
 
-<nav class="topnav">
-  <div class="wrap">
-    <a class="brand" href="https://siriusganesh.com/">sirius ganesh</a>
-    <ul>
-      <li class="has-dropdown">
-        <details>
-          <summary>projects</summary>
-          <ul class="dropdown-menu">
-            <li><a href="https://siriusganesh.com/coffee">coffee</a></li>
-            <li><span class="is-current" aria-current="page">colorado 14ers <span class="ext-arrow" aria-hidden="true">↗</span></span></li>
-            <li><a href="https://siriusganesh.github.io/bananagrams-checker/" target="_blank" rel="noopener">bananagrams <span class="ext-arrow" aria-hidden="true">↗</span></a></li>
-          </ul>
-        </details>
-      </li>
-    </ul>
-  </div>
-</nav>
-
 <main class="page">
   <section class="hero">
     <span class="overline">Quick reference · Colorado 14,000 ft peaks</span>
     <h1>Colorado 14ers<span class="accent">.</span></h1>
     <p class="lede">
       The 53 ranked peaks above 14,000 feet. Routes, difficulty, gain, distance, and objective ratings (exposure, rockfall, route-finding, commitment).
-      Sign in to track <strong>summits, route lines, and a plan-to-climb list</strong> across devices &mdash;
-      sign-out keeps your progress in this browser only.
+      Sign in to track <strong>summits, route lines, and a plan-to-climb list</strong> across devices.
+      Signed out, your progress stays in this browser only.
     </p>
     <p class="hero-source">
       data: <a href="https://14ers.com" target="_blank" rel="noopener">14ers.com</a>
@@ -2572,18 +2458,7 @@ init();
 window.addEventListener("error", e => console.error("[14ers] runtime error:", e.message, e.error));
 window.addEventListener("unhandledrejection", e => console.error("[14ers] unhandled rejection:", e.reason));
 
-// Projects dropdown: close on outside click or Escape so the menu doesn't
-// linger after the user has moved on.
-document.addEventListener("click", (event) => {
-  document.querySelectorAll("nav.topnav details[open]").forEach((d) => {
-    if (!d.contains(event.target)) d.open = false;
-  });
-});
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") {
-    document.querySelectorAll("nav.topnav details[open]").forEach((d) => { d.open = false; });
-  }
-
   const el = document.activeElement;
   const typing = el && (el.tagName === "INPUT" || el.tagName === "SELECT" || el.tagName === "TEXTAREA");
   const searchBox = document.getElementById("search");
@@ -2620,13 +2495,6 @@ document.addEventListener("keydown", (event) => {
     : Math.min(rowButtons.length - 1, Math.max(0, from + (event.key === "ArrowDown" ? 1 : -1)));
   if (el !== searchBox && event.key === "ArrowUp" && from === 0) { searchBox.focus(); return; }
   rowButtons[next].focus();
-});
-// Collapse the dropdown after clicking any of its links.
-document.querySelectorAll("nav.topnav details .dropdown-menu a").forEach((a) => {
-  a.addEventListener("click", () => {
-    const d = a.closest("details");
-    if (d) d.open = false;
-  });
 });
 </script>
 </body>
