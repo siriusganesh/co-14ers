@@ -186,10 +186,12 @@ section.block > header .meta {
   padding: .5rem .7rem; background: var(--bg); color: var(--text-heading);
   border: 1px solid var(--border-strong); border-radius: 0;
 }
-/* Flex basis wide enough that the three toggle chips wrap together onto
-   the second row rather than one of them riding up beside the selects.
-   Wrapping is decided by basis, not by grow, so this is the lever. */
-.controls input[type=search] { min-width: 180px; flex: 1 1 19rem; }
+/* Flex basis is the lever on where the row breaks: wrapping is decided by
+   basis, not by grow. Narrow enough that all three selects stay on the first
+   row and the three toggle chips wrap together onto the second, rather than
+   the route-type select riding down among the chips. Grow still hands the
+   search box whatever the selects leave on that first row. */
+.controls input[type=search] { min-width: 180px; flex: 1 1 12rem; }
 .controls input:focus, .controls select:focus { outline: none; border-color: var(--navy); box-shadow: inset 0 -2px 0 0 var(--navy); }
 .controls .chip {
   font-family: var(--font-mono); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
@@ -207,6 +209,11 @@ section.block > header .meta {
   outline: none; border-color: var(--navy); box-shadow: inset 0 -2px 0 0 var(--navy);
 }
 .controls .chip:hover:not(.suppress-hover-preview) { border-color: var(--navy); color: var(--navy); background: var(--navy-soft); }
+/* A kind: term names the exact route pool, so the any-route chip has nothing
+   left to widen. Disabled rather than hidden, so no control moves under the
+   cursor when the route-type select changes. */
+.controls .chip:disabled { opacity: .45; cursor: default; }
+.controls .chip:disabled:hover { border-color: var(--border); color: var(--text-dim); background: var(--bg-tint); }
 .controls .chip.on {
   background: var(--navy); color: #fff; border-color: var(--navy);
 }
@@ -704,6 +711,12 @@ footer.page-footer {
         <option value="4">moderate 4WD or easier</option>
         <option value="5">rough 4WD or easier</option>
       </select>
+      <select id="kindFilter" aria-label="filter by route type" autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore>
+        <option value="">any route type</option>
+        <option value="__custom" disabled>from query</option>
+        <option value="combo">combos only</option>
+        <option value="approach">approaches only</option>
+      </select>
       <button type="button" class="chip" id="summitedToggle" data-state="all" aria-pressed="false">hide summited</button>
       <button type="button" class="chip" id="plannedToggle" data-on="false" aria-pressed="false">planned only</button>
       <button type="button" class="chip" id="anyRouteToggle" data-on="false" aria-pressed="false" title="test difficulty, road, ratings, distance and gain against every route up the peak instead of just the standard route">any route</button>
@@ -731,13 +744,18 @@ footer.page-footer {
           <dt>dist, gain</dt><dd>miles, feet</dd>
           <dt>range</dt><dd>sawatch, sangre, elk, front, mosquito, juan, tenmile</dd>
           <dt>snow, summited, planned</dt><dd>yes, no</dd>
-          <dt>kind</dt><dd>route, combo, approach</dd>
-          <dt>scope</dt><dd>standard, any</dd>
+          <dt>scope</dt><dd>standard (the default), any</dd>
+          <dt>kind</dt><dd>route, combo, approach &mdash; narrows to that route type</dd>
         </dl>
-        <p class="query-help-scope">Route fields test the standard route.
-        <code>scope:any</code>, or the <strong>any route</strong> chip, tests every
-        way up the peak. The selects and chips are shortcuts that write terms
-        into this box, so the query is the whole filter.</p>
+        <p class="query-help-scope">Route fields test the standard route, and the
+        <strong>Standard</strong> column shows it. <code>scope:any</code>, or the
+        <strong>any route</strong> chip, tests every way up the peak;
+        <code>kind:combo</code>, or the route-type select, tests only combos. The
+        column follows either way, naming the route that satisfied the query, so
+        the difficulty and road on a row belong to the route you filtered for.
+        One route has to satisfy every route field at once. The selects and chips
+        are shortcuts that write terms into this box, so the query is the whole
+        filter.</p>
         <div class="query-examples">
           <button type="button" data-q="class:&gt;=3 routefinding:&lt;=moderate">class:&gt;=3 routefinding:&lt;=moderate</button>
           <button type="button" data-q="class:&lt;=2 road:&lt;=1">class:&lt;=2 road:&lt;=1</button>
@@ -756,8 +774,8 @@ footer.page-footer {
           <th data-sort="name">Peak</th>
           <th data-sort="elevation_ft" class="hide-xs">Elev</th>
           <th data-sort="range" class="hide-sm">Range</th>
-          <th data-sort="standard_score">Standard</th>
-          <th data-sort="standard_road">Road</th>
+          <th data-sort="view_score" id="routeCol">Standard</th>
+          <th data-sort="view_road">Road</th>
           <th></th>
         </tr>
       </thead>
@@ -1147,15 +1165,15 @@ const QUERY_FIELDS = {
     scope: "peak", parse: raw => normalizeSearch(raw) || null, hint: "sawatch, sangre, elk, ...",
     test: (p, t) => p.search_range.includes(t.value)
   },
-  // Snow and kind are peak-level on purpose: a snow line or a combo is a
-  // property of the peak's route list, not of its standard route.
+  // Snow is peak-level on purpose: a snow line is a property of the peak's
+  // route list, not of its standard route. kind used to sit here as the same
+  // shape of existence test, which made "kind:combo class:<=4" mean "has a
+  // combo, and its standard route is Class 4 or easier" -- six peaks whose
+  // only combo is Class 5 passed that, showing their standard route's class.
+  // It is a scope modifier now; see SCOPE_FIELD and scopedRoutes.
   snow: {
     scope: "peak", parse: parseBoolValue, format: v => (v ? "yes" : "no"), hint: "yes, no",
     test: (p, t) => p.has_snow === t.value
-  },
-  kind: {
-    scope: "peak", parse: parseKindValue, hint: "route, combo, approach",
-    test: (p, t) => p.routes.some(r => r.kind === t.value)
   },
   summited: {
     scope: "peak", parse: parseBoolValue, format: v => (v ? "yes" : "no"), hint: "yes, no",
@@ -1176,16 +1194,27 @@ const FIELD_ALIASES = {
   distance: "dist", miles: "dist", mi: "dist",
   vert: "gain", elevationgain: "gain",
   difficulty: "class", grade: "class",
+  type: "kind", routetype: "kind",
   done: "summited", todo: "planned"
 };
 
-// scope is a modifier rather than a predicate: it selects which routes the
-// route-scoped fields are tested against. It lives in the grammar so the
-// query string is the whole filter state and one string restores a view.
+// scope and kind are modifiers rather than predicates: they select which
+// routes the route-scoped fields are tested against, and so which route the
+// Standard and Road columns describe. They live in the grammar so the query
+// string is the whole filter state and one string restores a view.
+//
+// kind is the narrower of the two and wins when both are present: it names an
+// exact pool, while scope only says how wide to go. So "scope:any kind:combo"
+// tests combos, not everything.
 const SCOPE_FIELD = {
   scope: "modifier", hint: "any, standard",
   parse: raw => (["any", "standard"].find(v => v.startsWith(raw.toLowerCase())) || null)
 };
+const KIND_FIELD = {
+  scope: "modifier", hint: "route, combo, approach",
+  parse: parseKindValue
+};
+const MODIFIER_FIELDS = { scope: SCOPE_FIELD, kind: KIND_FIELD };
 
 const OP_LABEL = { "=": ":", ">=": "≥", "<=": "≤", ">": ">", "<": "<" };
 
@@ -1196,8 +1225,8 @@ function parseTerm(word) {
   const m = word.match(/^([A-Za-z][A-Za-z_-]*):(.*)$/);
   if (!m) return null;
   const key = m[1].toLowerCase().replace(/[-_]/g, "");
-  const name = QUERY_FIELDS[key] ? key : (key === "scope" ? "scope" : FIELD_ALIASES[key]);
-  const spec = name === "scope" ? SCOPE_FIELD : (name && QUERY_FIELDS[name]);
+  const name = (QUERY_FIELDS[key] || MODIFIER_FIELDS[key]) ? key : FIELD_ALIASES[key];
+  const spec = MODIFIER_FIELDS[name] || (name && QUERY_FIELDS[name]);
   if (!spec) return null;
   const rest = m[2].match(/^(>=|<=|>|<|=)?(.*)$/);
   const op = rest[1] || "=";
@@ -1232,11 +1261,16 @@ function parseQuery(raw) {
     if (term && term.incomplete) return;      // half-typed, ignore for now
     if (term) terms.push(term); else text.push(word);
   });
+  const kindTerm = terms.find(t => t.field === "kind" && !t.bad);
   const scopeTerm = terms.find(t => t.field === "scope" && !t.bad);
+  // kind carried separately as well as folded into scope, because an empty
+  // pool means different things: no route of the requested kind (exclude the
+  // peak) versus a peak with no routes at all.
   return {
     terms,
     tokens: queryTokens(text.join(" ")),
-    scope: scopeTerm ? scopeTerm.value : "standard"
+    kind: kindTerm ? kindTerm.value : null,
+    scope: kindTerm ? kindTerm.value : (scopeTerm ? scopeTerm.value : "standard")
   };
 }
 
@@ -1260,7 +1294,7 @@ function setQueryTerm(field, value) {
 
 // The parse behind the current render, so the chips' labels and the selects'
 // values can be derived without re-parsing on every pointer event.
-let lastParsed = { terms: [], tokens: [], scope: "standard" };
+let lastParsed = { terms: [], tokens: [], kind: null, scope: "standard" };
 function activeTerm(field) {
   return lastParsed.terms.find(t => t.field === field && !t.bad) || null;
 }
@@ -1328,27 +1362,53 @@ function didYouMean(tokens) {
   return anyMatch ? fixed : null;
 }
 
-// Routes a route-scoped predicate may look at. Default is the standard
-// route, which is what the class and road dropdowns have always tested.
-// The "any route" chip widens it to every way up the peak; approaches stay
-// out, since a Class 1 approach hike says nothing about the summit.
+// Routes a route-scoped predicate may look at, and the routes the Standard
+// and Road columns may describe. Default is the standard route, which is what
+// the class and road dropdowns have always tested. The "any route" chip
+// widens it to every way up the peak; approaches stay out of that pool, since
+// a Class 1 approach hike says nothing about the summit.
+//
+// A kind narrows to exactly that kind, with no fallback to the standard
+// route. The empty pool is load-bearing: it is what makes kind:combo still
+// exclude the 49 peaks with no combo, now that kind is a modifier rather than
+// an existence test.
 function scopedRoutes(p, scope) {
+  if (scope === "route")    return p.summit_routes;
+  if (scope === "combo")    return p.combo_routes;
+  if (scope === "approach") return p.approach_routes;
   if (scope !== "any") return p.standard ? [p.standard] : [];
   const pool = p.summit_routes.concat(p.combo_routes);
   return pool.length ? pool : (p.standard ? [p.standard] : []);
 }
-// Explains the Standard column's order: the cell shows only the coarse
+// Which of several qualifying routes the columns describe: the easiest, by
+// build_data.py's composite score. If you asked for class:<=3 you want the
+// easiest way that clears the bar, not whichever route the build script
+// happened to sort first. Ties keep pool order, so the standard route wins
+// one against a combo of equal score.
+function easiestRoute(list) {
+  return list.reduce((best, r) =>
+    (r.score != null ? r.score : 99) < (best.score != null ? best.score : 99) ? r : best);
+}
+// Header for the difficulty column. It stops claiming "Standard" as soon as a
+// scope sends it somewhere other than the standard route.
+const ROUTE_COL_LABEL = {
+  standard: "Standard", any: "Route", route: "Route",
+  combo: "Combo", approach: "Approach"
+};
+// Explains the difficulty column's order: the cell shows only the coarse
 // class, so the tooltip surfaces the composite score and the ratings
 // that produced it. Without this two adjacent "Class 2" rows give no
-// hint why one sorts above the other.
-function stdTooltip(p) {
-  const s = p.standard;
+// hint why one sorts above the other. Describes whichever route the column
+// is showing, and names it when that is not the standard route.
+function routeTooltip(p) {
+  const s = p.view_route || p.standard;
   if (!s) return "";
   const parts = [["exposure", s.exposure], ["rockfall", s.rockfall],
                  ["route-finding", s.route_finding], ["commitment", s.commitment]]
     .filter(([, v]) => v).map(([k, v]) => `${k} ${v.toLowerCase()}`);
-  const score = p.standard_score !== 99 ? ` \u00b7 composite ${p.standard_score.toFixed(3)}` : "";
-  return `${s.difficulty}${score}${parts.length ? " \u2014 " + parts.join(", ") : ""}`;
+  const score = s.score != null ? ` \u00b7 composite ${s.score.toFixed(3)}` : "";
+  const via = s === p.standard ? "" : `${s.name} \u2014 `;
+  return `${via}${s.difficulty}${score}${parts.length ? " \u2014 " + parts.join(", ") : ""}`;
 }
 function ratingClass(v) {
   if (!v) return "";
@@ -1378,6 +1438,9 @@ PEAKS.forEach(p => {
   // Composite score from build_data.py: class stays dominant, the four
   // risk ratings only order peaks within a class bucket. See the
   // difficulty_score() comment in scripts/build_data.py for the formula.
+  // The column and its sort read view_score / view_road, which applyFilters
+  // sets from the route the active scope picked; these two are the fallback
+  // for a peak with no routes at all.
   p.standard_score = std && std.score != null ? std.score : 99;
   p.standard_road = std && std.road != null ? std.road : 99;
   p.has_snow = p.routes.some(r => r.is_snow_climb);
@@ -1401,20 +1464,19 @@ PEAKS.forEach(p => {
 });
 
 // 14ers.com-style road difficulty bars for the 0-6 scale (0 paved
-// ... 6 difficult 4WD), drawn as 5 bars with ratings 5 and 6 both
-// fully shaded. Lossless in practice: no standard route rates 5
-// (statewide, only Lead King Basin -> Snowmass West Slope does, and
-// non-standard routes never render here), so the sixth bar only ever
-// spent width restating the fifth. Tooltip keeps the exact label.
-// Uses the standard route's rating -- same value the road filter
-// uses. Reuses the ROAD_LABELS list declared with the road filter
-// below.
+// ... 6 difficult 4WD), one bar per step. This drew 5 bars with ratings 5
+// and 6 both fully shaded, which was lossless while the column only ever
+// showed standard routes: statewide the one road-5 rating is Lead King
+// Basin -> Snowmass West Slope, and that route is not standard. The column
+// follows the active scope now, so that route does render, and the sixth
+// bar is what keeps it distinct from Lake Como's 6. Uses whichever route
+// the scope picked -- same value the road filter tested. Reuses the
+// ROAD_LABELS list declared with the road filter below.
 function roadBars(road) {
   if (road == null || road === 99) return '<span class="badge outline">&mdash;</span>';
   const label = `road: ${ROAD_LABELS[road]}`;
-  const filled = Math.min(road, 5);
   let bars = "";
-  for (let i = 1; i <= 5; i++) bars += `<i class="${i <= filled ? "fill" : ""}"></i>`;
+  for (let i = 1; i <= 6; i++) bars += `<i class="${i <= road ? "fill" : ""}"></i>`;
   return `<span class="road-bars" role="img" aria-label="${label}" title="${label}">${bars}</span>`;
 }
 
@@ -1784,6 +1846,12 @@ document.getElementById("classFilter").addEventListener("change", e => {
 document.getElementById("roadFilter").addEventListener("change", e => {
   setQueryTerm("road", e.target.value ? "<=" + e.target.value : null);
 });
+// Route type is a scope selector, not a predicate: it decides which routes the
+// class, road, rating, distance and gain fields test, and which route the
+// difficulty and road columns describe. See KIND_FIELD and scopedRoutes.
+document.getElementById("kindFilter").addEventListener("change", e => {
+  setQueryTerm("kind", e.target.value || null);
+});
 
 // Reflects the query back into the selects. A term the option list cannot
 // express -- class:2 exactly, or class:>=3 -- shows the disabled "from query"
@@ -1797,6 +1865,12 @@ function syncSelectsToQuery() {
     const preset = t.op === "<=" && presets.includes(String(t.value)) ? String(t.value) : null;
     sel.value = preset != null ? preset : "__custom";
   });
+  // kind takes no comparator, so any value the option list carries is
+  // expressible exactly. kind:route is only reachable by typing it, which is
+  // what "from query" is for.
+  const kindSel = document.getElementById("kindFilter");
+  const kt = activeTerm("kind");
+  kindSel.value = !kt ? "" : (["combo", "approach"].includes(kt.value) ? kt.value : "__custom");
 }
 const sumChip = document.getElementById("summitedToggle");
 // The label the chip shows for a given filter state. When `preview`
@@ -1921,11 +1995,21 @@ document.querySelectorAll("th[data-sort]").forEach(th => {
 
 function applyFilters(parsed = parseQuery(state.q)) {
   const { tokens, terms } = parsed;
+  // A term that failed to parse matches nothing, so it is settled once here
+  // rather than re-tested against all 73 peaks.
+  if (terms.some(t => t.bad)) return [];
+  // Split once instead of per peak. Route-scoped terms have to be handled as
+  // a group, not one at a time -- see the qualifying pool below.
+  const peakTerms  = terms.filter(t => t.spec.scope === "peak");
+  const routeTerms = terms.filter(t => t.spec.scope === "route");
   return PEAKS.filter(p => {
     p.relevance = relevanceScore(p, tokens);
-    // Which route satisfied a route-scoped predicate, when it was not the
-    // standard route. Cleared for every peak so a stale hit from a previous
-    // keystroke cannot leak into the row label.
+    // The route the difficulty and road columns describe, and the route their
+    // sort reads. The standard route until a scope sends it elsewhere. Reset
+    // for every peak so a stale pick from a previous keystroke cannot leak
+    // into the row.
+    p.view_route = p.standard;
+    // Set when that route is not the standard one, so the row can name it.
     p.scope_hit = null;
     // Unranked summits (El Diente, Challenger Point, Conundrum, Cameron
     // and 16 others) stay out of the default list, but they are real peaks
@@ -1942,17 +2026,30 @@ function applyFilters(parsed = parseQuery(state.q)) {
     // substring test against the whole string), so word order and extra
     // words in between do not matter: "elbert northeast" hits.
     if (tokens.length && !tokens.every(t => p.search_text.includes(t))) return false;
-    for (const term of terms) {
-      if (term.bad) return false;
-      if (term.spec.scope === "modifier") continue;   // scope, handled below
-      if (term.spec.scope === "peak") {
-        if (!term.spec.test(p, term)) return false;
-        continue;
-      }
-      const hit = scopedRoutes(p, parsed.scope).find(r => term.spec.test(r, term));
-      if (!hit) return false;
-      if (hit !== p.standard && !p.scope_hit) p.scope_hit = hit;
+    for (const term of peakTerms) if (!term.spec.test(p, term)) return false;
+
+    const pool = scopedRoutes(p, parsed.scope);
+    // An empty pool under a narrowed scope means the peak has no route of
+    // that kind. This is the existence test kind: used to perform itself.
+    if (parsed.kind && !pool.length) return false;
+    if (routeTerms.length) {
+      // One route has to satisfy every route-scoped term. Testing each term
+      // against the pool on its own let two different routes cover two
+      // terms: "scope:any class:<=2 road:<=1" matched Ellingwood Point on
+      // South Face for the class (road 6) and North Ridge for the road
+      // (Class 3), describing a trip that does not exist.
+      const qualifying = pool.filter(r => routeTerms.every(t => t.spec.test(r, t)));
+      if (!qualifying.length) return false;
+      p.view_route = easiestRoute(qualifying);
+    } else if (pool.length) {
+      // No route predicate to qualify on, but a narrowed scope still decides
+      // which route the columns describe. Prefer the standard route when the
+      // pool holds it, so the default view is unchanged.
+      p.view_route = pool.includes(p.standard) ? p.standard : easiestRoute(pool);
     }
+    if (p.view_route && p.view_route !== p.standard) p.scope_hit = p.view_route;
+    p.view_score = p.view_route && p.view_route.score != null ? p.view_route.score : p.standard_score;
+    p.view_road  = p.view_route && p.view_route.road  != null ? p.view_route.road  : p.standard_road;
     return true;
   });
 }
@@ -1972,10 +2069,10 @@ function highlightName(name, tokens) {
 }
 
 function matchHint(p, tokens) {
-  // A route-scoped term satisfied by a non-standard route is the same
-  // problem as a text match on a route: nothing in the visible columns
-  // supports the row. Name the qualifying route, and prefer it over a text
-  // hit since it is the stronger claim about why the row is here.
+  // The difficulty and road columns now show the route that qualified, but
+  // not its name, so a row picked up by a non-standard route still has to say
+  // which one. Preferred over a text hit since it is the stronger claim about
+  // why the row is here.
   if (p.scope_hit) {
     return `<span class="match-hint" title="${p.scope_hit.name}">${p.scope_hit.name}</span>`;
   }
@@ -2023,6 +2120,13 @@ function syncChipsToQuery() {
   anyRouteChip.dataset.on = String(any);
   anyRouteChip.classList.toggle("on", any);
   anyRouteChip.setAttribute("aria-pressed", String(any));
+  // A kind names an exact pool and outranks scope, so while one is active the
+  // chip has no widening left to do. Left in place and disabled rather than
+  // hidden, so nothing shifts under the cursor.
+  anyRouteChip.disabled = !!lastParsed.kind;
+  anyRouteChip.title = lastParsed.kind
+    ? `route fields are testing this peak's ${lastParsed.kind} routes`
+    : "test difficulty, road, ratings, distance and gain against every route up the peak instead of just the standard route";
 }
 
 function renderQueryChips(terms) {
@@ -2065,6 +2169,7 @@ function render() {
   renderQueryChips(parsed.terms);
   syncSelectsToQuery();
   syncChipsToQuery();
+  document.getElementById("routeCol").textContent = ROUTE_COL_LABEL[parsed.scope] || "Standard";
   rows.sort((a,b) => {
     // Relevance is a sort key like any other, with rank as the tie-break so
     // equally relevant peaks stay in the order the page normally shows.
@@ -2153,8 +2258,8 @@ function render() {
       <td class="peak-name"><button type="button" class="row-toggle" aria-expanded="${state.openPeak === p.peak_id}">${highlightName(p.name, tokens)}</button>${matchHint(p, tokens)}</td>
       <td class="elev hide-xs">${p.elevation_ft.toLocaleString()}</td>
       <td class="range hide-sm"><button type="button" class="range-filter" data-range="${RANGE_TOKEN[p.range] || ""}" title="filter to ${p.range}">${p.range}</button></td>
-      <td title="${stdTooltip(p)}">${p.standard ? classBadge(p.standard.difficulty) : '<span class="badge outline">—</span>'}</td>
-      <td class="road-col">${roadBars(p.standard_road)}</td>
+      <td title="${routeTooltip(p)}">${p.view_route ? classBadge(p.view_route.difficulty) : '<span class="badge outline">—</span>'}</td>
+      <td class="road-col">${roadBars(p.view_road)}</td>
       <td><button type="button" class="check ${state.summits.has(p.peak_id) ? "on" : ""}" data-id="${p.peak_id}" aria-pressed="${state.summits.has(p.peak_id)}" aria-label="${state.summits.has(p.peak_id) ? "unmark" : "mark"} ${p.name} summited"></button></td>
     `;
     const rangeBtn = tr.querySelector(".range-filter");
