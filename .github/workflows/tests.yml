@@ -1,0 +1,24 @@
+name: Tests
+
+on:
+  pull_request:
+
+jobs:
+  query-layer:
+    runs-on: ubuntu-latest
+    name: Query layer
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run query-layer tests
+        run: node --test
+
+      # index.html carries generated copies of search.mjs and peaks.json. This
+      # step fails the PR if either has drifted, which is what happens when an
+      # edit lands in the inlined copy instead of in the source file.
+      - name: Check index.html is in sync with its sources
+        run: python3 scripts/embed_data.py --check
