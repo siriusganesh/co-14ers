@@ -25,7 +25,9 @@ Use case: someone says "let's climb La Plata" and you want to know in
 ## Deliberate choices
 
 - Single-file `index.html` for the whole app — peaks data inlined at
-  build time so the page loads in one request.
+  build time so the page loads in one request. The query layer lives in
+  `search.mjs` and is inlined by the same script, so it stays unit-testable
+  without costing the page a second request.
 - Supabase Auth + Postgres RLS on every table; the localStorage shim
   mirrors the same shape so the UI is identical signed-in vs out.
 - CSV → JSON → inlined-into-HTML pipeline via idempotent Python scripts
@@ -40,10 +42,16 @@ Use case: someone says "let's climb La Plata" and you want to know in
 
 ```
 python3 scripts/build_data.py    # CSVs in data/ → peaks.json
-python3 scripts/embed_data.py    # peaks.json → inlined in index.html
+python3 scripts/embed_data.py    # peaks.json + search.mjs → inlined in index.html
 git commit -am "data: refresh from 14ers.com YYYY-MM-DD"
 git push                          # GitHub Pages auto-deploys from main
 ```
+
+## Tests
+
+`node --test` covers the query layer in `search.mjs`. Edit that file rather
+than the copy inlined in `index.html`, then re-run `embed_data.py`;
+`python3 scripts/embed_data.py --check` fails CI if the two drift.
 
 More: `docs/setup-supabase.md` (Supabase setup), `docs/auth-design.md` (auth).
 

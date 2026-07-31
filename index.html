@@ -1015,6 +1015,18 @@ const LEGACY_KEY = "co14ers.summited.v1";
 // punctuation and the Mt./Mount split stop mattering. Peak names carry
 // "Mount Elbert" while 14ers.com route names carry "Mt. Elbert", so the
 // old raw substring test found nothing for the query "mt elbert".
+// ==== SEARCH MODULE (inlined from search.mjs by scripts/embed_data.py) ====
+// Query layer for the peak table: tokenizing, the field grammar, route
+// scoping and the filter itself. Everything here is pure -- it takes the peak
+// list and the tracked summits/planned sets as arguments rather than reaching
+// for the page's globals -- so search.test.mjs can exercise it directly.
+//
+// index.html does not import this file. scripts/embed_data.py inlines it
+// between the SEARCH MODULE markers so the page still loads in one request,
+// dropping only the export block below. Run `python3 scripts/embed_data.py`
+// after editing, and `python3 scripts/embed_data.py --check` verifies the two
+// copies agree.
+
 function normalizeSearch(s) {
   return (s || "").toLowerCase()
     .replace(/[.,'\u2019+\/()\-&:]/g, " ")
@@ -1045,33 +1057,6 @@ function queryTokens(q) {
   });
 }
 
-const state = {
-  user: null, ready: false,
-  summits: new Map(), routes: new Map(), planned: new Map(),
-  // q is the whole filter state. The selects and the toggle chips read and
-  // write it rather than holding values of their own, so there is nothing
-  // that can disagree with what the search box says.
-  q: "",
-  sort: "rank", dir: "asc", authMode: "signin",
-  // Set when the user clicks a column header, cleared when the query box is
-  // emptied. While false, a text query sorts by relevance.
-  sortPinned: false,
-  openPeak: null
-};
-
-function classBadge(diff) {
-  if (!diff) return "";
-  const m = diff.match(/Class\s*(\d)/i);
-  const n = m ? m[1] : "?";
-  const isSnow = /snow/i.test(diff);
-  const cls = "badge c" + n;
-  // "Difficult" -> "Hard" is display-only shortening; the source data
-  // and sort/filter logic keep 14ers.com's "Difficult Class N" wording.
-  const shown = diff.replace(/\s*Moderate Snow|\s*Easy Snow|\s*Steep Snow/i, "").replace(/^Difficult\s+/i, "Hard ");
-  let out = `<span class="${cls}">${shown}</span>`;
-  if (isSnow) out += ` <span class="badge snow">${diff.match(/(Easy|Moderate|Steep) Snow/i)?.[0] || "snow"}</span>`;
-  return out;
-}
 function classNumber(diff) {
   const m = diff && diff.match(/Class\s*(\d)/i);
   return m ? parseInt(m[1], 10) : 99;
@@ -1177,11 +1162,11 @@ const QUERY_FIELDS = {
   },
   summited: {
     scope: "peak", parse: parseBoolValue, format: v => (v ? "yes" : "no"), hint: "yes, no",
-    test: (p, t) => state.summits.has(p.peak_id) === t.value
+    test: (p, t, tracked) => tracked.summits.has(p.peak_id) === t.value
   },
   planned: {
     scope: "peak", parse: parseBoolValue, format: v => (v ? "yes" : "no"), hint: "yes, no",
-    test: (p, t) => state.planned.has(p.peak_id) === t.value
+    test: (p, t, tracked) => tracked.planned.has(p.peak_id) === t.value
   }
 };
 
@@ -1274,39 +1259,6 @@ function parseQuery(raw) {
   };
 }
 
-// Every control writes its filter through here: the query string is the only
-// filter state, so a control cannot hold a value the string disagrees with.
-// A null value removes the field. Existing terms for the same field are
-// replaced, including a half-typed one.
-function setQueryTerm(field, value) {
-  const input = document.getElementById("search");
-  const kept = input.value.split(/\s+/).filter(Boolean).filter(w => {
-    const t = parseTerm(w.toLowerCase());
-    return !(t && t.field === field);
-  });
-  if (value != null) kept.push(`${field}:${value}`);
-  input.value = kept.join(" ");
-  state.q = input.value.trim().toLowerCase();
-  applySortMode();
-  render();
-  syncUrl();
-}
-
-// The parse behind the current render, so the chips' labels and the selects'
-// values can be derived without re-parsing on every pointer event.
-let lastParsed = { terms: [], tokens: [], kind: null, scope: "standard" };
-function activeTerm(field) {
-  return lastParsed.terms.find(t => t.field === field && !t.bad) || null;
-}
-// all -> summited:no -> summited:yes -> all
-function summitedMode() {
-  const t = activeTerm("summited");
-  return !t ? "all" : (t.value ? "only" : "hide");
-}
-
-// Rank of how directly a peak answers the text query, lowest first. A name
-// hit beats a route hit, which beats a trailhead hit, so "elbert" leads with
-// Mount Elbert rather than whichever peak sorts first by rank.
 function relevanceScore(p, tokens) {
   if (!tokens.length) return 0;
   if (p.search_name.startsWith(tokens[0])) return 0;
@@ -1319,10 +1271,10 @@ function relevanceScore(p, tokens) {
 // Every word in the data, for the did-you-mean fallback. Built once, and only
 // ever read when a query returns nothing.
 let SEARCH_VOCAB = null;
-function searchVocab() {
+function searchVocab(peaks) {
   if (SEARCH_VOCAB) return SEARCH_VOCAB;
   const set = new Set();
-  PEAKS.forEach(p => p.search_text.split(" ").forEach(w => { if (w.length > 2) set.add(w); }));
+  peaks.forEach(p => p.search_text.split(" ").forEach(w => { if (w.length > 2) set.add(w); }));
   SEARCH_VOCAB = [...set];
   return SEARCH_VOCAB;
 }
@@ -1349,16 +1301,16 @@ function withinOneEdit(a, b) {
 }
 // The single closest correction for a query that matched nothing, or null.
 // Only the tokens that appear nowhere are candidates for replacement.
-function didYouMean(tokens) {
+function didYouMean(peaks, tokens) {
   if (!tokens.length) return null;
-  const vocab = searchVocab();
+  const vocab = searchVocab(peaks);
   const fixed = tokens.map(t => {
     if (vocab.some(w => w.includes(t))) return t;
     const hit = vocab.find(w => withinOneEdit(t, w));
     return hit || t;
   });
   if (fixed.join(" ") === tokens.join(" ")) return null;
-  const anyMatch = PEAKS.some(p => fixed.every(t => p.search_text.includes(t)));
+  const anyMatch = peaks.some(p => fixed.every(t => p.search_text.includes(t)));
   return anyMatch ? fixed : null;
 }
 
@@ -1397,6 +1349,205 @@ const ROUTE_COL_LABEL = {
   standard: "Standard", any: "Route", route: "Route",
   combo: "Combo", approach: "Approach"
 };
+
+// Derived fields every query and every row reads: the route buckets, the
+// standard route, the composite fallbacks and the search haystacks. Called
+// once at startup, never per keystroke.
+function preparePeaks(peaks) {
+  peaks.forEach(p => {
+    // Summit routes only. Combos and approaches are listed separately in
+    // the detail panel and shouldn't inflate a peak's route count.
+    p.summit_routes = p.routes.filter(r => r.kind === "route");
+    p.combo_routes = p.routes.filter(r => r.kind === "combo");
+    p.approach_routes = p.routes.filter(r => r.kind === "approach");
+    p.route_count = p.summit_routes.length;
+    // Prefer the route that is both standard and primary. build_data.py's
+    // sort already puts it first, but a peak's list also carries combos
+    // flagged standard (the Decalibron is Bross's standard), so say it
+    // outright rather than relying on the sort.
+    const std = p.summit_routes.find(r => r.is_standard) || p.summit_routes[0]
+      || p.routes.find(r => r.is_standard) || p.routes[0];
+    p.standard = std || null;
+    // Composite score from build_data.py: class stays dominant, the four
+    // risk ratings only order peaks within a class bucket. See the
+    // difficulty_score() comment in scripts/build_data.py for the formula.
+    // The column and its sort read view_score / view_road, which applyFilters
+    // sets from the route the active scope picked; these two are the fallback
+    // for a peak with no routes at all.
+    p.standard_score = std && std.score != null ? std.score : 99;
+    p.standard_road = std && std.road != null ? std.road : 99;
+    p.has_snow = p.routes.some(r => r.is_snow_climb);
+    // Precomputed search haystacks. Search used to test p.name and p.range
+    // only, which left everything else in the data unreachable: 138 route
+    // names, 12 combos, 7 approaches and 70 trailheads. Queries like
+    // "traverse", "decalibron", "couloir" and "lake como" all returned
+    // nothing despite being present. Built once here because applyFilters
+    // runs on every keystroke.
+    //
+    // The per-token test in applyFilters walks p.search_pool rather than the
+    // joined p.search_text, so it can respect a kind:. p.search_text is what
+    // the did-you-mean vocabulary and its any-match check still read, and
+    // those stay deliberately unscoped: a correction should be offered for a
+    // word that sits on a route the current scope filtered out.
+    p.routes.forEach(r => {
+      r.search_name = normalizeSearch(r.name);
+      r.search_th = normalizeSearch(r.trailhead || "");
+      r.search_text = normalizeSearch([r.name, r.summits, r.trailhead, r.difficulty, r.kind].join(" "));
+    });
+    // Name, slug and range alone, so render() can tell a route-only match
+    // from a direct hit and label the row accordingly.
+    p.search_primary = normalizeSearch([p.name, p.slug, p.range].join(" "));
+    p.search_range = normalizeSearch(p.range);
+    p.search_name = normalizeSearch(p.name);
+    p.search_text = [p.search_primary].concat(p.routes.map(r => r.search_text)).join(" ");
+  });
+}
+
+function applyFilters(peaks, parsed, tracked) {
+  const { tokens, terms } = parsed;
+  // A term that failed to parse matches nothing, so it is settled once here
+  // rather than re-tested against all 73 peaks.
+  if (terms.some(t => t.bad)) return [];
+  // Split once instead of per peak. Route-scoped terms have to be handled as
+  // a group, not one at a time -- see the qualifying pool below.
+  const peakTerms  = terms.filter(t => t.spec.scope === "peak");
+  const routeTerms = terms.filter(t => t.spec.scope === "route");
+  return peaks.filter(p => {
+    // Pool first: the text test, the relevance tier, the row's match hint and
+    // the route predicates all read it, so nothing downstream can disagree
+    // with the scope.
+    p.pool = scopedRoutes(p, parsed.scope);
+    // Routes the text search may match. An explicit kind: is a statement about
+    // what you are looking for, so a token has to be accounted for by a route
+    // of that kind. "hourglass kind:combo" used to return Little Bear, because
+    // "hourglass" sits in its West Ridge summit route, and the row then
+    // credited the Blanca traverse for a word no combo contains.
+    //
+    // Without a kind the search stays wide, and deliberately wider than the
+    // route predicates: text is the only way to reach a non-standard route at
+    // all. Narrowing this to p.pool measured as "decalibron", "sawtooth",
+    // "tour de abyss" and "ellingwood arete" all going from hits to zero.
+    p.search_pool = parsed.kind ? p.pool : p.routes;
+    p.relevance = relevanceScore(p, tokens);
+    // The route the difficulty and road columns describe, and the route their
+    // sort reads. The standard route until a scope sends it elsewhere. Reset
+    // for every peak so a stale pick from a previous keystroke cannot leak
+    // into the row.
+    p.view_route = p.standard;
+    // Set when that route is not the standard one, so the row can name it.
+    p.scope_hit = null;
+    // Unranked summits (El Diente, Challenger Point, Conundrum, Cameron
+    // and 16 others) stay out of the default list, but they are real peaks
+    // in the data and were unreachable by any query because this test ran
+    // before the search test. A text token brings them back, grouped
+    // separately by render() so the ranked count stays honest.
+    //
+    // Text tokens only, not terms: now that the selects and chips write
+    // terms, gating on terms too would mean clicking "hide summited"
+    // surfaced all 20 subpoints. The rule is that you search for a subpoint
+    // by name; filters describe the ranked list.
+    if (p.unranked && !tokens.length) return false;
+    // Every token must appear somewhere in the peak's own name, slug or range,
+    // or on one route in the search pool. AND across tokens, not one substring
+    // test against a joined string, so word order and extra words in between
+    // do not matter: "elbert northeast" hits, and "little bear hourglass" can
+    // take one token from the peak and one from a route.
+    //
+    // Identical to the old single test against p.search_text whenever there is
+    // no kind: to narrow the pool, since a token never contains the space that
+    // joined those haystacks and so can never straddle two of them.
+    if (tokens.length && !tokens.every(t => p.search_primary.includes(t)
+        || p.search_pool.some(r => r.search_text.includes(t)))) return false;
+    for (const term of peakTerms) if (!term.spec.test(p, term, tracked)) return false;
+
+    // An empty pool under a narrowed scope means the peak has no route of
+    // that kind. This is the existence test kind: used to perform itself.
+    if (parsed.kind && !p.pool.length) return false;
+    if (routeTerms.length) {
+      // One route has to satisfy every route-scoped term. Testing each term
+      // against the pool on its own let two different routes cover two
+      // terms: "scope:any class:<=2 road:<=1" matched Ellingwood Point on
+      // South Face for the class (road 6) and North Ridge for the road
+      // (Class 3), describing a trip that does not exist.
+      const qualifying = p.pool.filter(r => routeTerms.every(t => t.spec.test(r, t)));
+      if (!qualifying.length) return false;
+      p.view_route = easiestRoute(qualifying);
+    } else if (p.pool.length) {
+      // No route predicate to qualify on, but a narrowed scope still decides
+      // which route the columns describe. Prefer the standard route when the
+      // pool holds it, so the default view is unchanged.
+      p.view_route = p.pool.includes(p.standard) ? p.standard : easiestRoute(p.pool);
+    }
+    if (p.view_route && p.view_route !== p.standard) p.scope_hit = p.view_route;
+    p.view_score = p.view_route && p.view_route.score != null ? p.view_route.score : p.standard_score;
+    p.view_road  = p.view_route && p.view_route.road  != null ? p.view_route.road  : p.standard_road;
+    return true;
+  });
+}
+// ==== END SEARCH MODULE ====
+
+const state = {
+  user: null, ready: false,
+  summits: new Map(), routes: new Map(), planned: new Map(),
+  // q is the whole filter state. The selects and the toggle chips read and
+  // write it rather than holding values of their own, so there is nothing
+  // that can disagree with what the search box says.
+  q: "",
+  sort: "rank", dir: "asc", authMode: "signin",
+  // Set when the user clicks a column header, cleared when the query box is
+  // emptied. While false, a text query sorts by relevance.
+  sortPinned: false,
+  openPeak: null
+};
+
+function classBadge(diff) {
+  if (!diff) return "";
+  const m = diff.match(/Class\s*(\d)/i);
+  const n = m ? m[1] : "?";
+  const isSnow = /snow/i.test(diff);
+  const cls = "badge c" + n;
+  // "Difficult" -> "Hard" is display-only shortening; the source data
+  // and sort/filter logic keep 14ers.com's "Difficult Class N" wording.
+  const shown = diff.replace(/\s*Moderate Snow|\s*Easy Snow|\s*Steep Snow/i, "").replace(/^Difficult\s+/i, "Hard ");
+  let out = `<span class="${cls}">${shown}</span>`;
+  if (isSnow) out += ` <span class="badge snow">${diff.match(/(Easy|Moderate|Steep) Snow/i)?.[0] || "snow"}</span>`;
+  return out;
+}
+
+// Every control writes its filter through here: the query string is the only
+// filter state, so a control cannot hold a value the string disagrees with.
+// A null value removes the field. Existing terms for the same field are
+// replaced, including a half-typed one.
+function setQueryTerm(field, value) {
+  const input = document.getElementById("search");
+  const kept = input.value.split(/\s+/).filter(Boolean).filter(w => {
+    const t = parseTerm(w.toLowerCase());
+    return !(t && t.field === field);
+  });
+  if (value != null) kept.push(`${field}:${value}`);
+  input.value = kept.join(" ");
+  state.q = input.value.trim().toLowerCase();
+  applySortMode();
+  render();
+  syncUrl();
+}
+
+// The parse behind the current render, so the chips' labels and the selects'
+// values can be derived without re-parsing on every pointer event.
+let lastParsed = { terms: [], tokens: [], kind: null, scope: "standard" };
+function activeTerm(field) {
+  return lastParsed.terms.find(t => t.field === field && !t.bad) || null;
+}
+// all -> summited:no -> summited:yes -> all
+function summitedMode() {
+  const t = activeTerm("summited");
+  return !t ? "all" : (t.value ? "only" : "hide");
+}
+
+// Rank of how directly a peak answers the text query, lowest first. A name
+// hit beats a route hit, which beats a trailhead hit, so "elbert" leads with
+// Mount Elbert rather than whichever peak sorts first by rank.
+
 // Explains the difficulty column's order: the cell shows only the coarse
 // class, so the tooltip surfaces the composite score and the ratings
 // that produced it. Without this two adjacent "Class 2" rows give no
@@ -1423,53 +1574,7 @@ function ratingClass(v) {
   return "";
 }
 
-PEAKS.forEach(p => {
-  // Summit routes only. Combos and approaches are listed separately in
-  // the detail panel and shouldn't inflate a peak's route count.
-  p.summit_routes = p.routes.filter(r => r.kind === "route");
-  p.combo_routes = p.routes.filter(r => r.kind === "combo");
-  p.approach_routes = p.routes.filter(r => r.kind === "approach");
-  p.route_count = p.summit_routes.length;
-  // Prefer the route that is both standard and primary. build_data.py's
-  // sort already puts it first, but a peak's list also carries combos
-  // flagged standard (the Decalibron is Bross's standard), so say it
-  // outright rather than relying on the sort.
-  const std = p.summit_routes.find(r => r.is_standard) || p.summit_routes[0]
-    || p.routes.find(r => r.is_standard) || p.routes[0];
-  p.standard = std || null;
-  // Composite score from build_data.py: class stays dominant, the four
-  // risk ratings only order peaks within a class bucket. See the
-  // difficulty_score() comment in scripts/build_data.py for the formula.
-  // The column and its sort read view_score / view_road, which applyFilters
-  // sets from the route the active scope picked; these two are the fallback
-  // for a peak with no routes at all.
-  p.standard_score = std && std.score != null ? std.score : 99;
-  p.standard_road = std && std.road != null ? std.road : 99;
-  p.has_snow = p.routes.some(r => r.is_snow_climb);
-  // Precomputed search haystacks. Search used to test p.name and p.range
-  // only, which left everything else in the data unreachable: 138 route
-  // names, 12 combos, 7 approaches and 70 trailheads. Queries like
-  // "traverse", "decalibron", "couloir" and "lake como" all returned
-  // nothing despite being present. Built once here because applyFilters
-  // runs on every keystroke.
-  //
-  // The per-token test in applyFilters walks p.search_pool rather than the
-  // joined p.search_text, so it can respect a kind:. p.search_text is what
-  // the did-you-mean vocabulary and its any-match check still read, and
-  // those stay deliberately unscoped: a correction should be offered for a
-  // word that sits on a route the current scope filtered out.
-  p.routes.forEach(r => {
-    r.search_name = normalizeSearch(r.name);
-    r.search_th = normalizeSearch(r.trailhead || "");
-    r.search_text = normalizeSearch([r.name, r.summits, r.trailhead, r.difficulty, r.kind].join(" "));
-  });
-  // Name, slug and range alone, so render() can tell a route-only match
-  // from a direct hit and label the row accordingly.
-  p.search_primary = normalizeSearch([p.name, p.slug, p.range].join(" "));
-  p.search_range = normalizeSearch(p.range);
-  p.search_name = normalizeSearch(p.name);
-  p.search_text = [p.search_primary].concat(p.routes.map(r => r.search_text)).join(" ");
-});
+preparePeaks(PEAKS);
 
 // 14ers.com-style road difficulty bars for the 0-6 scale (0 paved
 // ... 6 difficult 4WD), one bar per step. This drew 5 bars with ratings 5
@@ -2006,87 +2111,7 @@ document.querySelectorAll("th[data-sort]").forEach(th => {
   });
 });
 
-function applyFilters(parsed = parseQuery(state.q)) {
-  const { tokens, terms } = parsed;
-  // A term that failed to parse matches nothing, so it is settled once here
-  // rather than re-tested against all 73 peaks.
-  if (terms.some(t => t.bad)) return [];
-  // Split once instead of per peak. Route-scoped terms have to be handled as
-  // a group, not one at a time -- see the qualifying pool below.
-  const peakTerms  = terms.filter(t => t.spec.scope === "peak");
-  const routeTerms = terms.filter(t => t.spec.scope === "route");
-  return PEAKS.filter(p => {
-    // Pool first: the text test, the relevance tier, the row's match hint and
-    // the route predicates all read it, so nothing downstream can disagree
-    // with the scope.
-    p.pool = scopedRoutes(p, parsed.scope);
-    // Routes the text search may match. An explicit kind: is a statement about
-    // what you are looking for, so a token has to be accounted for by a route
-    // of that kind. "hourglass kind:combo" used to return Little Bear, because
-    // "hourglass" sits in its West Ridge summit route, and the row then
-    // credited the Blanca traverse for a word no combo contains.
-    //
-    // Without a kind the search stays wide, and deliberately wider than the
-    // route predicates: text is the only way to reach a non-standard route at
-    // all. Narrowing this to p.pool measured as "decalibron", "sawtooth",
-    // "tour de abyss" and "ellingwood arete" all going from hits to zero.
-    p.search_pool = parsed.kind ? p.pool : p.routes;
-    p.relevance = relevanceScore(p, tokens);
-    // The route the difficulty and road columns describe, and the route their
-    // sort reads. The standard route until a scope sends it elsewhere. Reset
-    // for every peak so a stale pick from a previous keystroke cannot leak
-    // into the row.
-    p.view_route = p.standard;
-    // Set when that route is not the standard one, so the row can name it.
-    p.scope_hit = null;
-    // Unranked summits (El Diente, Challenger Point, Conundrum, Cameron
-    // and 16 others) stay out of the default list, but they are real peaks
-    // in the data and were unreachable by any query because this test ran
-    // before the search test. A text token brings them back, grouped
-    // separately by render() so the ranked count stays honest.
-    //
-    // Text tokens only, not terms: now that the selects and chips write
-    // terms, gating on terms too would mean clicking "hide summited"
-    // surfaced all 20 subpoints. The rule is that you search for a subpoint
-    // by name; filters describe the ranked list.
-    if (p.unranked && !tokens.length) return false;
-    // Every token must appear somewhere in the peak's own name, slug or range,
-    // or on one route in the search pool. AND across tokens, not one substring
-    // test against a joined string, so word order and extra words in between
-    // do not matter: "elbert northeast" hits, and "little bear hourglass" can
-    // take one token from the peak and one from a route.
-    //
-    // Identical to the old single test against p.search_text whenever there is
-    // no kind: to narrow the pool, since a token never contains the space that
-    // joined those haystacks and so can never straddle two of them.
-    if (tokens.length && !tokens.every(t => p.search_primary.includes(t)
-        || p.search_pool.some(r => r.search_text.includes(t)))) return false;
-    for (const term of peakTerms) if (!term.spec.test(p, term)) return false;
 
-    // An empty pool under a narrowed scope means the peak has no route of
-    // that kind. This is the existence test kind: used to perform itself.
-    if (parsed.kind && !p.pool.length) return false;
-    if (routeTerms.length) {
-      // One route has to satisfy every route-scoped term. Testing each term
-      // against the pool on its own let two different routes cover two
-      // terms: "scope:any class:<=2 road:<=1" matched Ellingwood Point on
-      // South Face for the class (road 6) and North Ridge for the road
-      // (Class 3), describing a trip that does not exist.
-      const qualifying = p.pool.filter(r => routeTerms.every(t => t.spec.test(r, t)));
-      if (!qualifying.length) return false;
-      p.view_route = easiestRoute(qualifying);
-    } else if (p.pool.length) {
-      // No route predicate to qualify on, but a narrowed scope still decides
-      // which route the columns describe. Prefer the standard route when the
-      // pool holds it, so the default view is unchanged.
-      p.view_route = p.pool.includes(p.standard) ? p.standard : easiestRoute(p.pool);
-    }
-    if (p.view_route && p.view_route !== p.standard) p.scope_hit = p.view_route;
-    p.view_score = p.view_route && p.view_route.score != null ? p.view_route.score : p.standard_score;
-    p.view_road  = p.view_route && p.view_route.road  != null ? p.view_route.road  : p.standard_road;
-    return true;
-  });
-}
 
 // Names what matched when the peak's own name and range did not, so a
 // row whose visible columns contain nothing from the query is still
@@ -2199,7 +2224,7 @@ function render() {
   const parsed = parseQuery(state.q);
   lastParsed = parsed;
   const tokens = parsed.tokens;
-  const rows = applyFilters(parsed);
+  const rows = applyFilters(PEAKS, parsed, state);
   renderQueryChips(parsed.terms);
   syncSelectsToQuery();
   syncChipsToQuery();
@@ -2272,7 +2297,7 @@ function render() {
   if (!ordered.length) {
     const emptyTr = document.createElement("tr");
     emptyTr.className = "empty-row";
-    const guess = didYouMean(tokens);
+    const guess = didYouMean(PEAKS, tokens);
     emptyTr.innerHTML = `<td colspan="7">no peaks match.${guess
       ? ` did you mean <button type="button" class="link-btn" id="emptyGuess">${guess.join(" ")}</button>?`
       : ""} <button type="button" class="link-btn" id="emptyReset">clear filters</button></td>`;
