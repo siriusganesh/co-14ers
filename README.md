@@ -10,7 +10,10 @@ Use case: someone says "let's climb La Plata" and you want to know in
 
 ## Features
 
-- Sortable, filterable peak table (range, max class, snow ok / not, search).
+- One search box is the whole filter: `class:<=3 road:<=1 kind:combo` and
+  plain text share the same input, and the query string is the shareable state.
+- Route type scopes the table. Filter to combos and the difficulty and road
+  columns describe the combo, not the peak's standard route.
 - Click a peak to see all its routes with difficulty, gain, distance,
   exposure / rockfall / route-finding / commitment ratings.
 - Route names link out to the 14ers.com route page.
@@ -27,6 +30,10 @@ Use case: someone says "let's climb La Plata" and you want to know in
   mirrors the same shape so the UI is identical signed-in vs out.
 - CSV → JSON → inlined-into-HTML pipeline via idempotent Python scripts
   (`build_data.py`, `embed_data.py`).
+- Route filters resolve to one route: a single route has to satisfy every
+  route field, and that route is what the columns then describe, so a row
+  cannot contradict the filter that surfaced it. Text search stays wider on
+  purpose, since it is the only way to reach a non-standard route at all.
 - Lighthouse CI on every PR (mobile + desktop matrix).
 
 ## Updating the data
@@ -38,8 +45,7 @@ git commit -am "data: refresh from 14ers.com YYYY-MM-DD"
 git push                          # GitHub Pages auto-deploys from main
 ```
 
-Supabase setup walkthrough: `docs/setup-supabase.md`.
-Auth architecture: `docs/auth-design.md`.
+More: `docs/setup-supabase.md` (Supabase setup), `docs/auth-design.md` (auth).
 
 ## Attribution
 

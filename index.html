@@ -1389,8 +1389,10 @@ function easiestRoute(list) {
   return list.reduce((best, r) =>
     (r.score != null ? r.score : 99) < (best.score != null ? best.score : 99) ? r : best);
 }
-// Header for the difficulty column. It stops claiming "Standard" as soon as a
-// scope sends it somewhere other than the standard route.
+// Header for the difficulty column, keyed by scope. render() only reaches for
+// it once a row is actually showing something other than its standard route:
+// scope:any with no route predicate still lands every row on the standard
+// route, and "Route" there would advertise a widening that changed nothing.
 const ROUTE_COL_LABEL = {
   standard: "Standard", any: "Route", route: "Route",
   combo: "Combo", approach: "Approach"
@@ -1478,9 +1480,14 @@ PEAKS.forEach(p => {
 // bar is what keeps it distinct from Lake Como's 6. Uses whichever route
 // the scope picked -- same value the road filter tested. Reuses the
 // ROAD_LABELS list declared with the road filter below.
-function roadBars(road) {
+//
+// Takes the route name when the scope sent the cell somewhere other than the
+// standard route, so the bars say whose road they are. The difficulty cell's
+// tooltip already named it; this cell was the one place a non-standard rating
+// appeared unattributed.
+function roadBars(road, routeName) {
   if (road == null || road === 99) return '<span class="badge outline">&mdash;</span>';
-  const label = `road: ${ROAD_LABELS[road]}`;
+  const label = `${routeName ? routeName + " \u2014 " : ""}road: ${ROAD_LABELS[road]}`;
   let bars = "";
   for (let i = 1; i <= 6; i++) bars += `<i class="${i <= road ? "fill" : ""}"></i>`;
   return `<span class="road-bars" role="img" aria-label="${label}" title="${label}">${bars}</span>`;
@@ -2196,7 +2203,9 @@ function render() {
   renderQueryChips(parsed.terms);
   syncSelectsToQuery();
   syncChipsToQuery();
-  document.getElementById("routeCol").textContent = ROUTE_COL_LABEL[parsed.scope] || "Standard";
+  const allStandard = rows.every(p => p.view_route === p.standard);
+  const routeColLabel = allStandard ? "Standard" : (ROUTE_COL_LABEL[parsed.scope] || "Standard");
+  document.getElementById("routeCol").textContent = routeColLabel;
   rows.sort((a,b) => {
     // Relevance is a sort key like any other, with rank as the tie-break so
     // equally relevant peaks stay in the order the page normally shows.
@@ -2219,13 +2228,37 @@ function render() {
 
   const rankedRows = rows.filter(p => !p.unranked);
   const unrankedRows = rows.filter(p => p.unranked);
+  // Rows are peaks, so one route shared by several summits fills several of
+  // them: kind:combo shows 21 rows over 11 combos, kind:approach 9 over 4.
+  // Unsaid, that reads as 21 things to climb.
+  //
+  // Counted by route_key, not by object identity. Each peak carries its own
+  // copy of a shared route, so Grays and Torreys hold two separate objects
+  // that are both torr5; deduping on the objects counted 21. route_key is the
+  // same identifier setRoute uses for route lines, so it is already the thing
+  // that means "one route" here.
+  //
+  // Shown only when the two numbers disagree, which no default or
+  // standard-scope view does, so the line stays quiet until there is
+  // something to disclose. That also drops it from kind:route, where 53 rows
+  // really are 53 distinct routes.
+  const distinctRoutes = new Set(rankedRows.map(p => p.view_route && p.view_route.route_key)).size;
+  const routeNoun = parsed.kind === "combo" ? ["combo", "combos"]
+    : parsed.kind === "approach" ? ["approach", "approaches"] : ["route", "routes"];
+  const routeWord = routeNoun[distinctRoutes === 1 ? 0 : 1];
+  const showRouteCount = distinctRoutes < rankedRows.length;
   // Relevance ordering leaves no sort arrow on any column, since no column is
   // the sort key, so the count line has to say how the list is ordered.
   const countText = `${rankedRows.length} shown`
+    + (showRouteCount ? ` \u00b7 ${distinctRoutes} ${routeWord}` : "")
     + (unrankedRows.length ? ` \u00b7 ${unrankedRows.length} unranked` : "")
     + (state.sort === "relevance" ? " \u00b7 by relevance" : "");
   document.getElementById("peakCount").textContent = countText;
-  announceCount(countText);
+  // The column heading renaming itself is a visual-only signal, so the live
+  // region carries it as well. Appended to the announced string rather than
+  // the visible one, which the heading already sits next to.
+  announceCount(countText
+    + (routeColLabel === "Standard" ? "" : ` \u00b7 ${routeColLabel.toLowerCase()} column`));
   const ranked = PEAKS.filter(p => !p.unranked);
   const done = ranked.filter(p => state.summits.has(p.peak_id)).length;
   const planCount = ranked.filter(p => state.planned.has(p.peak_id)).length;
@@ -2286,7 +2319,7 @@ function render() {
       <td class="elev hide-xs">${p.elevation_ft.toLocaleString()}</td>
       <td class="range hide-sm"><button type="button" class="range-filter" data-range="${RANGE_TOKEN[p.range] || ""}" title="filter to ${p.range}">${p.range}</button></td>
       <td title="${routeTooltip(p)}">${p.view_route ? classBadge(p.view_route.difficulty) : '<span class="badge outline">—</span>'}</td>
-      <td class="road-col">${roadBars(p.view_road)}</td>
+      <td class="road-col">${roadBars(p.view_road, p.scope_hit && p.scope_hit.name)}</td>
       <td><button type="button" class="check ${state.summits.has(p.peak_id) ? "on" : ""}" data-id="${p.peak_id}" aria-pressed="${state.summits.has(p.peak_id)}" aria-label="${state.summits.has(p.peak_id) ? "unmark" : "mark"} ${p.name} summited"></button></td>
     `;
     const rangeBtn = tr.querySelector(".range-filter");
