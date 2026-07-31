@@ -474,6 +474,34 @@ td.peak-name mark {
 .check-btn .check { pointer-events: none; }
 .check.sm.on::after { left: 3px; top: -1px; }
 
+/* Route-line toggle, in a row only when a scope has pointed the difficulty
+   column at something other than the standard route. Drawn as a line rather
+   than a second box: the summit check beside it is a box, and two boxes in one
+   cell meaning different things is the confusion this control exists to avoid.
+   Borrows the filled-bar idiom the road column already uses.
+   Its bar is presentational, hence aria-hidden and pointer-events: none, which
+   is also what keeps the row's click handler seeing the button itself.
+
+   Stacked under the summit check rather than set beside it. The tracking column
+   is a 2.25rem track under table-layout: fixed, so a second control alongside
+   could not fit: it overflowed the table's right edge, and widening the track
+   cost the peak name 30px in the 720-900 band and pushed a 17px horizontal
+   scroll onto the page at 640. Stacking costs no width at all, and the rows
+   that show this control are already two lines tall, so it lands beside the
+   match hint naming the very route it toggles. */
+.route-check {
+  display: flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; cursor: pointer;
+  background: none; border: 0; padding: 0; margin: .4rem 0 0;
+  -webkit-appearance: none; appearance: none;
+}
+.route-check i { width: 14px; height: 2px; background: var(--border-strong); pointer-events: none; }
+/* Hover goes navy but stays thin, so it cannot be mistaken for the on state. */
+.route-check:hover i { background: var(--navy); }
+.route-check.on i { height: 4px; background: var(--navy); }
+.route-check:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+td.row-actions { white-space: nowrap; }
+
 /* difficulty badges — filled, gradient by class */
 .badge {
   display: inline-block; font-family: var(--font-mono); font-size: .68rem;
@@ -776,7 +804,7 @@ footer.page-footer {
           <th data-sort="range" class="hide-sm">Range</th>
           <th data-sort="view_score" id="routeCol">Standard</th>
           <th data-sort="view_road">Road</th>
-          <th></th>
+          <th><span class="sr-only">tracking</span></th>
         </tr>
       </thead>
       <tbody id="peakBody"></tbody>
@@ -2345,7 +2373,7 @@ function render() {
       <td class="range hide-sm"><button type="button" class="range-filter" data-range="${RANGE_TOKEN[p.range] || ""}" title="filter to ${p.range}">${p.range}</button></td>
       <td title="${routeTooltip(p)}">${p.view_route ? classBadge(p.view_route.difficulty) : '<span class="badge outline">—</span>'}</td>
       <td class="road-col">${roadBars(p.view_road, p.scope_hit && p.scope_hit.name)}</td>
-      <td><button type="button" class="check ${state.summits.has(p.peak_id) ? "on" : ""}" data-id="${p.peak_id}" aria-pressed="${state.summits.has(p.peak_id)}" aria-label="${state.summits.has(p.peak_id) ? "unmark" : "mark"} ${p.name} summited"></button></td>
+      <td class="row-actions"><button type="button" class="check ${state.summits.has(p.peak_id) ? "on" : ""}" data-id="${p.peak_id}" aria-pressed="${state.summits.has(p.peak_id)}" aria-label="${state.summits.has(p.peak_id) ? "unmark" : "mark"} ${p.name} summited"></button>${routeLineToggle(p)}</td>
     `;
     const rangeBtn = tr.querySelector(".range-filter");
     if (rangeBtn) rangeBtn.addEventListener("click", e => {
@@ -2353,9 +2381,16 @@ function render() {
       setQueryTerm("range", rangeBtn.dataset.range);
     });
     tr.addEventListener("click", e => {
-      // Buttons inside the row bubble here: .check handles itself, and the
-      // row-toggle deliberately falls through to togglePeak below so the
-      // keyboard path and the click-anywhere-on-the-row path are identical.
+      // Buttons inside the row bubble here: the two tracking controls handle
+      // themselves, and the row-toggle deliberately falls through to
+      // togglePeak below so the keyboard path and the click-anywhere-on-the-row
+      // path are identical.
+      if (e.target.classList.contains("route-check")) {
+        e.stopPropagation();
+        const key = e.target.dataset.route;
+        setRoute(key, e.target.dataset.peak, !state.routes.has(key));
+        return;
+      }
       if (e.target.classList.contains("check")) {
         e.stopPropagation();
         const id = e.target.dataset.id;
@@ -2375,6 +2410,29 @@ function render() {
       bindDetailEvents(p, detailTr);
     }
   });
+}
+
+// The row's second control, and the only one that appears conditionally: a
+// route line is a claim about one route, so it is offered only once the scope
+// has named which route the row is about. p.scope_hit is exactly that, set by
+// applyFilters when the qualifying route is not the standard one.
+//
+// Deliberately not folded into the summit checkbox. One control that means
+// "peak summited" in the default view and "route climbed" under a scope would
+// be a click whose effect depends on a select three rows above it.
+//
+// Shown signed out as well, where setRoute answers with the same "Sign in to
+// track routes" toast the detail panel gives. Route lines are account-only
+// while summits fall back to localStorage, so hiding it here would mean the
+// row and the panel disagreed about whether the control exists.
+function routeLineToggle(p) {
+  const r = p.scope_hit;
+  if (!r) return "";
+  const on = state.routes.has(r.route_key);
+  return `<button type="button" class="route-check ${on ? "on" : ""}"`
+    + ` data-route="${r.route_key}" data-peak="${p.peak_id}" aria-pressed="${on}"`
+    + ` aria-label="${on ? "unmark" : "mark"} ${r.name} climbed"`
+    + ` title="${on ? "climbed" : "mark climbed"}: ${r.name}"><i aria-hidden="true"></i></button>`;
 }
 
 function togglePeak(p) {
