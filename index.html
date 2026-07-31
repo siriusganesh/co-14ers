@@ -1312,7 +1312,7 @@ function relevanceScore(p, tokens) {
   if (p.search_name.startsWith(tokens[0])) return 0;
   if (tokens.every(t => p.search_name.includes(t))) return 1;
   if (tokens.every(t => p.search_primary.includes(t))) return 2;
-  if (p.routes.some(r => tokens.every(t => r.search_name.includes(t)))) return 3;
+  if (p.search_pool.some(r => tokens.every(t => r.search_name.includes(t)))) return 3;
   return 4;
 }
 
@@ -1450,6 +1450,12 @@ PEAKS.forEach(p => {
   // "traverse", "decalibron", "couloir" and "lake como" all returned
   // nothing despite being present. Built once here because applyFilters
   // runs on every keystroke.
+  //
+  // The per-token test in applyFilters walks p.search_pool rather than the
+  // joined p.search_text, so it can respect a kind:. p.search_text is what
+  // the did-you-mean vocabulary and its any-match check still read, and
+  // those stay deliberately unscoped: a correction should be offered for a
+  // word that sits on a route the current scope filtered out.
   p.routes.forEach(r => {
     r.search_name = normalizeSearch(r.name);
     r.search_th = normalizeSearch(r.trailhead || "");
@@ -2003,6 +2009,21 @@ function applyFilters(parsed = parseQuery(state.q)) {
   const peakTerms  = terms.filter(t => t.spec.scope === "peak");
   const routeTerms = terms.filter(t => t.spec.scope === "route");
   return PEAKS.filter(p => {
+    // Pool first: the text test, the relevance tier, the row's match hint and
+    // the route predicates all read it, so nothing downstream can disagree
+    // with the scope.
+    p.pool = scopedRoutes(p, parsed.scope);
+    // Routes the text search may match. An explicit kind: is a statement about
+    // what you are looking for, so a token has to be accounted for by a route
+    // of that kind. "hourglass kind:combo" used to return Little Bear, because
+    // "hourglass" sits in its West Ridge summit route, and the row then
+    // credited the Blanca traverse for a word no combo contains.
+    //
+    // Without a kind the search stays wide, and deliberately wider than the
+    // route predicates: text is the only way to reach a non-standard route at
+    // all. Narrowing this to p.pool measured as "decalibron", "sawtooth",
+    // "tour de abyss" and "ellingwood arete" all going from hits to zero.
+    p.search_pool = parsed.kind ? p.pool : p.routes;
     p.relevance = relevanceScore(p, tokens);
     // The route the difficulty and road columns describe, and the route their
     // sort reads. The standard route until a scope sends it elsewhere. Reset
@@ -2022,30 +2043,36 @@ function applyFilters(parsed = parseQuery(state.q)) {
     // surfaced all 20 subpoints. The rule is that you search for a subpoint
     // by name; filters describe the ranked list.
     if (p.unranked && !tokens.length) return false;
-    // Every token must appear somewhere in the haystack (AND, not one
-    // substring test against the whole string), so word order and extra
-    // words in between do not matter: "elbert northeast" hits.
-    if (tokens.length && !tokens.every(t => p.search_text.includes(t))) return false;
+    // Every token must appear somewhere in the peak's own name, slug or range,
+    // or on one route in the search pool. AND across tokens, not one substring
+    // test against a joined string, so word order and extra words in between
+    // do not matter: "elbert northeast" hits, and "little bear hourglass" can
+    // take one token from the peak and one from a route.
+    //
+    // Identical to the old single test against p.search_text whenever there is
+    // no kind: to narrow the pool, since a token never contains the space that
+    // joined those haystacks and so can never straddle two of them.
+    if (tokens.length && !tokens.every(t => p.search_primary.includes(t)
+        || p.search_pool.some(r => r.search_text.includes(t)))) return false;
     for (const term of peakTerms) if (!term.spec.test(p, term)) return false;
 
-    const pool = scopedRoutes(p, parsed.scope);
     // An empty pool under a narrowed scope means the peak has no route of
     // that kind. This is the existence test kind: used to perform itself.
-    if (parsed.kind && !pool.length) return false;
+    if (parsed.kind && !p.pool.length) return false;
     if (routeTerms.length) {
       // One route has to satisfy every route-scoped term. Testing each term
       // against the pool on its own let two different routes cover two
       // terms: "scope:any class:<=2 road:<=1" matched Ellingwood Point on
       // South Face for the class (road 6) and North Ridge for the road
       // (Class 3), describing a trip that does not exist.
-      const qualifying = pool.filter(r => routeTerms.every(t => t.spec.test(r, t)));
+      const qualifying = p.pool.filter(r => routeTerms.every(t => t.spec.test(r, t)));
       if (!qualifying.length) return false;
       p.view_route = easiestRoute(qualifying);
-    } else if (pool.length) {
+    } else if (p.pool.length) {
       // No route predicate to qualify on, but a narrowed scope still decides
       // which route the columns describe. Prefer the standard route when the
       // pool holds it, so the default view is unchanged.
-      p.view_route = pool.includes(p.standard) ? p.standard : easiestRoute(pool);
+      p.view_route = p.pool.includes(p.standard) ? p.standard : easiestRoute(p.pool);
     }
     if (p.view_route && p.view_route !== p.standard) p.scope_hit = p.view_route;
     p.view_score = p.view_route && p.view_route.score != null ? p.view_route.score : p.standard_score;
@@ -2078,7 +2105,7 @@ function matchHint(p, tokens) {
   }
   if (!tokens.length) return "";
   if (tokens.every(t => p.search_primary.includes(t))) return "";
-  const hit = p.routes.find(r => tokens.every(t => r.search_text.includes(t)));
+  const hit = p.search_pool.find(r => tokens.every(t => r.search_text.includes(t)));
   if (!hit) return "";
   const viaTrailhead = hit.search_th && tokens.every(t => hit.search_th.includes(t));
   const text = viaTrailhead && !tokens.every(t => hit.search_name.includes(t))
