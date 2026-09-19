@@ -350,9 +350,9 @@ function preparePeaks(peaks) {
     const std = p.summit_routes.find(r => r.is_standard) || p.summit_routes[0]
       || p.routes.find(r => r.is_standard) || p.routes[0];
     p.standard = std || null;
-    // Composite score from build_data.py: class stays dominant, the four
-    // risk ratings only order peaks within a class bucket. See the
-    // difficulty_score() comment in scripts/build_data.py for the formula.
+    // Composite score from build_data.py: class stays dominant, and gain,
+    // distance and the four risk ratings order peaks within a class bucket.
+    // See the difficulty_score() comment in scripts/build_data.py.
     // The column and its sort read view_score / view_road, which applyFilters
     // sets from the route the active scope picked; these two are the fallback
     // for a peak with no routes at all.
