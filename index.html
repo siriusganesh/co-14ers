@@ -18,6 +18,24 @@
 <meta name="twitter:description" content="Quick reference for the 53 ranked Colorado 14,000 ft peaks. Routes, difficulty, ratings. Track your summits.">
 <meta name="twitter:image" content="https://siriusganesh.github.io/co-14ers/og-image.png?v=1">
 <link rel="icon" type="image/svg+xml" href="favicon.svg?v=3">
+<meta name="theme-color" id="themeColor" content="#ffffff">
+<script>
+// Resolve the theme before first paint, so a dark-theme visitor never sees a
+// white flash. The stored key holds only an explicit choice from the toggle;
+// with nothing stored the OS setting decides, which is why this reads both.
+// data-theme carries the RESOLVED theme from here on, so the stylesheet needs
+// one [data-theme="dark"] block and no duplicate prefers-color-scheme copy of
+// the tokens. Safe on a JS-off browser too: the peak table is JS-rendered, so
+// there is no page left to theme.
+(function () {
+  var stored = null;
+  try { stored = localStorage.getItem("co14ers.theme"); } catch (e) {}
+  var dark = stored ? stored === "dark"
+                    : window.matchMedia("(prefers-color-scheme: dark)").matches;
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  if (dark) document.getElementById("themeColor").content = "#121316";
+})();
+</script>
 <script src="vendor/supabase.min.js" defer></script>
 <style>
 @font-face {
@@ -29,6 +47,7 @@
   src: url("fonts/ibm-plex-mono-500-latin.woff2") format("woff2");
 }
 :root {
+  color-scheme: light;
   --bg: #ffffff; --bg-tint: #f7f7f4;
   --text: #111113; --text-heading: #303130; --text-dim: #616160; --text-faint: #717270;
   --border: #e4e4df; --border-strong: #91928f;
@@ -36,9 +55,30 @@
   --rust: #990000; --rust-soft: #fbe5e5;
   --good: #1d6f3f; --good-soft: #dcefe2;
   --amber: #b8860b; --amber-soft: #f5ebcd;
+  /* Text drawn ON a filled swatch. Split out of the rules below because the
+     light theme can hardcode #fff on every fill, while the dark theme lifts
+     those fills to light tints that need dark text instead. */
+  --on-accent: #ffffff; --on-rust: #ffffff; --on-good: #ffffff; --amber-text: #6b4d05;
   --font-sans: Verdana, Geneva, "DejaVu Sans", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --measure: 72ch; --page-max: 880px;
+}
+
+/* Dark theme. Accents are lifted, not inverted: navy at #011f5b is unreadable
+   on a dark ground, so it becomes the light blue that the same rules then use
+   for accent text, fills and row hover. Every pair below clears WCAG AA at the
+   size it is used, including text-faint on navy-soft, which the light theme
+   misses (3.76) and this one does not. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #121316; --bg-tint: #1a1b1e;
+  --text: #e6e6e3; --text-heading: #f4f4f1; --text-dim: #a8a8a3; --text-faint: #97978f;
+  --border: #2e2f33; --border-strong: #6b6c70;
+  --navy: #93b4f2; --navy-deep: #bcd1fa; --navy-soft: #1d2c4d;
+  --rust: #f08a82; --rust-soft: #3a1a19;
+  --good: #5cc98a; --good-soft: #16301f;
+  --amber: #dcae4a; --amber-soft: #362c10;
+  --on-accent: #0b1220; --on-rust: #2a0f0d; --on-good: #08190f; --amber-text: #e8cf94;
 }
 * { box-sizing: border-box; }
 html { scrollbar-gutter: stable; }
@@ -95,6 +135,32 @@ strong { color: var(--text-heading); font-weight: 700; }
 }
 .hero-source a { color: var(--navy); border-bottom: 1px solid var(--navy-soft); }
 .hero-source a:hover { color: var(--navy-deep); border-bottom-color: var(--navy-deep); }
+
+/* Kicker row: the overline keeps the left, the theme toggle takes the right.
+   Inline rather than fixed -- a floating control would sit over the table on
+   a phone and would need its own stacking context above the detail panel.
+   The overline's own margin-bottom moves up to this row so the tight
+   kicker -> h1 gap documented above survives the extra wrapper. */
+.hero-top {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; margin-bottom: .75rem;
+}
+.hero-top .overline { margin-bottom: 0; }
+/* Same square icon-button idiom as .controls .reset-btn. */
+.theme-toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 2.1rem; height: 2.1rem; padding: 0; flex: none;
+  border: 1px solid var(--border-strong); border-radius: 0;
+  background: var(--bg); color: var(--text-dim); cursor: pointer;
+}
+.theme-toggle:hover { border-color: var(--navy); color: var(--navy); background: var(--navy-soft); }
+.theme-toggle:focus-visible { outline: none; border-color: var(--navy); box-shadow: inset 0 -2px 0 0 var(--navy); }
+/* The icon names the theme the click switches TO, so only one is ever drawn.
+   Swapped in CSS off data-theme rather than in JS, so the button is already
+   correct on the first paint that shows it. */
+.theme-toggle .icon-sun { display: none; }
+:root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
 
 section.block { margin: 3.5rem 0; }
 section.block > header {
@@ -161,7 +227,7 @@ section.block > header .meta {
 .auth-card .row { display: flex; gap: .75rem; margin-top: 1rem; flex-wrap: wrap; align-items: center; }
 .auth-card button.primary {
   font-family: var(--font-mono); font-size: .78rem; letter-spacing: .12em; text-transform: uppercase;
-  padding: .6rem 1.1rem; background: var(--navy); color: #fff;
+  padding: .6rem 1.1rem; background: var(--navy); color: var(--on-accent);
   border: 1px solid var(--navy); border-radius: 0; cursor: pointer;
 }
 .auth-card button.primary:hover:not(:disabled) { background: var(--navy-deep); border-color: var(--navy-deep); }
@@ -215,14 +281,14 @@ section.block > header .meta {
 .controls .chip:disabled { opacity: .45; cursor: default; }
 .controls .chip:disabled:hover { border-color: var(--border); color: var(--text-dim); background: var(--bg-tint); }
 .controls .chip.on {
-  background: var(--navy); color: #fff; border-color: var(--navy);
+  background: var(--navy); color: var(--on-accent); border-color: var(--navy);
 }
 /* "summited only" — red variant of the active chip; signals exclusion
    (only the done ones) vs. the navy "hide summited" which signals
    the everyday filter. Uses the brand red so it reads as a state
    change, not a destructive action. */
 .controls .chip.on[data-state="only"] {
-  background: var(--rust); color: #fff; border-color: var(--rust);
+  background: var(--rust); color: var(--on-rust); border-color: var(--rust);
 }
 /* Hover on the active "hide summited" chip previews what the next
    click produces — the red "summited only" state. Without this, the
@@ -460,7 +526,7 @@ td.peak-name mark {
 .check.on { background: var(--navy); border-color: var(--navy); position: relative; }
 .check.on::after {
   content: ""; position: absolute; left: 4px; top: 0; width: 4px; height: 9px;
-  border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg);
+  border: solid var(--on-accent); border-width: 0 2px 2px 0; transform: rotate(45deg);
 }
 .check.sm { width: 14px; height: 14px; }
 /* Box plus its text as a single control. The .check inside is presentational
@@ -509,11 +575,11 @@ td.row-actions { white-space: nowrap; }
   padding: .15rem .5rem; border: 1px solid transparent;
   vertical-align: middle; white-space: nowrap;
 }
-.badge.c1 { background: var(--good-soft);  color: var(--good);     border-color: var(--good); }
-.badge.c2 { background: var(--good);       color: #fff;            border-color: var(--good); }
-.badge.c3 { background: var(--amber-soft); color: #6b4d05;         border-color: var(--amber); }
-.badge.c4 { background: var(--rust);       color: #fff;            border-color: var(--rust); }
-.badge.c5 { background: var(--navy);       color: #fff;            border-color: var(--navy); }
+.badge.c1 { background: var(--good-soft);  color: var(--good);       border-color: var(--good); }
+.badge.c2 { background: var(--good);       color: var(--on-good);    border-color: var(--good); }
+.badge.c3 { background: var(--amber-soft); color: var(--amber-text); border-color: var(--amber); }
+.badge.c4 { background: var(--rust);       color: var(--on-rust);    border-color: var(--rust); }
+.badge.c5 { background: var(--navy);       color: var(--on-accent);  border-color: var(--navy); }
 .badge.snow    { background: var(--navy-soft); color: var(--navy); border-color: var(--navy); }
 .badge.outline { background: var(--bg-tint);   color: var(--text-dim); border-color: var(--border); }
 
@@ -583,11 +649,11 @@ a.route-name:hover { color: var(--navy); border-bottom-color: var(--navy); }
   padding: .1rem .45rem; border: 1px solid transparent;
   vertical-align: middle; line-height: 1.4;
 }
-.ratings .v.rating-low      { background: var(--good-soft);  color: var(--good); border-color: var(--good); }
-.ratings .v.rating-mod      { background: var(--amber-soft); color: #6b4d05;     border-color: var(--amber); }
-.ratings .v.rating-cons     { background: var(--rust-soft);  color: var(--rust); border-color: var(--rust); }
-.ratings .v.rating-high     { background: var(--rust);       color: #fff;        border-color: var(--rust); }
-.ratings .v.rating-extreme  { background: var(--navy);       color: #fff;        border-color: var(--navy); }
+.ratings .v.rating-low      { background: var(--good-soft);  color: var(--good);       border-color: var(--good); }
+.ratings .v.rating-mod      { background: var(--amber-soft); color: var(--amber-text); border-color: var(--amber); }
+.ratings .v.rating-cons     { background: var(--rust-soft);  color: var(--rust);       border-color: var(--rust); }
+.ratings .v.rating-high     { background: var(--rust);       color: var(--on-rust);    border-color: var(--rust); }
+.ratings .v.rating-extreme  { background: var(--navy);       color: var(--on-accent);  border-color: var(--navy); }
 /* Route metadata as two columns: risk factors | trip stats. Labels
    and values align per column via display:contents rows. */
 .route-cols {
@@ -636,7 +702,7 @@ footer.page-footer {
 
 .toast {
   position: fixed; bottom: 1.5rem; right: 1.5rem;
-  padding: .65rem 1rem; background: var(--text-heading); color: #fff;
+  padding: .65rem 1rem; background: var(--text-heading); color: var(--bg);
   font-family: var(--font-mono); font-size: .78rem; letter-spacing: .04em;
   border: 1px solid var(--text-heading); opacity: 0; transition: opacity .2s;
   pointer-events: none; max-width: 320px;
@@ -653,6 +719,9 @@ footer.page-footer {
   .page { padding: 2.5rem 1.25rem; }
   section.block { margin: 2.5rem 0; }
   .hero { padding-top: 1rem; padding-bottom: .25rem; }
+  /* 2.1rem is a 34px target -- fine under a mouse, under the 44px touch
+     minimum. The kicker row has the width to spare at any phone size. */
+  .theme-toggle { width: 2.75rem; height: 2.75rem; }
   .rule { margin: 2rem 0; }
   th.hide-sm, td.hide-sm { display: none; }
 }
@@ -691,7 +760,18 @@ footer.page-footer {
 
 <main class="page">
   <section class="hero">
-    <span class="overline">Quick reference · Colorado 14,000 ft peaks</span>
+    <div class="hero-top">
+      <span class="overline">Quick reference · Colorado 14,000 ft peaks</span>
+      <button type="button" class="theme-toggle" id="themeToggle" aria-label="switch to dark theme" title="switch to dark theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+        </svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.5"></circle>
+          <path d="M12 1.5v2.5M12 20v2.5M3.6 3.6l1.8 1.8M18.6 18.6l1.8 1.8M1.5 12h2.5M20 12h2.5M3.6 20.4l1.8-1.8M18.6 5.4l1.8-1.8"></path>
+        </svg>
+      </button>
+    </div>
     <h1>Colorado 14ers<span class="accent">.</span></h1>
     <p class="lede">
       The 53 ranked peaks above 14,000 feet. Routes, difficulty, gain, distance, and objective ratings (exposure, rockfall, route-finding, commitment).
@@ -2698,6 +2778,37 @@ async function init() {
   renderAuthCard();
   render();
 }
+
+// ---- theme toggle -------------------------------------------------------
+// data-theme always carries the resolved theme (set pre-paint by the head
+// script). THEME_KEY holds only an explicit choice, so an untouched page keeps
+// following the OS -- including a flip while the tab is open, which the
+// matchMedia listener picks up. Clearing the key in devtools restores that.
+const THEME_KEY = "co14ers.theme";
+const themeBtn = document.getElementById("themeToggle");
+const themeMeta = document.getElementById("themeColor");
+const darkMQ = window.matchMedia("(prefers-color-scheme: dark)");
+
+function storedTheme() {
+  try { return localStorage.getItem(THEME_KEY); } catch (e) { return null; }
+}
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  themeMeta.content = theme === "dark" ? "#121316" : "#ffffff";
+  // The label names the destination, matching the icon the CSS draws.
+  const label = `switch to ${theme === "dark" ? "light" : "dark"} theme`;
+  themeBtn.setAttribute("aria-label", label);
+  themeBtn.title = label;
+}
+applyTheme(document.documentElement.dataset.theme === "dark" ? "dark" : "light");
+themeBtn.addEventListener("click", () => {
+  const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+  applyTheme(next);
+});
+darkMQ.addEventListener("change", e => {
+  if (!storedTheme()) applyTheme(e.matches ? "dark" : "light");
+});
 
 window.addEventListener("hashchange", () => { applyHash(); render(); });
 
