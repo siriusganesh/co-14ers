@@ -25,25 +25,41 @@ from collections import defaultdict
 # 14ers.com only publishes a coarse class (Class 1-4 with optional
 # Easy/Difficult modifier), so 25 peaks share a bare "Class 2" standard
 # route and tie when that column is sorted. This score keeps class
-# dominant and uses the four risk ratings only to order peaks *within*
-# a class bucket:
+# dominant and orders peaks *within* a class bucket from two terms:
 #
-#   score = class + modifier_offset + 0.2 * mean(normalized ratings)
+#   score = class + modifier_offset
+#           + 0.08 * mean(normalized risk ratings)
+#           + 0.12 * mean(normalized gain, normalized distance)
 #   modifier_offset: Easy -0.3, none 0.0, Difficult +0.3
 #
-# Buckets therefore never overlap (plain Class 2 spans 2.00-2.20,
-# Difficult Class 2 spans 2.30-2.50, Easy Class 3 2.70-2.90, and so
-# on), so no Class 3 peak can ever sort below a Class 2 one. The four
-# factors are weighted equally and each is normalized against its own
-# observed maximum, because the scales differ in practice: exposure,
-# route-finding and commitment reach Extreme in this dataset while
-# rockfall tops out at High.
+# The two spans still sum to 0.2, so the buckets never overlap (plain
+# Class 2 spans 2.00-2.20, Difficult Class 2 spans 2.30-2.50, Easy
+# Class 3 2.70-2.90, and so on) and no Class 3 peak can ever sort below
+# a Class 2 one.
 #
-# This is a derived, opinionated number -- not a 14ers.com rating.
-# Gain and distance are deliberately excluded: they measure fatigue
-# rather than technical difficulty, they already have their own
-# columns, and traverse routes carry combined stats for several peaks
-# which would inflate any single peak's score.
+# The four risk factors are weighted equally and each is normalized
+# against its own observed maximum, because the scales differ in
+# practice: exposure, route-finding and commitment reach Extreme in
+# this dataset while rockfall tops out at High. Gain and distance are
+# normalized the same way, each against its own observed maximum.
+#
+# Gain and distance were excluded until Sept 2026. They came back after
+# a reconciliation against 14ers.com routes_bydifficulty.php, which
+# states it ranks on class, distance and gain. Class buckets already
+# agreed for all 58 ranked routes and the route chosen per peak agreed
+# too; only the within-bucket order differed, and gain and distance
+# were the whole difference (inside plain Class 2 their order tracks
+# gain x distance at rho 0.93, against 0.64 for a risk-only score).
+# This 0.12/0.08 split fit their published order best: rho 0.994 over
+# all 58 routes and a mean rank delta of 1.3 places, against 0.98 and
+# 2.3 places for risk alone.
+#
+# This is still a derived, opinionated number -- not a 14ers.com
+# rating. Counting effort has two known consequences: a long easy route
+# now outranks a short hard one of the same class, which is the point;
+# and a traverse row carries combined stats for several peaks, so a
+# combo sorts high inside its own class bucket. The Standard column
+# only ever reads single-peak routes, so the peak table is unaffected.
 # 14ers.com groups peaks by trailhead/area and lists every route in the
 # group on every peak in it, so the raw CSV attaches Little Bear's routes
 # to Ellingwood Point and Eolus's to Windom. Three kinds of row survive
@@ -100,7 +116,9 @@ def row_kind(row, combo_summits: dict):
 
 RATING_VALUES = {"low": 0, "moderate": 1, "considerable": 2, "high": 3, "extreme": 4}
 RISK_FACTORS = ["exposure", "rockfall", "route_finding", "commitment"]
-REFINE_SPAN = 0.2
+RISK_SPAN = 0.08
+EFFORT_SPAN = 0.12
+MEASURE_RE = re.compile(r"[\d,.]+")
 
 
 def class_number(difficulty: str):
@@ -126,14 +144,39 @@ def rating_maxima(rows) -> dict:
     return out
 
 
-def difficulty_score(row, maxima: dict):
+def measure(value):
+    """First number in a gain or distance cell. "4,500'" -> 4500.0,
+    "9.75 mi" -> 9.75. None when the cell carries no number."""
+    m = MEASURE_RE.search(str(value or ""))
+    if not m:
+        return None
+    try:
+        return float(m.group(0).replace(",", ""))
+    except ValueError:
+        return None
+
+
+def effort_maxima(rows) -> dict:
+    out = {}
+    for name, col in (("gain", "elevation_gain"), ("distance", "distance")):
+        vals = [v for v in (measure(r.get(col)) for r in rows) if v]
+        out[name] = max(vals) if vals else 1.0
+    return out
+
+
+def difficulty_score(row, maxima: dict, effort: dict):
     n = class_number(row["difficulty"])
     if n is None:
         return None
     vals = [RATING_VALUES[row[f].lower()] / maxima[f] for f in RISK_FACTORS
             if row.get(f) and row[f].lower() in RATING_VALUES]
-    refine = sum(vals) / len(vals) if vals else 0.0
-    return round(n + modifier_offset(row["difficulty"]) + REFINE_SPAN * refine, 4)
+    risk = sum(vals) / len(vals) if vals else 0.0
+    legs = [v / effort[name] for name, v in
+            (("gain", measure(row.get("elevation_gain"))),
+             ("distance", measure(row.get("distance")))) if v]
+    work = sum(legs) / len(legs) if legs else 0.0
+    return round(n + modifier_offset(row["difficulty"])
+                 + RISK_SPAN * risk + EFFORT_SPAN * work, 4)
 
 
 
@@ -159,6 +202,7 @@ def build(peaks_csv: str, routes_csv: str, combos_csv: str, out_json: str) -> No
         route_rows = [row for row in csv.DictReader(f)
                       if row["difficulty"] not in ("false", "true", "")]
     maxima = rating_maxima(route_rows)
+    effort = effort_maxima(route_rows)
     combo_summits = load_combo_summits(combos_csv)
     dropped = 0
     for row in route_rows:
@@ -185,7 +229,7 @@ def build(peaks_csv: str, routes_csv: str, combos_csv: str, out_json: str) -> No
                 "trailhead": row.get("trailhead_name") or None,
                 "th_lat": float(row["trailhead_lat"]) if row.get("trailhead_lat") else None,
                 "th_lon": float(row["trailhead_lon"]) if row.get("trailhead_lon") else None,
-                "score": difficulty_score(row, maxima),
+                "score": difficulty_score(row, maxima, effort),
             })
 
     for p in peaks:
