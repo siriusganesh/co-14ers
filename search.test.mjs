@@ -17,7 +17,7 @@ preparePeaks(PEAKS);
 
 const NOTHING = { summits: new Map(), planned: new Map() };
 const q = (s, tracked = NOTHING) => applyFilters(PEAKS, parseQuery(s), tracked);
-const ranked = s => q(s).filter(p => !p.unranked);
+const listed = s => q(s).filter(p => !p.subpoint);
 const names = rows => rows.map(p => p.name).sort();
 const keyOf = p => p.view_route && p.view_route.route_key;
 
@@ -43,16 +43,15 @@ test("an unknown field stays plain text rather than matching everything", () => 
 });
 
 test("a half-typed term constrains nothing, a broken one matches nothing", () => {
-  assert.equal(ranked("class:").length, 53, "class: is not a term yet");
+  assert.equal(listed("class:").length, 58, "class: is not a term yet");
   assert.equal(q("class:>").length, 58, "53 ranked plus the 5 unranked with routes");
   assert.equal(q("kind:bogus").length, 0, "a value that cannot parse matches nothing");
 });
 
 test("the default view is the 58 peaks with routes, on their standard routes", () => {
   const rows = q("");
-  assert.equal(rows.filter(p => !p.unranked).length, 53);
-  assert.equal(rows.filter(p => p.unranked).length, 5,
-    "the unranked peaks that have routes, not the 15 route-less subpoints");
+  assert.equal(rows.length, 58, "53 ranked plus the 5 unranked peaks with routes");
+  assert.equal(rows.filter(p => p.subpoint).length, 0, "subpoints need a text token");
   assert.ok(rows.every(p => p.view_route === p.standard),
     "nothing may repoint the columns without a scope");
   assert.equal(ROUTE_COL_LABEL[parseQuery("").scope], "Standard");
@@ -61,33 +60,37 @@ test("the default view is the 58 peaks with routes, on their standard routes", (
 test("kind:combo class:<=4 drops the peaks whose only combo is Class 5", () => {
   // The bug this whole line of work started from: kind: used to be an
   // existence test, so these six passed on their standard route's class.
-  const got = names(ranked("kind:combo class:<=4"));
+  const got = names(listed("kind:combo class:<=4"));
   for (const n of ["Crestone Needle", "Crestone Peak", "Maroon Peak",
                    "North Maroon Peak", "Little Bear Peak"]) {
     assert.ok(!got.includes(n), `${n} has no combo at Class 4 or easier`);
   }
   // Blanca has two combos; the Class 3 one qualifies, so it stays, and the
   // column has to describe that one rather than the Class 5 traverse.
-  const blanca = ranked("kind:combo class:<=4").find(p => p.name === "Blanca Peak");
+  const blanca = listed("kind:combo class:<=4").find(p => p.name === "Blanca Peak");
   assert.ok(blanca, "Blanca qualifies on Combo: Blanca and Ellingwood");
   assert.equal(blanca.view_route.difficulty, "Class 3");
 });
 
 test("kind:combo class:<=2 is exactly the peaks with a Class 2 or easier combo", () => {
-  assert.deepEqual(names(ranked("kind:combo class:<=2")), [
-    "Castle Peak", "Grays Peak", "Missouri Mountain", "Mount Belford",
-    "Mount Bross", "Mount Columbia", "Mount Democrat", "Mount Harvard",
-    "Mount Lincoln", "Mount Oxford", "Torreys Peak"
+  // Cameron and Conundrum are unranked, and both have a Class 2 combo
+  // (the Decalibron, Castle-Conundrum). They belong here now that the list
+  // is the 58.
+  assert.deepEqual(names(listed("kind:combo class:<=2")), [
+    "Castle Peak", "Conundrum Peak", "Grays Peak", "Missouri Mountain",
+    "Mount Belford", "Mount Bross", "Mount Cameron", "Mount Columbia",
+    "Mount Democrat", "Mount Harvard", "Mount Lincoln", "Mount Oxford",
+    "Torreys Peak"
   ]);
 });
 
 test("one route has to satisfy every route field, not one route per field", () => {
   // Ellingwood Point used to match by taking the class from South Face
   // (Class 2, road 6) and the road from North Ridge (Class 3, road 1).
-  const got = names(ranked("scope:any class:<=2 road:<=1"));
+  const got = names(listed("scope:any class:<=2 road:<=1"));
   assert.ok(!got.includes("Ellingwood Point"));
   assert.ok(got.includes("Mount Elbert"), "genuine single-route matches survive");
-  for (const p of ranked("scope:any class:<=2 road:<=1")) {
+  for (const p of listed("scope:any class:<=2 road:<=1")) {
     assert.ok(classValue(p.view_route.difficulty) <= 2, p.name);
     assert.ok(p.view_route.road <= 1, p.name);
   }
@@ -105,8 +108,8 @@ test("kind outranks scope when both are present", () => {
   const parsed = parseQuery("scope:any kind:combo");
   assert.equal(parsed.scope, "combo");
   assert.equal(parsed.kind, "combo");
-  assert.deepEqual(names(ranked("scope:any kind:combo class:<=4")),
-                   names(ranked("kind:combo class:<=4")));
+  assert.deepEqual(names(listed("scope:any kind:combo class:<=4")),
+                   names(listed("kind:combo class:<=4")));
 });
 
 test("an explicit kind narrows the text search too", () => {
@@ -145,16 +148,16 @@ test("an unranked peak with routes is listed; a route-less subpoint needs its na
 });
 
 test("rows are peaks, so a shared route fills several of them", () => {
-  const rows = ranked("kind:combo");
-  assert.equal(rows.length, 21);
+  const rows = listed("kind:combo");
+  assert.equal(rows.length, 24);
   assert.equal(new Set(rows.map(keyOf)).size, 11, "counted by route_key, not by object");
   // Grays and Torreys hold two separate objects that are both torr5.
   const grays = rows.find(p => p.name === "Grays Peak");
   const torreys = rows.find(p => p.name === "Torreys Peak");
   assert.equal(keyOf(grays), keyOf(torreys));
   assert.notEqual(grays.view_route, torreys.view_route, "same key, different objects");
-  const app = ranked("kind:approach");
-  assert.equal(app.length, 9);
+  const app = listed("kind:approach");
+  assert.equal(app.length, 12);
   assert.equal(new Set(app.map(keyOf)).size, 4);
 });
 
@@ -163,7 +166,7 @@ test("the columns describe the easiest route that cleared the bar", () => {
   // (Class 2, score 2.0292), but East Slopes is Class 1 at score 1. Asking
   // for Class 2 or easier should show the easiest way that clears the bar,
   // not whichever route build_data.py happened to sort first.
-  const bross = ranked("scope:any class:<=2").find(p => p.name === "Mount Bross");
+  const bross = listed("scope:any class:<=2").find(p => p.name === "Mount Bross");
   assert.equal(bross.view_route.name, "Mt. Bross - East Slopes");
   assert.equal(bross.view_route.difficulty, "Class 1");
   const qualifying = bross.pool.filter(r => classValue(r.difficulty) <= 2);
@@ -173,7 +176,7 @@ test("the columns describe the easiest route that cleared the bar", () => {
 });
 
 test("the columns describe the easiest qualifying route", () => {
-  const blueSky = ranked("kind:combo").find(p => p.name === "Mount Blue Sky");
+  const blueSky = listed("kind:combo").find(p => p.name === "Mount Blue Sky");
   const combos = blueSky.combo_routes;
   assert.ok(combos.length > 1, "Blue Sky has more than one combo to choose between");
   assert.equal(blueSky.view_score, Math.min(...combos.map(r => r.score)));
@@ -181,7 +184,7 @@ test("the columns describe the easiest qualifying route", () => {
 });
 
 test("the row names the route when it is not the standard one", () => {
-  for (const p of ranked("kind:combo")) {
+  for (const p of listed("kind:combo")) {
     assert.equal(p.scope_hit, p.view_route);
     assert.equal(p.view_road, p.view_route.road);
   }

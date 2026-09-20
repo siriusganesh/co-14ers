@@ -343,6 +343,12 @@ function preparePeaks(peaks) {
     p.combo_routes = p.routes.filter(r => r.kind === "combo");
     p.approach_routes = p.routes.filter(r => r.kind === "approach");
     p.route_count = p.summit_routes.length;
+    // A subpoint is an unranked peak with no routes of its own: North
+    // Massive, East Crestone, South Elbert and 12 more. The other five
+    // unranked peaks do have routes, and those five are part of the 58 this
+    // page is a list of, so "unranked" is the wrong line to divide on
+    // anywhere in the UI. This is the right one.
+    p.subpoint = p.unranked && p.summit_routes.length === 0;
     // Prefer the route that is both standard and primary. build_data.py's
     // sort already puts it first, but a peak's list also carries combos
     // flagged standard (the Decalibron is Bross's standard), so say it
@@ -418,25 +424,17 @@ function applyFilters(peaks, parsed, tracked) {
     p.view_route = p.standard;
     // Set when that route is not the standard one, so the row can name it.
     p.scope_hit = null;
-    // The 20 unranked peaks split in two, and having routes is the split.
-    //
-    // Five do: El Diente, Challenger Point, Mount Cameron, Conundrum Peak and
-    // North Eolus. They carry a class, a road rating and the four risk
-    // ratings, they are the five that take 14ers.com's list from 53 to 58,
-    // and people climb them. They belong in the default list and they answer
-    // every filter the way a ranked peak does. render() still groups them
-    // under the divider and counts them apart, so the ranked count stays
-    // honest.
-    //
-    // The other 15 are subpoints with an empty routes array: North Massive,
-    // East Crestone, South Elbert and the like. Nothing on them is
-    // filterable -- no class, no road, no ratings -- so listing them by
-    // default would be 15 rows passing or failing a filter on absence rather
-    // than on data. They stay reachable by name.
+    // Subpoints are out of the default list. Nothing on them is filterable
+    // -- no class, no road, no ratings -- so listing them would be 15 rows
+    // passing or failing a filter on absence rather than on data. A text
+    // token brings them back, grouped under the divider by render().
     //
     // Text tokens only, not terms: gating on terms as well would mean
     // clicking "hide summited" surfaced all 15 subpoints at once.
-    if (p.unranked && !p.summit_routes.length && !tokens.length) return false;
+    //
+    // The five unranked peaks that DO have routes are not subpoints and are
+    // not gated here. See the p.subpoint comment in preparePeaks.
+    if (p.subpoint && !tokens.length) return false;
     // Every token must appear somewhere in the peak's own name, slug or range,
     // or on one route in the search pool. AND across tokens, not one substring
     // test against a joined string, so word order and extra words in between

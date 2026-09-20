@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Colorado 14ers</title>
-<meta name="description" content="Quick reference for the 53 ranked Colorado 14,000 ft peaks. Routes, difficulty, ratings. Track your summits.">
+<meta name="description" content="Quick reference for all 58 Colorado 14,000 ft peaks. Routes, difficulty, ratings. Track your summits.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Colorado 14ers">
-<meta property="og:description" content="Quick reference for the 53 ranked Colorado 14,000 ft peaks. Routes, difficulty, ratings. Track your summits.">
+<meta property="og:description" content="Quick reference for all 58 Colorado 14,000 ft peaks. Routes, difficulty, ratings. Track your summits.">
 <meta property="og:url" content="https://siriusganesh.github.io/co-14ers/">
 <meta property="og:image" content="https://siriusganesh.github.io/co-14ers/og-image.png?v=1">
 <meta property="og:image:width" content="1200">
@@ -15,7 +15,7 @@
 <meta property="og:image:alt" content="Colorado 14ers — quick reference for the 53 ranked peaks above 14,000 ft.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Colorado 14ers">
-<meta name="twitter:description" content="Quick reference for the 53 ranked Colorado 14,000 ft peaks. Routes, difficulty, ratings. Track your summits.">
+<meta name="twitter:description" content="Quick reference for all 58 Colorado 14,000 ft peaks. Routes, difficulty, ratings. Track your summits.">
 <meta name="twitter:image" content="https://siriusganesh.github.io/co-14ers/og-image.png?v=1">
 <link rel="icon" type="image/svg+xml" href="favicon.svg?v=3">
 <meta name="theme-color" id="themeColor" content="#ffffff">
@@ -350,14 +350,13 @@ table { width: 100%; border-collapse: collapse; font-size: 14px; }
    summited) cannot reflow the columns. Without table-layout: fixed
    the column widths are recomputed from whichever rows are visible,
    which causes the table to subtly resize on every filter change.
-   Peak (col 2) is left auto so it absorbs the leftover space. */
+   Peak (col 1) is left auto so it absorbs the leftover space. */
 #peakTable { table-layout: fixed; }
-#peakTable th:nth-child(1), #peakTable td:nth-child(1) { width: 3.25rem; }
-#peakTable th:nth-child(3), #peakTable td:nth-child(3) { width: 7rem; }
+#peakTable th:nth-child(2), #peakTable td:nth-child(2) { width: 7rem; }
+#peakTable th:nth-child(3), #peakTable td:nth-child(3) { width: 11rem; }
 #peakTable th:nth-child(4), #peakTable td:nth-child(4) { width: 11rem; }
-#peakTable th:nth-child(5), #peakTable td:nth-child(5) { width: 11rem; }
-#peakTable th:nth-child(6), #peakTable td:nth-child(6) { width: 4.5rem; }
-#peakTable th:nth-child(7), #peakTable td:nth-child(7) { width: 2.25rem; }
+#peakTable th:nth-child(5), #peakTable td:nth-child(5) { width: 4.5rem; }
+#peakTable th:nth-child(6), #peakTable td:nth-child(6) { width: 2.25rem; }
 th, td { text-align: left; padding: .6rem .7rem; border-bottom: 1px solid var(--border); vertical-align: top; }
 th {
   font-family: var(--font-mono); font-weight: 500; font-size: .68rem;
@@ -711,7 +710,7 @@ footer.page-footer {
 
 @media (max-width: 720px) {
   /* Below 720px some peak-table columns are display:none while the
-     detail row's colspan="7" still spans all seven tracks. Fixed
+     detail row's colspan="6" still spans all six tracks. Fixed
      layout realizes the hidden tracks when a row opens and
      redistributes widths onto the wrong columns, collapsing the peak
      name. Auto layout sizes from content and handles both cleanly. */
@@ -737,15 +736,13 @@ footer.page-footer {
   th.hide-xs, td.hide-xs { display: none; }
   /* Column budget: the .68rem badge is ~109px wide -- wider than a
      7rem cell's content box -- so it overflowed into the road column
-     and sat flush against the bars while the rank gutter idled. A
-     slightly smaller portrait badge fits a 6.5rem column with real
-     margin; the reclaimed width goes to the peak name. */
-  #peakTable th:nth-child(1), #peakTable td:nth-child(1) { width: 1.8rem; }
-  #peakTable th:nth-child(5), #peakTable td:nth-child(5) { width: 6.5rem; }
-  #peakTable th:nth-child(6), #peakTable td:nth-child(6) { width: 3rem; }
-  #peakTable th:nth-child(7), #peakTable td:nth-child(7) { width: 1.9rem; }
+     and sat flush against the bars. A slightly smaller portrait badge
+     fits a 6.5rem column with real margin; the reclaimed width goes to
+     the peak name. */
+  #peakTable th:nth-child(4), #peakTable td:nth-child(4) { width: 6.5rem; }
+  #peakTable th:nth-child(5), #peakTable td:nth-child(5) { width: 3rem; }
+  #peakTable th:nth-child(6), #peakTable td:nth-child(6) { width: 1.9rem; }
   th, td { padding: .45rem .4rem; }
-  td:first-child, th:first-child { padding-right: .15rem; }
   table { font-size: 13px; }
   .badge { font-size: .6rem; letter-spacing: .06em; padding: .15rem .35rem; }
 
@@ -774,7 +771,7 @@ footer.page-footer {
     </div>
     <h1>Colorado 14ers<span class="accent">.</span></h1>
     <p class="lede">
-      The 53 ranked peaks above 14,000 feet. Routes, difficulty, gain, distance, and objective ratings (exposure, rockfall, route-finding, commitment).
+      All 58 peaks above 14,000 feet: the 53 ranked summits plus the five unranked ones with routes of their own. Routes, difficulty, gain, distance, and objective ratings (exposure, rockfall, route-finding, commitment).
       Sign in to track <strong>summits, route lines, and a plan-to-climb list</strong> across devices.
       Signed out, your progress stays in this browser only.
     </p>
@@ -793,7 +790,7 @@ footer.page-footer {
   <section class="block">
     <header>
       <h2>peaks</h2>
-      <span class="meta" id="peakCount">53 ranked</span>
+      <span class="meta" id="peakCount">58 peaks</span>
       <span class="sr-only" role="status" aria-live="polite" id="peakCountStatus"></span>
     </header>
 
@@ -878,9 +875,8 @@ footer.page-footer {
     <table id="peakTable">
       <thead>
         <tr>
-          <th data-sort="rank" class="sort-asc">#</th>
           <th data-sort="name">Peak</th>
-          <th data-sort="elevation_ft" class="hide-xs">Elev</th>
+          <th data-sort="elevation_ft" class="hide-xs sort-desc">Elev</th>
           <th data-sort="range" class="hide-sm">Range</th>
           <th data-sort="view_score" id="routeCol">Standard</th>
           <th data-sort="view_road">Road</th>
@@ -1469,6 +1465,12 @@ function preparePeaks(peaks) {
     p.combo_routes = p.routes.filter(r => r.kind === "combo");
     p.approach_routes = p.routes.filter(r => r.kind === "approach");
     p.route_count = p.summit_routes.length;
+    // A subpoint is an unranked peak with no routes of its own: North
+    // Massive, East Crestone, South Elbert and 12 more. The other five
+    // unranked peaks do have routes, and those five are part of the 58 this
+    // page is a list of, so "unranked" is the wrong line to divide on
+    // anywhere in the UI. This is the right one.
+    p.subpoint = p.unranked && p.summit_routes.length === 0;
     // Prefer the route that is both standard and primary. build_data.py's
     // sort already puts it first, but a peak's list also carries combos
     // flagged standard (the Decalibron is Bross's standard), so say it
@@ -1544,25 +1546,17 @@ function applyFilters(peaks, parsed, tracked) {
     p.view_route = p.standard;
     // Set when that route is not the standard one, so the row can name it.
     p.scope_hit = null;
-    // The 20 unranked peaks split in two, and having routes is the split.
-    //
-    // Five do: El Diente, Challenger Point, Mount Cameron, Conundrum Peak and
-    // North Eolus. They carry a class, a road rating and the four risk
-    // ratings, they are the five that take 14ers.com's list from 53 to 58,
-    // and people climb them. They belong in the default list and they answer
-    // every filter the way a ranked peak does. render() still groups them
-    // under the divider and counts them apart, so the ranked count stays
-    // honest.
-    //
-    // The other 15 are subpoints with an empty routes array: North Massive,
-    // East Crestone, South Elbert and the like. Nothing on them is
-    // filterable -- no class, no road, no ratings -- so listing them by
-    // default would be 15 rows passing or failing a filter on absence rather
-    // than on data. They stay reachable by name.
+    // Subpoints are out of the default list. Nothing on them is filterable
+    // -- no class, no road, no ratings -- so listing them would be 15 rows
+    // passing or failing a filter on absence rather than on data. A text
+    // token brings them back, grouped under the divider by render().
     //
     // Text tokens only, not terms: gating on terms as well would mean
     // clicking "hide summited" surfaced all 15 subpoints at once.
-    if (p.unranked && !p.summit_routes.length && !tokens.length) return false;
+    //
+    // The five unranked peaks that DO have routes are not subpoints and are
+    // not gated here. See the p.subpoint comment in preparePeaks.
+    if (p.subpoint && !tokens.length) return false;
     // Every token must appear somewhere in the peak's own name, slug or range,
     // or on one route in the search pool. AND across tokens, not one substring
     // test against a joined string, so word order and extra words in between
@@ -1609,7 +1603,7 @@ const state = {
   // write it rather than holding values of their own, so there is nothing
   // that can disagree with what the search box says.
   q: "",
-  sort: "rank", dir: "asc", authMode: "signin",
+  sort: "elevation_ft", dir: "desc", authMode: "signin",
   // Set when the user clicks a column header, cleared when the query box is
   // emptied. While false, a text query sorts by relevance.
   sortPinned: false,
@@ -2061,7 +2055,7 @@ function applySortMode() {
   const hasText = parseQuery(state.q).tokens.length > 0;
   if (!state.q) state.sortPinned = false;
   if (hasText && !state.sortPinned) { state.sort = "relevance"; state.dir = "asc"; }
-  else if (!hasText && state.sort === "relevance") { state.sort = "rank"; state.dir = "asc"; }
+  else if (!hasText && state.sort === "relevance") { state.sort = "elevation_ft"; state.dir = "desc"; }
 }
 
 // The query is the whole filter state, so it is also the whole shareable
@@ -2353,13 +2347,15 @@ function render() {
   const routeColLabel = allStandard ? "Standard" : (ROUTE_COL_LABEL[parsed.scope] || "Standard");
   document.getElementById("routeCol").textContent = routeColLabel;
   rows.sort((a,b) => {
-    // Relevance is a sort key like any other, with rank as the tie-break so
-    // equally relevant peaks stay in the order the page normally shows.
+    // Relevance is a sort key like any other, with elevation as the
+    // tie-break so equally relevant peaks stay in the order the page
+    // normally shows. Negated because relevance always sorts ascending
+    // while the default elevation order runs highest first.
     if (state.sort === "relevance" && a.relevance !== b.relevance) {
       return state.dir === "asc" ? a.relevance - b.relevance : b.relevance - a.relevance;
     }
-    let av = state.sort === "relevance" ? a.rank : a[state.sort];
-    let bv = state.sort === "relevance" ? b.rank : b[state.sort];
+    let av = state.sort === "relevance" ? -a.elevation_ft : a[state.sort];
+    let bv = state.sort === "relevance" ? -b.elevation_ft : b[state.sort];
     if (typeof av === "string") { av = av.toLowerCase(); bv = bv.toLowerCase(); }
     if (av == null) av = Infinity; if (bv == null) bv = Infinity;
     if (av < bv) return state.dir === "asc" ? -1 : 1;
@@ -2372,8 +2368,10 @@ function render() {
     if (th.dataset.sort === state.sort) th.classList.add(state.dir === "asc" ? "sort-asc" : "sort-desc");
   });
 
-  const rankedRows = rows.filter(p => !p.unranked);
-  const unrankedRows = rows.filter(p => p.unranked);
+  // The list is the 58, so the five unranked peaks with routes count as
+  // listed rows. Only routeless subpoints sit apart.
+  const listedRows = rows.filter(p => !p.subpoint);
+  const subpointRows = rows.filter(p => p.subpoint);
   // Rows are peaks, so one route shared by several summits fills several of
   // them: kind:combo shows 21 rows over 11 combos, kind:approach 9 over 4.
   // Unsaid, that reads as 21 things to climb.
@@ -2388,16 +2386,17 @@ function render() {
   // standard-scope view does, so the line stays quiet until there is
   // something to disclose. That also drops it from kind:route, where 53 rows
   // really are 53 distinct routes.
-  const distinctRoutes = new Set(rankedRows.map(p => p.view_route && p.view_route.route_key)).size;
+  const distinctRoutes = new Set(listedRows.map(p => p.view_route && p.view_route.route_key)).size;
   const routeNoun = parsed.kind === "combo" ? ["combo", "combos"]
     : parsed.kind === "approach" ? ["approach", "approaches"] : ["route", "routes"];
   const routeWord = routeNoun[distinctRoutes === 1 ? 0 : 1];
-  const showRouteCount = distinctRoutes < rankedRows.length;
+  const showRouteCount = distinctRoutes < listedRows.length;
   // Relevance ordering leaves no sort arrow on any column, since no column is
   // the sort key, so the count line has to say how the list is ordered.
-  const countText = `${rankedRows.length} shown`
+  const countText = `${listedRows.length} shown`
     + (showRouteCount ? ` \u00b7 ${distinctRoutes} ${routeWord}` : "")
-    + (unrankedRows.length ? ` \u00b7 ${unrankedRows.length} unranked` : "")
+    + (subpointRows.length
+        ? ` \u00b7 ${subpointRows.length} subpoint${subpointRows.length === 1 ? "" : "s"}` : "")
     + (state.sort === "relevance" ? " \u00b7 by relevance" : "");
   document.getElementById("peakCount").textContent = countText;
   // The column heading renaming itself is a visual-only signal, so the live
@@ -2405,21 +2404,25 @@ function render() {
   // the visible one, which the heading already sits next to.
   announceCount(countText
     + (routeColLabel === "Standard" ? "" : ` \u00b7 ${routeColLabel.toLowerCase()} column`));
-  const ranked = PEAKS.filter(p => !p.unranked);
-  const done = ranked.filter(p => state.summits.has(p.peak_id)).length;
-  const planCount = ranked.filter(p => state.planned.has(p.peak_id)).length;
-  document.getElementById("progress").textContent = `${done} / ${ranked.length} summited${planCount ? ` · ${planCount} planned` : ""}`;
+  // The target is the 58, not the 53 ranked: the five unranked summits with
+  // routes are peaks people set out to climb, so they count. Subpoints do
+  // not -- there is no route up them to have done.
+  const listed = PEAKS.filter(p => !p.subpoint);
+  const done = listed.filter(p => state.summits.has(p.peak_id)).length;
+  const planCount = listed.filter(p => state.planned.has(p.peak_id)).length;
+  document.getElementById("progress").textContent = `${done} / ${listed.length} summited${planCount ? ` · ${planCount} planned` : ""}`;
 
   const tb = document.getElementById("peakBody");
   tb.innerHTML = "";
-  // Unranked matches always sort to the bottom, behind a divider,
-  // whatever the active column sort is.
-  const ordered = unrankedRows.length ? rankedRows.concat(unrankedRows) : rows;
+  // Subpoint matches always sort to the bottom, behind a divider, whatever
+  // the active column sort is. The five unranked peaks with routes are not
+  // separated out any more: they belong to the 58 and sort in among them.
+  const ordered = subpointRows.length ? listedRows.concat(subpointRows) : rows;
   if (!ordered.length) {
     const emptyTr = document.createElement("tr");
     emptyTr.className = "empty-row";
     const guess = didYouMean(PEAKS, tokens);
-    emptyTr.innerHTML = `<td colspan="7">no peaks match.${guess
+    emptyTr.innerHTML = `<td colspan="6">no peaks match.${guess
       ? ` did you mean <button type="button" class="link-btn" id="emptyGuess">${guess.join(" ")}</button>?`
       : ""} <button type="button" class="link-btn" id="emptyReset">clear filters</button></td>`;
     const guessBtn = emptyTr.querySelector("#emptyGuess");
@@ -2448,11 +2451,11 @@ function render() {
   }
   let dividerDrawn = false;
   ordered.forEach(p => {
-    if (p.unranked && !dividerDrawn) {
+    if (p.subpoint && !dividerDrawn) {
       dividerDrawn = true;
       const divTr = document.createElement("tr");
       divTr.className = "group-divider";
-      divTr.innerHTML = `<td colspan="7">unranked summits</td>`;
+      divTr.innerHTML = `<td colspan="6">subpoints</td>`;
       tb.appendChild(divTr);
     }
     const tr = document.createElement("tr");
@@ -2460,7 +2463,6 @@ function render() {
     if (state.planned.has(p.peak_id)) tr.classList.add("planned");
     if (state.openPeak === p.peak_id) tr.classList.add("is-open");
     tr.innerHTML = `
-      <td>${p.rank ?? ""}</td>
       <td class="peak-name"><button type="button" class="row-toggle" aria-expanded="${state.openPeak === p.peak_id}">${highlightName(p.name, tokens)}</button>${matchHint(p, tokens)}</td>
       <td class="elev hide-xs">${p.elevation_ft.toLocaleString()}</td>
       <td class="range hide-sm"><button type="button" class="range-filter" data-range="${RANGE_TOKEN[p.range] || ""}" title="filter to ${p.range}">${p.range}</button></td>
@@ -2498,7 +2500,7 @@ function render() {
     if (state.openPeak === p.peak_id) {
       const detailTr = document.createElement("tr");
       detailTr.className = "detail-row";
-      detailTr.innerHTML = `<td colspan="7">${detailHTML(p)}</td>`;
+      detailTr.innerHTML = `<td colspan="6">${detailHTML(p)}</td>`;
       tb.appendChild(detailTr);
       bindDetailEvents(p, detailTr);
     }
@@ -2636,7 +2638,7 @@ function detailHTML(p) {
       <div class="panel-head">
         <div>
           <h3>${p.name}</h3>
-          <div class="meta">${p.elevation_ft.toLocaleString()} ft · ${p.range} · rank #${p.rank ?? "—"}</div>
+          <div class="meta">${p.elevation_ft.toLocaleString()} ft · ${p.range}${p.unranked ? " · unranked" : ""}</div>
           ${p.note ? `<div class="note">${p.note}</div>` : ""}
         </div>
         <div class="panel-actions">
