@@ -1,6 +1,6 @@
 # Colorado 14ers
 
-Quick-reference site for the 53 ranked Colorado 14,000 ft peaks, built
+Quick-reference site for all 58 Colorado 14,000 ft peaks, built
 from data scraped off [14ers.com](https://14ers.com).
 
 [Live →](https://siriusganesh.github.io/co-14ers/)

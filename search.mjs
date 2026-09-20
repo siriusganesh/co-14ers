@@ -343,6 +343,12 @@ function preparePeaks(peaks) {
     p.combo_routes = p.routes.filter(r => r.kind === "combo");
     p.approach_routes = p.routes.filter(r => r.kind === "approach");
     p.route_count = p.summit_routes.length;
+    // A subpoint is an unranked peak with no routes of its own: North
+    // Massive, East Crestone, South Elbert and 12 more. The other five
+    // unranked peaks do have routes, and those five are part of the 58 this
+    // page is a list of, so "unranked" is the wrong line to divide on
+    // anywhere in the UI. This is the right one.
+    p.subpoint = p.unranked && p.summit_routes.length === 0;
     // Prefer the route that is both standard and primary. build_data.py's
     // sort already puts it first, but a peak's list also carries combos
     // flagged standard (the Decalibron is Bross's standard), so say it
@@ -418,17 +424,17 @@ function applyFilters(peaks, parsed, tracked) {
     p.view_route = p.standard;
     // Set when that route is not the standard one, so the row can name it.
     p.scope_hit = null;
-    // Unranked summits (El Diente, Challenger Point, Conundrum, Cameron
-    // and 16 others) stay out of the default list, but they are real peaks
-    // in the data and were unreachable by any query because this test ran
-    // before the search test. A text token brings them back, grouped
-    // separately by render() so the ranked count stays honest.
+    // Subpoints are out of the default list. Nothing on them is filterable
+    // -- no class, no road, no ratings -- so listing them would be 15 rows
+    // passing or failing a filter on absence rather than on data. A text
+    // token brings them back, grouped under the divider by render().
     //
-    // Text tokens only, not terms: now that the selects and chips write
-    // terms, gating on terms too would mean clicking "hide summited"
-    // surfaced all 20 subpoints. The rule is that you search for a subpoint
-    // by name; filters describe the ranked list.
-    if (p.unranked && !tokens.length) return false;
+    // Text tokens only, not terms: gating on terms as well would mean
+    // clicking "hide summited" surfaced all 15 subpoints at once.
+    //
+    // The five unranked peaks that DO have routes are not subpoints and are
+    // not gated here. See the p.subpoint comment in preparePeaks.
+    if (p.subpoint && !tokens.length) return false;
     // Every token must appear somewhere in the peak's own name, slug or range,
     // or on one route in the search pool. AND across tokens, not one substring
     // test against a joined string, so word order and extra words in between
