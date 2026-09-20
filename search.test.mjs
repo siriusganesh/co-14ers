@@ -44,14 +44,15 @@ test("an unknown field stays plain text rather than matching everything", () => 
 
 test("a half-typed term constrains nothing, a broken one matches nothing", () => {
   assert.equal(ranked("class:").length, 53, "class: is not a term yet");
-  assert.equal(q("class:>").length, 53);
+  assert.equal(q("class:>").length, 58, "53 ranked plus the 5 unranked with routes");
   assert.equal(q("kind:bogus").length, 0, "a value that cannot parse matches nothing");
 });
 
-test("the default view is 53 ranked peaks on their standard routes", () => {
+test("the default view is the 58 peaks with routes, on their standard routes", () => {
   const rows = q("");
   assert.equal(rows.filter(p => !p.unranked).length, 53);
-  assert.equal(rows.filter(p => p.unranked).length, 0, "unranked need a text token");
+  assert.equal(rows.filter(p => p.unranked).length, 5,
+    "the unranked peaks that have routes, not the 15 route-less subpoints");
   assert.ok(rows.every(p => p.view_route === p.standard),
     "nothing may repoint the columns without a scope");
   assert.equal(ROUTE_COL_LABEL[parseQuery("").scope], "Standard");
@@ -129,10 +130,18 @@ test("without a kind the text search stays wider than the filters", () => {
   }
 });
 
-test("unranked summits come back for a text token and not for a filter", () => {
-  assert.ok(q("el diente").some(p => p.unranked));
-  assert.ok(q("kind:combo").every(p => !p.unranked));
-  assert.ok(q("summited:no").every(p => !p.unranked));
+test("an unranked peak with routes is listed; a route-less subpoint needs its name", () => {
+  assert.deepEqual(names(q("").filter(p => p.unranked)),
+    ["Challenger Point", "Conundrum Peak", "El Diente Peak", "Mount Cameron", "North Eolus"]);
+  // Having routes means having something to filter on, so these answer terms.
+  assert.ok(q("kind:combo").some(p => p.name === "El Diente Peak"));
+  assert.ok(q("class:<=3").some(p => p.name === "North Eolus"));
+  assert.ok(q("summited:no").some(p => p.unranked));
+  // The 15 with an empty routes array stay out until they are named.
+  const subpoint = p => p.name === "North Massive";
+  assert.ok(!q("").some(subpoint));
+  assert.ok(!q("summited:no").some(subpoint), "a term must not surface a subpoint");
+  assert.ok(q("north massive").some(subpoint));
 });
 
 test("rows are peaks, so a shared route fills several of them", () => {
@@ -184,7 +193,7 @@ test("summited and planned read the tracked sets they are handed", () => {
   const tracked = { summits: new Map([[elbert.peak_id, {}]]), planned: new Map() };
   assert.deepEqual(names(q("summited:yes", tracked)), ["Mount Elbert"]);
   assert.equal(q("summited:yes", NOTHING).length, 0);
-  assert.equal(q("summited:no", tracked).length, 52);
+  assert.equal(q("summited:no", tracked).length, 57, "58 listed peaks less the summited one");
 });
 
 test("did-you-mean corrects across every route, not just the scoped ones", () => {

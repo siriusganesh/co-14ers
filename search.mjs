@@ -418,17 +418,25 @@ function applyFilters(peaks, parsed, tracked) {
     p.view_route = p.standard;
     // Set when that route is not the standard one, so the row can name it.
     p.scope_hit = null;
-    // Unranked summits (El Diente, Challenger Point, Conundrum, Cameron
-    // and 16 others) stay out of the default list, but they are real peaks
-    // in the data and were unreachable by any query because this test ran
-    // before the search test. A text token brings them back, grouped
-    // separately by render() so the ranked count stays honest.
+    // The 20 unranked peaks split in two, and having routes is the split.
     //
-    // Text tokens only, not terms: now that the selects and chips write
-    // terms, gating on terms too would mean clicking "hide summited"
-    // surfaced all 20 subpoints. The rule is that you search for a subpoint
-    // by name; filters describe the ranked list.
-    if (p.unranked && !tokens.length) return false;
+    // Five do: El Diente, Challenger Point, Mount Cameron, Conundrum Peak and
+    // North Eolus. They carry a class, a road rating and the four risk
+    // ratings, they are the five that take 14ers.com's list from 53 to 58,
+    // and people climb them. They belong in the default list and they answer
+    // every filter the way a ranked peak does. render() still groups them
+    // under the divider and counts them apart, so the ranked count stays
+    // honest.
+    //
+    // The other 15 are subpoints with an empty routes array: North Massive,
+    // East Crestone, South Elbert and the like. Nothing on them is
+    // filterable -- no class, no road, no ratings -- so listing them by
+    // default would be 15 rows passing or failing a filter on absence rather
+    // than on data. They stay reachable by name.
+    //
+    // Text tokens only, not terms: gating on terms as well would mean
+    // clicking "hide summited" surfaced all 15 subpoints at once.
+    if (p.unranked && !p.summit_routes.length && !tokens.length) return false;
     // Every token must appear somewhere in the peak's own name, slug or range,
     // or on one route in the search pool. AND across tokens, not one substring
     // test against a joined string, so word order and extra words in between
