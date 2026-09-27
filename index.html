@@ -1827,8 +1827,11 @@ async function sendRow(kind, row, on) {
     : sb.from(t.table).delete().eq(t.key, row[t.key]);
   // One bar of signal can hold a request open for minutes. Upsert and delete
   // are idempotent, so giving up and resending later is safe.
+  // The race also covers the SDK's own token refresh before the request,
+  // which retries with backoff for about 30 s when there is no network.
   if (typeof AbortSignal.timeout === "function") q = q.abortSignal(AbortSignal.timeout(WRITE_TIMEOUT_MS));
-  try { return await q; }
+  const timedOut = new Promise(res => setTimeout(() => res({ error: { message: "timed out" }, status: 0 }), WRITE_TIMEOUT_MS));
+  try { return await Promise.race([q, timedOut]); }
   catch (e) { return { error: { message: String(e) }, status: 0 }; }
 }
 
