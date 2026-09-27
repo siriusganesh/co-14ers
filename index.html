@@ -18,6 +18,7 @@
 <meta name="twitter:description" content="Quick reference for all 58 Colorado 14,000 ft peaks. Routes, difficulty, ratings. Track your summits.">
 <meta name="twitter:image" content="https://siriusganesh.github.io/co-14ers/og-image.png?v=2">
 <link rel="icon" type="image/svg+xml" href="favicon.svg?v=3">
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" id="themeColor" content="#ffffff">
 <script>
 // Resolve the theme before first paint, so a dark-theme visitor never sees a
@@ -1080,7 +1081,11 @@ function setupSupabase() {
   });
   sb.auth.onAuthStateChange(async (event, session) => {
     const prevUserId = state.user?.id;
-    state.user = session?.user || null;
+    // A null session on anything but a real sign-out is a token refresh that
+    // could not reach the server (offline). Keep the user, so the tracker stays
+    // usable and queued writes stay attached to the account.
+    if (session?.user) state.user = session.user;
+    else if (event === "SIGNED_OUT" || event === "USER_DELETED") state.user = null;
     state.authMode = null;
 
     // Real wipe events only. Anything else (TOKEN_REFRESHED, USER_UPDATED,
@@ -1774,10 +1779,138 @@ function clearCache() {
   try { localStorage.removeItem(CACHE_KEY); } catch (e) {}
 }
 
+// === Offline write queue ===
+// A write that cannot reach Supabase (no signal, request timed out, access
+// token expired and not yet refreshable) is kept here instead of reverted.
+// One entry per row, so the last change to a peak or route wins. The queue is
+// sent at the start of every hydrate, which covers launch, returning to the
+// app, the resync timer and the browser's online event.
+const OUTBOX_KEY = "co14ers.outbox";
+const WRITE_TIMEOUT_MS = 8000;
+const TABLES = {
+  summit:  { table: "summits",        key: "peak_id" },
+  route:   { table: "routes_climbed", key: "route_key" },
+  planned: { table: "planned",        key: "peak_id" }
+};
+
+function loadOutbox() {
+  try {
+    const box = JSON.parse(localStorage.getItem(OUTBOX_KEY) || "null");
+    if (box && state.user && box.user_id === state.user.id) return box;
+  } catch (e) {}
+  return { user_id: state.user?.id ?? null, ops: {} };
+}
+function saveOutbox(box) {
+  try {
+    if (Object.keys(box.ops).length) localStorage.setItem(OUTBOX_KEY, JSON.stringify(box));
+    else localStorage.removeItem(OUTBOX_KEY);
+  } catch (e) {}
+}
+function pendingCount() {
+  return state.user ? Object.keys(loadOutbox().ops).length : 0;
+}
+function rowId(kind, row) { return kind + ":" + row[TABLES[kind].key]; }
+
+// status 0: no answer at all (offline, or the timeout below fired). 401: the
+// access token expired while offline. 408 / 429 / 5xx: try again later.
+// Anything else (RLS, bad data) is a real rejection.
+function isRetryable(res) {
+  const st = res?.status ?? 0;
+  return st === 0 || st === 401 || st === 408 || st === 429 || st >= 500;
+}
+
+async function sendRow(kind, row, on) {
+  if (!sb) return { error: { message: "offline" }, status: 0 };
+  const t = TABLES[kind];
+  let q = on
+    ? sb.from(t.table).upsert(row)
+    : sb.from(t.table).delete().eq(t.key, row[t.key]);
+  // One bar of signal can hold a request open for minutes. Upsert and delete
+  // are idempotent, so giving up and resending later is safe.
+  // The race also covers the SDK's own token refresh before the request,
+  // which retries with backoff for about 30 s when there is no network.
+  if (typeof AbortSignal.timeout === "function") q = q.abortSignal(AbortSignal.timeout(WRITE_TIMEOUT_MS));
+  const timedOut = new Promise(res => setTimeout(() => res({ error: { message: "timed out" }, status: 0 }), WRITE_TIMEOUT_MS));
+  try { return await Promise.race([q, timedOut]); }
+  catch (e) { return { error: { message: String(e) }, status: 0 }; }
+}
+
+function queueRow(kind, row, on) {
+  const box = loadOutbox();
+  const first = !Object.keys(box.ops).length;
+  box.user_id = state.user.id;
+  box.ops[rowId(kind, row)] = { kind, row, on, seq: Date.now() + Math.random() };
+  saveOutbox(box);
+  if (first) toast("Offline. Saved on this device, will sync later.");
+  renderAuthStrip();
+}
+
+// Send one write, or queue it. Resolves with an error only for a real
+// rejection, which the caller reverts. A queued write resolves { error: null }.
+async function writeRow(kind, row, on) {
+  // A queued change to this row must not be sent after this newer one, so
+  // replace it in the queue and send the queue instead.
+  if (loadOutbox().ops[rowId(kind, row)]) {
+    queueRow(kind, row, on);
+    flushOutbox();
+    return { error: null };
+  }
+  const res = await sendRow(kind, row, on);
+  if (res.error && isRetryable(res)) { queueRow(kind, row, on); return { error: null }; }
+  return res;
+}
+
+let flushing = null;
+function flushOutbox() {
+  if (!flushing) flushing = doFlush().finally(() => { flushing = null; });
+  return flushing;
+}
+async function doFlush() {
+  let sent = 0;
+  // The cap only guards against a storage failure that keeps an entry from
+  // being removed; a real queue is a handful of rows.
+  for (let i = 0; i < 500 && state.user; i++) {
+    const box = loadOutbox();
+    const id = Object.keys(box.ops)[0];
+    if (!id) break;
+    const op = box.ops[id];
+    const res = await sendRow(op.kind, op.row, op.on);
+    if (res.error && isRetryable(res)) break;      // still offline; keep the rest
+    if (res.error) {
+      // Real rejection: drop it. The hydrate that follows restores server state.
+      console.error(res.error);
+      toast("Sync failed: " + res.error.message);
+    }
+    // The row may have changed again while this request was out. Remove the
+    // entry only if it is still the one that was sent.
+    const now = loadOutbox();
+    if (now.ops[id] && now.ops[id].seq === op.seq) { delete now.ops[id]; saveOutbox(now); }
+    sent++;
+  }
+  if (sent) {
+    if (!pendingCount()) toast("Synced");
+    renderAuthStrip();
+  }
+  return sent;
+}
+
+// Lay queued writes over fresh server data, so a hydrate that runs while
+// changes are still pending does not hide them.
+function applyPending(summits, routes, planned) {
+  const maps = { summit: summits, route: routes, planned };
+  for (const { kind, row, on } of Object.values(loadOutbox().ops)) {
+    const m = maps[kind];
+    if (!on) { m.delete(row[TABLES[kind].key]); continue; }
+    if (kind === "summit")  m.set(row.peak_id,   { summit_date: row.summit_date ?? null });
+    if (kind === "route")   m.set(row.route_key, { climbed_date: row.climbed_date ?? null, peak_id: row.peak_id });
+    if (kind === "planned") m.set(row.peak_id,   { target_date: row.target_date ?? null });
+  }
+}
+
 // Read the supabase-stored session straight from localStorage so we can
 // render "signed in as X" on first paint, without waiting for the SDK's
 // _initialize to finish. Returns the parsed session if it looks valid and
-// not expired, otherwise null.
+// is either unexpired or refreshable, otherwise null.
 function loadStoredSession() {
   try {
     const raw = localStorage.getItem("co14ers.auth");
@@ -1786,7 +1919,10 @@ function loadStoredSession() {
     // older supabase-js stored under .currentSession; newer is flat
     if (parsed && parsed.currentSession) parsed = parsed.currentSession;
     if (!parsed || !parsed.access_token || !parsed.user || !parsed.user.id) return null;
-    if (parsed.expires_at && Date.now() / 1000 > parsed.expires_at) return null;
+    // An expired access token is normal after an hour offline. Keep the user
+    // on screen when a refresh token exists: the SDK refreshes it once the
+    // network is back, and fires SIGNED_OUT if the server rejects it.
+    if (parsed.expires_at && Date.now() / 1000 > parsed.expires_at && !parsed.refresh_token) return null;
     return parsed;
   } catch (e) { return null; }
 }
@@ -1814,6 +1950,7 @@ async function getSessionSafe() {
 // Atomic hydrate: build new Maps locally, swap into state only on full success.
 // On failure (timeout, RLS, network), existing state is preserved.
 async function hydrateFromDB() {
+  await flushOutbox();
   let s, r, pl;
   try {
     [s, r, pl] = await withTimeout(Promise.all([
@@ -1835,6 +1972,7 @@ async function hydrateFromDB() {
   s.data.forEach(row => newSummits.set(row.peak_id, { summit_date: row.summit_date }));
   r.data.forEach(row => newRoutes.set(row.route_key, { climbed_date: row.climbed_date, peak_id: row.peak_id }));
   pl.data.forEach(row => newPlanned.set(row.peak_id, { target_date: row.target_date }));
+  applyPending(newSummits, newRoutes, newPlanned);
   // atomic swap
   state.summits = newSummits;
   state.routes  = newRoutes;
@@ -1862,6 +2000,7 @@ async function migrateLegacyIfNeeded() {
 
 // Optimistic mutations: update local state + render immediately, fire DB
 // write in the background, revert on error. UI never waits on the network.
+// A write that cannot reach the server is queued, not reverted (writeRow).
 function setSummit(peak_id, on, summit_date = null) {
   const prev = state.summits.get(peak_id);
   if (on) state.summits.set(peak_id, { summit_date });
@@ -1870,10 +2009,7 @@ function setSummit(peak_id, on, summit_date = null) {
   render();
   if (!state.user) return;
   broadcastChange({ kind: "summit", op: on ? "set" : "del", peak_id, summit_date, user_id: state.user.id });
-  const op = on
-    ? sb.from("summits").upsert({ user_id: state.user.id, peak_id, summit_date })
-    : sb.from("summits").delete().eq("peak_id", peak_id);
-  op.then(({ error }) => {
+  writeRow("summit", { user_id: state.user.id, peak_id, summit_date }, on).then(({ error }) => {
     if (!error) return;
     toast((on ? "Save" : "Delete") + " failed: " + error.message);
     if (prev !== undefined) state.summits.set(peak_id, prev);
@@ -1891,7 +2027,7 @@ function setSummitDate(peak_id, summit_date) {
   render();
   if (!state.user) return;
   broadcastChange({ kind: "summit", op: "set", peak_id, summit_date, user_id: state.user.id });
-  sb.from("summits").upsert({ user_id: state.user.id, peak_id, summit_date }).then(({ error }) => {
+  writeRow("summit", { user_id: state.user.id, peak_id, summit_date }, true).then(({ error }) => {
     if (!error) return;
     toast("Save failed: " + error.message);
     state.summits.set(peak_id, prev);
@@ -1908,10 +2044,7 @@ function setRoute(route_key, peak_id, on, climbed_date = null) {
   saveCache();
   render();
   broadcastChange({ kind: "route", op: on ? "set" : "del", route_key, peak_id, climbed_date, user_id: state.user.id });
-  const op = on
-    ? sb.from("routes_climbed").upsert({ user_id: state.user.id, route_key, peak_id, climbed_date })
-    : sb.from("routes_climbed").delete().eq("route_key", route_key);
-  op.then(({ error }) => {
+  writeRow("route", { user_id: state.user.id, route_key, peak_id, climbed_date }, on).then(({ error }) => {
     if (!error) return;
     toast((on ? "Save" : "Delete") + " failed: " + error.message);
     if (prev !== undefined) state.routes.set(route_key, prev);
@@ -1929,10 +2062,7 @@ function setPlanned(peak_id, on, target_date = null) {
   saveCache();
   render();
   broadcastChange({ kind: "planned", op: on ? "set" : "del", peak_id, target_date, user_id: state.user.id });
-  const op = on
-    ? sb.from("planned").upsert({ user_id: state.user.id, peak_id, target_date })
-    : sb.from("planned").delete().eq("peak_id", peak_id);
-  op.then(({ error }) => {
+  writeRow("planned", { user_id: state.user.id, peak_id, target_date }, on).then(({ error }) => {
     if (!error) return;
     toast((on ? "Save" : "Delete") + " failed: " + error.message);
     if (prev !== undefined) state.planned.set(peak_id, prev);
@@ -1942,6 +2072,11 @@ function setPlanned(peak_id, on, target_date = null) {
   });
 }
 
+function pendingNote() {
+  const n = pendingCount();
+  return n ? ` <span class="dim">&middot; ${n} change${n === 1 ? "" : "s"} not synced</span>` : "";
+}
+
 function renderAuthStrip() {
   const el = document.getElementById("authStrip");
   el.classList.remove("signed-in");
@@ -1949,7 +2084,7 @@ function renderAuthStrip() {
   if (state.user) {
     el.classList.add("signed-in");
     el.innerHTML = `
-      <span class="who">Signed in as <strong>${state.user.email}</strong></span>
+      <span class="who">Signed in as <strong>${state.user.email}</strong>${pendingNote()}</span>
       <button class="linklike" id="logoutBtn">log out</button>`;
     document.getElementById("logoutBtn").addEventListener("click", async () => { if (sb) await sb.auth.signOut(); });
     return;
@@ -2772,6 +2907,9 @@ async function init() {
   // user_id at message time.
   startDataBroadcast();
   setupVisibilityRehydrate();
+  window.addEventListener("online", () => {
+    if (state.user) hydrateFromDB().then(ok => { if (ok) render(); renderAuthStrip(); });
+  });
 
   // Validate the optimistic state via the SDK. getSessionSafe returns null on
   // both timeout and "no session" — only update state.user on a positive
@@ -2874,6 +3012,14 @@ document.addEventListener("keydown", (event) => {
   if (el !== searchBox && event.key === "ArrowUp" && from === 0) { searchBox.focus(); return; }
   rowButtons[next].focus();
 });
+
+// Offline support (sw.js). Registered after load so it never competes with
+// the first paint.
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  });
+}
 </script>
 </body>
 </html>

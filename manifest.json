@@ -1,0 +1,13 @@
+{
+  "name": "Colorado 14ers",
+  "short_name": "14ers",
+  "description": "Quick reference for all 58 Colorado 14,000 ft peaks. Routes, difficulty, ratings. Track your summits.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    { "src": "favicon.svg?v=3", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
